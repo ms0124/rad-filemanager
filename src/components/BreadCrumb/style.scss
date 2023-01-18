@@ -1,0 +1,23 @@
+.bread-crumb {
+  height: 60px;
+  background-color: #f2f2f2;
+  color: #b5b5b5;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-right: 15px;
+
+  &__your-path {
+    color: #777;
+  }
+  &__item {
+    // padding: 8px;
+    &:hover {
+      color: #ff9b3f;
+      cursor: pointer;
+    }
+  }
+  &__copyright{
+    padding-left: 10px;
+  }
+}

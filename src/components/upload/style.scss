@@ -1,0 +1,49 @@
+@import '../../sass/variables';
+
+.btn-upload {
+  background-color: $color-orange;
+  color: #fff;
+  &:focus{
+    background-color: $color-orange;
+    color: #fff;
+  }
+}
+
+.modal-container {
+  &.upload-toast {
+    &.modal-dialog {
+      align-items: end;
+      justify-content: end;
+      max-width: none;
+      margin-left: 20px;
+      .modal-content{
+        border-radius: 0;
+        .modal-header{
+          background-color: #6184ff;
+          .modal-title{
+            display: flex;
+            width: 100%;
+            justify-content: space-between;
+            color: #fff;
+            .icon-times{
+              cursor: pointer;
+            }
+          }
+
+        }
+      }
+    }
+
+  }
+  .modal-content {
+    width: 355px;
+    min-height: 240px;
+    border-radius: 8px;
+  }
+  .drag-here {
+    margin: 1rem;
+    border: 2px dashed $color-gray;
+    border-radius: 8px;
+    text-align: center;
+  }
+}

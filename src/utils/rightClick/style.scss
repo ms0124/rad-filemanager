@@ -1,0 +1,31 @@
+
+.context-menu {
+  position: fixed;
+  z-index: 10;
+  box-shadow: 0px 0px 11px 4px #0000001A;
+  border-radius: 4px;
+  width: 260px;
+  background-color: #fff;
+  color: #737373;
+  &__icon{
+    margin-left: 16px;
+  }
+  &__text{
+
+  }
+  .nav{
+    padding: 16px 12px 16px 12px;
+    .nav-item{
+      text-align: right;
+      cursor: pointer;
+    }
+  }
+
+}
+
+.modal-operation{
+
+  .modal-header{
+    border-bottom: 1px solid transparent;
+  }
+}
