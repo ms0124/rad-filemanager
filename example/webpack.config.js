@@ -1,4 +1,6 @@
 const TerserPlugin = require('terser-webpack-plugin');
+const path = require('path');
+
 module.exports = (env, argv) => {
   return {
     mode: argv.mode === 'development' ? 'development' : 'production',
@@ -40,6 +42,13 @@ module.exports = (env, argv) => {
       minimizer: [
         new TerserPlugin()
       ]
-    }
+    },
+    devServer: {
+      static: {
+        directory: path.join(__dirname, 'build'),
+      },
+      compress: true,
+      port: 3000,
+    },
   };
 };
