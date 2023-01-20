@@ -12,6 +12,7 @@
     "node": ">=10"
   },
   "scripts": {
+    "dev": "webpack --config webpack.config.js",
     "build": "microbundle-crl --no-compress --no-css-modules --format modern,cjs",
     "start": "microbundle-crl watch --no-compress --no-css-modules --format modern,cjs",
     "prepare": "run-s build",
@@ -35,10 +36,15 @@
     "@types/node": "^12.12.38",
     "@types/react": "^16.9.27",
     "@types/react-dom": "^16.9.7",
+    "@types/webpack": "^5.28.0",
     "@typescript-eslint/eslint-plugin": "^2.26.0",
     "@typescript-eslint/parser": "^2.26.0",
+    "@webpack-cli/generators": "^3.0.1",
     "babel-eslint": "^10.0.3",
+    "clean-webpack-plugin": "^4.0.0",
+    "copy-webpack-plugin": "^11.0.0",
     "cross-env": "^7.0.2",
+    "css-loader": "^6.7.3",
     "eslint": "^6.8.0",
     "eslint-config-prettier": "^6.7.0",
     "eslint-config-standard": "^14.1.0",
@@ -57,7 +63,12 @@
     "react-dom": "^16.13.1",
     "react-scripts": "^3.4.1",
     "rollup-plugin-img": "^1.1.0",
-    "typescript": "^3.7.5"
+    "style-loader": "^3.3.1",
+    "ts-loader": "^9.4.2",
+    "typescript": "^4.9.4",
+    "webpack": "^5.75.0",
+    "webpack-dev-server": "^4.11.1",
+    "wepack-cli": "^0.0.1-security"
   },
   "files": [
     "dist"
