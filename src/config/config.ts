@@ -17,7 +17,7 @@ export const instance = axios.create({
   headers: {
     common: {
       'Client-Id': CLIENT_ID,
-      'Access-Token': '1e31907a78d94b79853c83cfa20daab5.XzIwMjMx'
+      'Access-Token': '5d388912b8fe4eecb8969604ea3085e7.XzIwMjMx'
     }
   }
 });

@@ -1,7 +1,7 @@
 import React from 'react';
 
-import { FileManagerReact } from 'rad-filemanager';
-import 'rad-filemanager/dist/index.css';
+import { FileManagerReact } from 'node_modules/rad-filemanager';
+// import 'rad-filemanager/dist/index.css';
 
 const App = () => {
   // const token = await fetch('https://accounts.pod.ir/oauth2/token', {
@@ -17,8 +17,9 @@ const App = () => {
   //     refresh_token: '7628c06df92c44a2b47cd8097bf9a2c3.XzIwMjMx'
   //   })
   // });
-  // console.log(11111,token)
-  return <FileManagerReact />;
+  console.log(11111)
+  return <div>2222</div>
+  // return <FileManagerReact />;
 };
 
 export default App;

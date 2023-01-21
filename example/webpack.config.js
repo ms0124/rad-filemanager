@@ -7,7 +7,7 @@ module.exports = (env, argv) => {
     watch: argv.mode === 'development',
     entry: { index: ['./src/index.tsx'] },
     output: {
-      path: __dirname + '/dist'
+      path: __dirname + '/public'
     },
     resolve: {
       // Add `.ts` and `.tsx` as a resolvable extension.
@@ -45,10 +45,21 @@ module.exports = (env, argv) => {
     },
     devServer: {
       static: {
-        directory: path.join(__dirname, 'build'),
+        directory: path.join(__dirname, '/public'),
       },
       compress: true,
       port: 3000,
+      allowedHosts: "all",
+      open: "",
+      historyApiFallback: true,
+      hot: false,
+      // inline: true,
+      open: true,
+      https: false,
+      liveReload: false,
+      devMiddleware: {
+        writeToDisk: true,
+      },
     },
   };
 };

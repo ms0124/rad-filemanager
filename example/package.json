@@ -4,8 +4,10 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
+    "serve": "webpack-dev-server --config webpack.config.js --mode development",
+    "start": "webpack --config webpack.config.js --mode development",
+    "start-old": "react-scripts start",
+    "build-old": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
@@ -13,18 +15,32 @@
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.5.0",
     "@testing-library/user-event": "^7.2.1",
-    "@types/jest": "^25.1.4",
-    "@types/node": "^12.12.38",
     "@types/react": "^16.9.27",
     "@types/react-dom": "^16.9.7",
-    "rad-filemanager": "file:..",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
-    "react-scripts": "^3.4.1",
-    "typescript": "^3.7.5"
+    "typescript": "^4.9.4",
+    "rad-filemanager": "file:../rad-filemanager"
   },
   "devDependencies": {
-    "@babel/plugin-syntax-object-rest-spread": "^7.8.3"
+    "@babel/plugin-syntax-object-rest-spread": "^7.8.3",
+    "@types/jest": "^29.2.6",
+    "@types/mocha": "^10.0.1",
+    "@types/node": "^18.11.18",
+    "@types/webpack": "^5.28.0",
+    "@types/webpack-env": "^1.18.0",
+    "css-loader": "^6.7.3",
+    "file-loader": "^6.2.0",
+    "path": "^0.12.7",
+    "sass": "^1.57.1",
+    "sass-loader": "^13.2.0",
+    "style-loader": "^3.3.1",
+    "terser-webpack-plugin": "^5.3.6",
+    "ts-loader": "^9.4.2",
+    "webpack": "^5.75.0",
+    "webpack-cli": "^5.0.1",
+    "webpack-dev-server": "^4.11.1",
+    "wepack-cli": "^0.0.1-security"
   },
   "eslintConfig": {
     "extends": "react-app"

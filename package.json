@@ -6,7 +6,6 @@
   "license": "MIT",
   "repository": "/rad-filemanager",
   "main": "dist/index.js",
-  "module": "dist/index.modern.js",
   "source": "src/index.tsx",
   "engines": {
     "node": ">=10"
@@ -14,6 +13,7 @@
   "scripts": {
     "start": "webpack --config webpack.config.js --mode development",
     "build": "webpack --config webpack.config.js",
+    "serve": "webpack-dev-server --config test.webpack.config.js --mode development",
     "prepare": "run-s build",
     "test": "run-s test:unit test:lint test:build",
     "test:build": "run-s build",
@@ -73,9 +73,6 @@
     "webpack-dev-server": "^4.11.1",
     "wepack-cli": "^0.0.1-security"
   },
-  "files": [
-    "dist"
-  ],
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^6.1.1",
     "@fortawesome/free-regular-svg-icons": "^6.1.1",

@@ -4,7 +4,7 @@ module.exports = (env, argv) => {
   return {
     mode: argv.mode === 'development' ? 'development' : 'production',
     watch: argv.mode === 'development',
-    entry: { index: ['./src/index.tsx'] },
+    entry: { index: ['./src/example.tsx'] },
     output: {
       path: path.join(__dirname, '/dist')
     },
