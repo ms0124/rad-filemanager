@@ -1,11 +1,22 @@
-import React, { FunctionComponent, useEffect, useState } from 'react';
+import React, {
+  FunctionComponent,
+  useEffect,
+  useState,
+  useContext
+} from 'react';
 
 import { Modal, ModalBody, ModalHeader } from 'reactstrap';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCloudUploadAlt, faTimes } from '@fortawesome/free-solid-svg-icons';
 
-import { uploadFile } from "../../config/api";
+import { upload } from '../../config/api';
+import { Context } from '../../store';
+
+import { queryClient } from '../../config/config';
+
+import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
+import 'react-circular-progressbar/dist/styles.css';
 
 interface Props {
   modal: boolean;
@@ -17,10 +28,13 @@ interface fileListInterface {
 }
 
 const FilesDragAndDrop: FunctionComponent<Props> = ({ modal, toggleModal }) => {
+  const { currentHash } = useContext(Context);
+
   const [element, setElement] = useState<HTMLDivElement | null>(null);
   const [hoverFile, setHoverFile] = useState(false);
   const [isUpload, setIsUpload] = useState(false);
   const [fileList, setFileList] = useState<fileListInterface[]>([]);
+  const [progress, setProgress] = useState<number>(0);
 
   useEffect(() => {
     if (!element) return;
@@ -34,11 +48,30 @@ const FilesDragAndDrop: FunctionComponent<Props> = ({ modal, toggleModal }) => {
     };
   }, [element]);
 
-  
   const onUpload = (files) => {
-    
-    uploadFile({file: files})
-  }
+    let formData = new FormData();
+
+    formData.append('file', files[0]);
+    formData.append('folderHash', currentHash);
+    const onUploadProgress = (progressEvent) => {
+      const { loaded, total, progress } = progressEvent;
+
+      let progressPercent = (100 * loaded) / total;
+      setProgress(parseInt(progressPercent.toFixed()));
+      if (progress == 1) {
+        setTimeout(() => {
+          setFileList([]);
+          setProgress(0);
+          toggleModal();
+        }, 2500);
+      }
+    };
+    upload(formData, false, onUploadProgress).then(() => {
+      queryClient.refetchQueries({
+        queryKey: ['folderContentChildren', currentHash]
+      });
+    });
+  };
   const handleDragOver = (e: any) => {
     e.preventDefault();
     e.stopPropagation();
@@ -78,7 +111,22 @@ const FilesDragAndDrop: FunctionComponent<Props> = ({ modal, toggleModal }) => {
           <ModalBody>
             {fileList &&
               Object.values(fileList).map((item) => {
-                return <div>{item.name}</div>;
+                return (
+                  <div className='d-flex justify-content-between'>
+                    <span>{item.name}</span>
+                    <div style={{ width: 25, height: 25 }}>
+                      <CircularProgressbar
+                        value={progress}
+                        styles={buildStyles({
+                          textSize: '30px',
+                          pathColor: '#000000',
+                          textColor: '#000000'
+                        })}
+                        text={`${progress} %`}
+                      />
+                    </div>
+                  </div>
+                );
               })}
           </ModalBody>
         </React.Fragment>

@@ -50,13 +50,26 @@ export const renameFileAndFolder = async (
   return data;
 };
 
-export const uploadFile = async (params) => {
-  await instance.post(`${namespace}/upload`, params, {
-    headers: {
-      'Content-Type': 'multipart/form-data'
+/************************************* */
+/********* U P L O A D *****************/
+/************************************* */
+
+export const upload = async (params, image = false, onUploadProgress) => {
+  return await instance.post(
+    `${namespace}/upload${image ? '/image' : ''}`,
+    params,
+    {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      },
+      onUploadProgress,
     }
-  });
+  );
 };
+
+/************************************* */
+/********* C O P Y  &  C U T ***********/
+/************************************* */
 
 export const copy = async (
   params: Partial<{ hash: string; destFolderHash: string }>
@@ -95,13 +108,14 @@ export const archiveDelete = async (params: string): Promise<Data> => {
   return data;
 };
 
+/************************************* */
+/********* D O W N L O A D ***************/
+/************************************* */
+
 export const download = async (hash) => {
   return instance
     .get(`${namespace}/download/${hash}/`, {
       responseType: 'blob'
-      // headers: {
-      //   'Content-Type': 'application/octet-stream; charset=utf-8'
-      // }
     })
     .then((response) => {
       const blob = response.data;
@@ -109,6 +123,6 @@ export const download = async (hash) => {
     });
 };
 
-export const downloadThumbnail = async(hash) => {
-  return await instance.get(`${namespace}/download/${hash}/thumbnail`)
-}
+export const downloadThumbnail = async (hash) => {
+  return await instance.get(`${namespace}/download/${hash}/thumbnail`);
+};

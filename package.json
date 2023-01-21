@@ -73,7 +73,7 @@
     "file-saver": "^2.0.5",
     "moment-jalaali": "^0.9.6",
     "node-sass": "^4.14.1",
-    "react-circular-progressbar": "^2.0.4",
+    "react-circular-progressbar": "^2.1.0",
     "react-query": "^3.39.2",
     "reactstrap": "^9.0.2"
   }

@@ -51,11 +51,15 @@ const Column: React.FunctionComponent<IProps> = ({ list = [], setHash }) => {
                 </div>
                 {/* {console.log("ddd ", downloadThumbnail(item.hash))} */}
                 {item.extension ? (
-                  <img
-                    className='col__img'
-                    src={`https://rad-sandbox.pod.ir/api/core/drives/download/${item.hash}/thumbnail`}
-                    // src={}
-                  />
+                  item.thumbnail === 'THUMBNAIL_EXIST_PNG' ? (
+                    <img
+                      className='col__img'
+                      src={`https://sandbox.podspace.ir:8443/api/files/${item.hash}/thumbnail`}
+                      // src={}
+                    />
+                  ) : (
+                    ''
+                  )
                 ) : (
                   <div className='col__folder-img-wrapper'>
                     <img className='col__folder-img' src={folder} />

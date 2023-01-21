@@ -22,6 +22,7 @@ const MenuItem: React.FunctionComponent<IProps> = ({
   return (
     <React.Fragment>
       <DropdownItem
+        role="button"
         tag={type === OperationTypes.Download ? 'a' : undefined}
         onClick={clickHandler}
         target="_blank"
