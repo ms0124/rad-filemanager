@@ -17,7 +17,7 @@ const Upload = () => {
   return (
     <React.Fragment>
       <Button className='btn-upload mb-2' onClick={handleModalToggle}>
-        <FontAwesomeIcon icon={faCloudUploadAlt} /> بار گذاری
+        <FontAwesomeIcon icon={faCloudUploadAlt} /> بارگذاری
       </Button>
       {modal && (
         <FileDragAndDrop

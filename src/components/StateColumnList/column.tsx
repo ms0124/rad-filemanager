@@ -21,7 +21,7 @@ interface IProps {
 const Column: React.FunctionComponent<IProps> = ({ list = [], setHash }) => {
   return (
     <React.Fragment>
-      {/* <RightClick query='.m-4' /> */}
+      <RightClick query='.m-4' />
       <Row className='m-4'>
         {list.map((item, index) => (
           <Col xs={3} md={3} lg={3} key={index}>

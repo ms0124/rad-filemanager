@@ -2,7 +2,8 @@ import React, {
   FunctionComponent,
   useEffect,
   useState,
-  useContext
+  useContext,
+  useRef
 } from 'react';
 
 import { Modal, ModalBody, ModalHeader } from 'reactstrap';
@@ -36,6 +37,8 @@ const FilesDragAndDrop: FunctionComponent<Props> = ({ modal, toggleModal }) => {
   const [fileList, setFileList] = useState<fileListInterface[]>([]);
   const [progress, setProgress] = useState<number>(0);
 
+  const inputRef = useRef<HTMLInputElement | null>(null);
+
   useEffect(() => {
     if (!element) return;
     element.addEventListener('dragover', handleDragOver);
@@ -53,6 +56,7 @@ const FilesDragAndDrop: FunctionComponent<Props> = ({ modal, toggleModal }) => {
 
     formData.append('file', files[0]);
     formData.append('folderHash', currentHash);
+    formData.append('isPublic', 'true');
     const onUploadProgress = (progressEvent) => {
       const { loaded, total, progress } = progressEvent;
 
@@ -91,6 +95,14 @@ const FilesDragAndDrop: FunctionComponent<Props> = ({ modal, toggleModal }) => {
     }
   };
 
+  const handleOnChangesInputFiles = (event) => {
+    const files = event.target.files;
+    if (files && files.length) {
+      onUpload(files);
+      setIsUpload(true);
+      setFileList(files);
+    }
+  };
   return (
     <Modal
       isOpen={modal}
@@ -133,11 +145,20 @@ const FilesDragAndDrop: FunctionComponent<Props> = ({ modal, toggleModal }) => {
       ) : (
         <div ref={setElement}>
           <ModalBody
+            onClick={() => {
+              inputRef.current?.click();
+            }}
             className='drag-here'
             style={{
               backgroundColor: hoverFile ? 'rgba(97, 132, 255, 0.2)' : ''
             }}
           >
+            <input
+              ref={inputRef}
+              type='file'
+              style={{ display: 'none', width: '100%', height: '100%' }}
+              onChange={handleOnChangesInputFiles}
+            />
             <FontAwesomeIcon icon={faCloudUploadAlt} size='8x' />
             <div>فایل مورد نظر را در اینجا رها کنید.</div>
           </ModalBody>
