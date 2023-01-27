@@ -6,7 +6,7 @@ import { Context } from '../../store/index';
 import { useCreateNewFolder } from '../../config/hooks';
 import {
   useDeleteFileAndFolder,
-  useRenameFileAndFolder
+  useRenameFileAndFolder,
 } from '../../config/hooks';
 interface IProps {
   title: string;
@@ -45,7 +45,7 @@ const Index: React.FC<IProps> = ({
         createNewFolder.mutateAsync({ name, parentHash: currentHash });
         break;
       case OperationTypes.Remove:
-        deleteFileAndFolder.mutateAsync(item?.hash);
+        deleteFileAndFolder.mutateAsync({hash: item?.hash});
         break;
       case OperationTypes.Rename:
         renameFileAndFolder.mutateAsync({ hash: item?.hash, newName: name });

@@ -1,9 +1,35 @@
 import { useQuery, useMutation } from 'react-query';
 import { queryClient } from './config';
 import * as api from './api';
+import { useContext } from 'react';
+import { Context } from '../store';
+
+/************************************* */
+/********* get Header ***************/
+/************************************* */
+
+export const getHeader = (inHeaders: boolean = true) => {
+  const { header } = useContext(Context);
+  if (inHeaders) {
+    return {
+      headers: {
+        // common: {
+        'Client-Id': `${header.clientId}`,
+        'Access-Token': `${header.accessToken}`
+        // }
+      }
+    };
+  }
+  return {
+    // common: {
+    'Client-Id': `${header.clientId}`,
+    'Access-Token': `${header.accessToken}`
+    // }
+  };
+};
 
 export const useGetBaseDir = () => {
-  return useQuery('baseDir', api.getBaseDir);
+  return useQuery('baseDir', () => api.getBaseDir);
 };
 
 export const useGetFolderContent = (hash: string) => {
@@ -12,75 +38,89 @@ export const useGetFolderContent = (hash: string) => {
   );
 };
 
-export const useGetFolderContentChildren = (
-  hash: string,
-  params: object = {}
-) => {
-  return useQuery(['folderContentChildren', hash, params], ({ queryKey }) =>
-    api.getFolderContentChildren(queryKey[1], queryKey[2])
+export const useGetFolderContentChildren = (hash: string, params: {} = {}) => {
+  return useQuery(
+    ['folderContentChildren', { headers: getHeader(false), hash, params }],
+    ({ queryKey }) => api.getFolderContentChildren(queryKey[1])
   );
 };
 
 export const useGetUserStorage = () => {
-  return useQuery('userStorage', api.getUserStorage);
+  return useQuery(['userStorage', getHeader()], ({ queryKey }) =>
+    api.getUserStorage(queryKey[1])
+  );
 };
 
 export const useCreateNewFolder = () => {
-  return useMutation(api.createNewFolder, {
-    onSuccess: (_, { parentHash }) => {
+  const headers = getHeader(false);
+  return useMutation({
+    mutationFn: (variables: { name: string; parentHash: string }) =>
+      api.createNewFolder({ headers, ...variables }),
+    onSuccess: (data, variables, context) => {
+      const { parentHash } = variables;
       queryClient.refetchQueries({
-        queryKey: ['folderContentChildren', parentHash]
+        queryKey: ['folderContentChildren', { hash: parentHash, headers }]
       });
     }
   });
-  // return useQuery(['createNewFolder', params], ({ queryKey }) =>
-  //   api.createNewFolder(queryKey[1])
-  // );
 };
 
 export const useDeleteFileAndFolder = (folderHash) => {
-  return useMutation(api.deleteFileAndFolder, {
+  const headers = getHeader(false);
+  return useMutation({
+    mutationFn: (variables: { hash: string | undefined }) =>
+      api.deleteFileAndFolder({ headers, ...variables }),
     onSuccess: (_, variables) => {
+      const { hash } = variables;
       queryClient.refetchQueries({
-        queryKey: ['folderContentChildren', folderHash]
+        queryKey: ['folderContentChildren', { hash: folderHash, headers }]
       });
     }
   });
 };
 
 export const useRenameFileAndFolder = (folderHash) => {
-  return useMutation(api.renameFileAndFolder, {
+  const headers = getHeader(false);
+  return useMutation({
+    mutationFn: (variables: { hash: string | undefined; newName: string }) =>
+      api.renameFileAndFolder({ headers, ...variables }),
     onSuccess: (_, variables) => {
       queryClient.refetchQueries({
-        queryKey: ['folderContentChildren', folderHash]
+        queryKey: ['folderContentChildren', { hash: folderHash, headers }]
       });
     }
   });
 };
 
 export const useCopy = (folderHash) => {
-  return useMutation(api.copy, {
+  const headers = getHeader(false);
+  return useMutation({
+    mutationFn: (variables: { hash: string; destFolderHash: string }) =>
+      api.copy({ headers, ...variables }),
     onSuccess: (_, variables) => {
       queryClient.refetchQueries({
-        queryKey: ['folderContentChildren', folderHash]
+        queryKey: ['folderContentChildren', { hash: folderHash, headers }]
       });
     }
   });
 };
 
 export const useCut = (folderHash) => {
-  return useMutation(api.cut, {
+  const headers = getHeader(false);
+  return useMutation({
+    mutationFn: (variables: { hash: string; destFolderHash: string }) =>
+      api.cut({ headers, ...variables }),
     onSuccess: (_, variables) => {
       queryClient.refetchQueries({
-        queryKey: ['folderContentChildren', folderHash]
+        queryKey: ['folderContentChildren', { hash: folderHash, headers }]
       });
     }
   });
 };
 
-export const useArchiveList = (params: string) => {
-  return useQuery(['archiveList', params], ({ queryKey }) =>
-    api.getArchiveList(queryKey[1])
+export const useArchiveList = (query: string) => {
+  return useQuery(
+    ['archiveList', { headers: getHeader(false), query }],
+    ({ queryKey }) => api.getArchiveList(queryKey[1])
   );
 };
-

@@ -13,40 +13,47 @@ export const getFolderContent: (hash: string) => object = async (hash) => {
   return data;
 };
 
-export const getFolderContentChildren = async (
-  hash: string | object,
-  params: string | object
-): Promise<Data> => {
+export const getFolderContentChildren = async ({
+  headers,
+  hash,
+  ...params
+}: any): Promise<Data> => {
   const { data } = await instance.get(`${namespace}/${hash}/children`, {
-    params: params
+    params,
+    headers
   });
   return data;
 };
 
-export const getUserStorage = async (): Promise<Data> => {
-  const { data } = await instance.get(`${namespace}/storage`);
+export const getUserStorage = async ({
+  headers,
+  ...params
+}: any): Promise<Data> => {
+  const { data } = await instance.get(`${namespace}/storage`, { headers });
   return data;
 };
 
-export const createNewFolder = async (params): Promise<Data> => {
-  const { data } = await instance.post(`${namespace}/folder`, params);
+export const createNewFolder = async ({
+  headers,
+  ...params
+}: any): Promise<any> => {
+  const { data } = await instance.post(`${namespace}/folder`, params, {
+    headers
+  });
   return data;
 };
 
-export const deleteFileAndFolder = async (hash): Promise<Data> => {
-  const { data } = await instance.delete(`${namespace}/${hash}`);
+export const deleteFileAndFolder = async ({ hash, headers }): Promise<Data> => {
+  const { data } = await instance.delete(`${namespace}/${hash}`, { headers });
   return data;
 };
 
-export const renameFileAndFolder = async (
-  params: Partial<{
-    hash: string;
-    newName: string;
-  }>
-) => {
-  const hash = params.hash;
-  delete params.hash;
-  const { data } = await instance.post(`${namespace}/${hash}/rename`, params);
+export const renameFileAndFolder = async ({ headers, hash, newName }) => {
+  const { data } = await instance.post(
+    `${namespace}/${hash}/rename`,
+    { newName },
+    { headers }
+  );
   return data;
 };
 
@@ -62,7 +69,7 @@ export const upload = async (params, image = false, onUploadProgress) => {
       headers: {
         'Content-Type': 'multipart/form-data'
       },
-      onUploadProgress,
+      onUploadProgress
     }
   );
 };
@@ -71,19 +78,17 @@ export const upload = async (params, image = false, onUploadProgress) => {
 /********* C O P Y  &  C U T ***********/
 /************************************* */
 
-export const copy = async (
-  params: Partial<{ hash: string; destFolderHash: string }>
-): Promise<Data> => {
-  const hash = params.hash;
-  delete params.hash;
-  const { data } = await instance.post(`${namespace}/${hash}/copy`, params);
+export const copy = async ({ headers, hash, ...params }): Promise<Data> => {
+  const { data } = await instance.post(`${namespace}/${hash}/copy`, params, {
+    headers
+  });
   return data;
 };
 
-export const cut = async (params): Promise<Data> => {
-  const hash = params.hash;
-  delete params.hash;
-  const { data } = await instance.post(`${namespace}/${hash}/cut`, params);
+export const cut = async ({ headers, hash, ...params }): Promise<Data> => {
+  const { data } = await instance.post(`${namespace}/${hash}/cut`, params, {
+    headers
+  });
   return data;
 };
 
@@ -91,8 +96,10 @@ export const cut = async (params): Promise<Data> => {
 /********* A R C H I V E ***************/
 /************************************* */
 
-export const getArchiveList = async (params: string): Promise<Data> => {
-  const { data } = await instance.get(`${namespace}/archive/${params}`);
+export const getArchiveList = async ({ headers, query, ...params }: any) => {
+  const { data } = await instance.get(`${namespace}/archive/${query}`, {
+    headers
+  });
   return data;
 };
 

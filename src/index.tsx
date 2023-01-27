@@ -7,7 +7,14 @@ import { Context, AppContextInterface } from './store/index';
 import { QueryClientProvider } from 'react-query';
 import { queryClient } from './config/config';
 interface Props {
-  // text?: string
+  header: {
+    clientId: string;
+    accessToken: string;
+  };
+  config?: {
+    width: number;
+    height: number;
+  };
 }
 
 const FileManagerReact: React.FC<Props> = ({ ...props }) => {
@@ -16,6 +23,9 @@ const FileManagerReact: React.FC<Props> = ({ ...props }) => {
   const [currentHash, setCurrentHash] = useState<string>('root');
   const [itemHash, setItemHash] = useState<string | undefined>(undefined);
   const [operationType, setOperationType] = useState<number | null>(null);
+
+  const [config, setConfig] = useState<any>(props.config);
+  const [header, setHeader] = useState<any>(props.header);
 
   const defaultValues: AppContextInterface = {
     isList,
@@ -27,7 +37,9 @@ const FileManagerReact: React.FC<Props> = ({ ...props }) => {
     itemHash,
     setItemHash,
     operationType,
-    setOperationType
+    setOperationType,
+    config,
+    header
   };
 
   return (

@@ -34,7 +34,8 @@ const MenuTools: React.FunctionComponent<IProps> = ({ item, ...props }) => {
   const {
     itemHash,
     setItemHash,
-    setOperationType: setActionType
+    setOperationType: setActionType,
+    
   } = useContext(Context);
 
   const [isOpen, setIsOpen] = useState<boolean>(false);
