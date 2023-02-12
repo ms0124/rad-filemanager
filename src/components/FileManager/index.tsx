@@ -5,7 +5,7 @@ import { ReactQueryDevtools } from 'react-query/devtools'
 const Index:FunctionComponent = () => {
   return <div id='filemanager-container'>
     <Tab />
-    <ReactQueryDevtools />
+    {/* <ReactQueryDevtools /> */}
     </div>
 }
  

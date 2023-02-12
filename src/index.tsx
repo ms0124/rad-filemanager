@@ -8,7 +8,7 @@ import App from './components/FileManager/index';
 import { Context, AppContextInterface } from './store/index';
 import { QueryClientProvider } from 'react-query';
 import { queryClient } from './config/config';
-import { ToastContainer }  from 'react-toastify';
+import { ToastContainer } from 'react-toastify';
 
 interface Props {
   header: {
@@ -20,11 +20,11 @@ interface Props {
   };
 }
 
-const FileManagerReact: React.FC<Props> = ({ ...props }) => {
+export function FileManagerReact({ ...props }: Props) {
   const [isList, setIsList] = useState<boolean>(true);
   const [breadCrumb, setBreadCrumb] = useState<[]>([]);
   const [currentHash, setCurrentHash] = useState<string>('root');
-  const [itemHash, setItemHash] = useState<string>("");
+  const [itemHash, setItemHash] = useState<string>('');
   const [operationType, setOperationType] = useState<number | null>(null);
 
   const [config, setConfig] = useState<any>(props.config);
@@ -48,14 +48,14 @@ const FileManagerReact: React.FC<Props> = ({ ...props }) => {
   return (
     <Context.Provider value={defaultValues}>
       <QueryClientProvider client={queryClient}>
-        <ToastContainer position="bottom-left" rtl />
-        <App {...props} />
+        <ToastContainer position='bottom-left' rtl />
+        <App />
       </QueryClientProvider>
     </Context.Provider>
   );
-};
+}
 
-function FileManager(props: any, elementId: any) {
+const FileManager = (props: any, elementId: any) => {
   ReactDOM.render(
     <React.StrictMode>
       <QueryClientProvider client={queryClient}>
@@ -64,8 +64,8 @@ function FileManager(props: any, elementId: any) {
     </React.StrictMode>,
     document.getElementById(elementId)
   );
-}
+};
 
 (window as any).FileManager = FileManager;
 
-export { FileManager, FileManagerReact };
+export { FileManager };
