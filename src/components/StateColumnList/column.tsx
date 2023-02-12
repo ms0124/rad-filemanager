@@ -4,8 +4,8 @@ import React, { useEffect, useRef } from 'react';
 import { Row, Col } from 'reactstrap';
 import moment from 'moment-jalaali';
 
-import n from 'n.png';
-import folder from 'folder.png';
+import n from './n.png';
+import folder from './folder.png';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faGlobe, faKey } from '@fortawesome/free-solid-svg-icons';
 import MenuTools from '../../utils/MenuTools/';

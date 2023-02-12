@@ -1,6 +1,8 @@
 @import 'variables';
+@import "typography";
 
 #filemanager-container {
+  font-family: IRANSans;
   color: $color-gray;
   .dirLtr{
     direction: ltr;
