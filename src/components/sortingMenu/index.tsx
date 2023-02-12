@@ -61,7 +61,7 @@ const DropDownElement: FunctionComponent<DropDownElementProps> = ({
     <Dropdown isOpen={isOpen} toggle={toggle} className='sort-dropdown'>
       <DropdownToggle color='none'>
         نام
-        <FontAwesomeIcon icon={faAngleDown} className="me-2" />
+        <FontAwesomeIcon icon={faAngleDown} className='me-2' />
       </DropdownToggle>
       <DropdownMenu end={true} container='body'>
         <DropdownItem className='sort-dropdown__item' onClick={() => toggle}>
@@ -99,7 +99,7 @@ const SortingMenu: FunctionComponent = () => {
     setDropDowmIsOpen((isOpen) => !isOpen);
   };
   return (
-    <div className='sorting-menu'>
+    <div className='sorting-menu fix-top' style={{ top: 62 }}>
       <Nav>
         <NavItem>
           <FontAwesomeIcon icon={faSort} />

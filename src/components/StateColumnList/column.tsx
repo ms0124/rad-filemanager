@@ -1,6 +1,6 @@
 import './style.scss';
 
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { Row, Col } from 'reactstrap';
 import moment from 'moment-jalaali';
 
@@ -16,9 +16,14 @@ import { downloadThumbnail } from '../../config/api';
 interface IProps {
   list: any;
   setHash: React.Dispatch<React.SetStateAction<string>>;
+  tabType: number;
 }
 
-const Column: React.FunctionComponent<IProps> = ({ list = [], setHash }) => {
+const Column: React.FunctionComponent<IProps> = ({
+  list = [],
+  setHash,
+  tabType
+}) => {
   return (
     <React.Fragment>
       <RightClick query='.m-4' />
@@ -34,7 +39,7 @@ const Column: React.FunctionComponent<IProps> = ({ list = [], setHash }) => {
             >
               <div className='col__img-wrapper'>
                 <div className='col__menu-wrapper'>
-                  <MenuTools item={item} />
+                  <MenuTools item={item} tabType={tabType} />
                 </div>
                 <div className='col__icon-access-wrapper'>
                   {item.isPublic ? (

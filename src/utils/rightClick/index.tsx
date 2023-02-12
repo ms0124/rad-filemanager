@@ -88,7 +88,7 @@ const App: React.FunctionComponent<RightClickProps> = ({ query }) => {
 
         if (OperationTypes.Cut === actionType)
           cut.mutateAsync({ hash: itemHash, destFolderHash: currentHash });
-        setItemHash(undefined);
+        setItemHash("");
         setIsShown(false);
         break;
     }

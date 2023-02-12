@@ -1,8 +1,9 @@
 import { instance } from './config';
 import { Data } from '../config/types';
+import { httpRequest } from '../utils/index';
 
 const namespace = 'api/core/drives';
-
+const successMessage = 'عملیات با موفقیت انجام شد';
 export const getBaseDir: () => object = async () => {
   const { data } = await instance.get(`${namespace}`);
   return data;
@@ -13,48 +14,42 @@ export const getFolderContent: (hash: string) => object = async (hash) => {
   return data;
 };
 
-export const getFolderContentChildren = async ({
+export const getFolderContentChildren = ({
   headers,
   hash,
-  ...params
+  query
 }: any): Promise<Data> => {
-  const { data } = await instance.get(`${namespace}/${hash}/children`, {
-    params,
+  return httpRequest(`${namespace}/${hash}/children/${query}`, {
     headers
   });
-  return data;
 };
 
-export const getUserStorage = async ({
-  headers,
-  ...params
-}: any): Promise<Data> => {
-  const { data } = await instance.get(`${namespace}/storage`, { headers });
-  return data;
+export const getUserStorage = ({ headers, ...params }: any): Promise<Data> => {
+  return httpRequest(`${namespace}/storage`, { headers });
 };
 
-export const createNewFolder = async ({
-  headers,
-  ...params
-}: any): Promise<any> => {
-  const { data } = await instance.post(`${namespace}/folder`, params, {
-    headers
-  });
-  return data;
+export const createNewFolder = ({ headers, ...params }: any): Promise<any> => {
+  return httpRequest(
+    `${namespace}/folder`,
+    { headers, message: successMessage, ...params },
+    'POST'
+  );
 };
 
 export const deleteFileAndFolder = async ({ hash, headers }): Promise<Data> => {
-  const { data } = await instance.delete(`${namespace}/${hash}`, { headers });
-  return data;
+  return httpRequest(
+    `${namespace}/${hash}`,
+    { headers, message: successMessage },
+    'DELETE'
+  );
 };
 
 export const renameFileAndFolder = async ({ headers, hash, newName }) => {
-  const { data } = await instance.post(
+  return httpRequest(
     `${namespace}/${hash}/rename`,
-    { newName },
-    { headers }
+    { newName, headers, message: successMessage },
+    'POST'
   );
-  return data;
 };
 
 /************************************* */
@@ -79,17 +74,27 @@ export const upload = async (params, image = false, onUploadProgress) => {
 /************************************* */
 
 export const copy = async ({ headers, hash, ...params }): Promise<Data> => {
-  const { data } = await instance.post(`${namespace}/${hash}/copy`, params, {
-    headers
-  });
-  return data;
+  return httpRequest(
+    `${namespace}/${hash}/copy`,
+    {
+      headers,
+      message: successMessage,
+      ...params
+    },
+    'POST'
+  );
 };
 
 export const cut = async ({ headers, hash, ...params }): Promise<Data> => {
-  const { data } = await instance.post(`${namespace}/${hash}/cut`, params, {
-    headers
-  });
-  return data;
+  return httpRequest(
+    `${namespace}/${hash}/cut`,
+    {
+      headers,
+      message: successMessage,
+      ...params
+    },
+    'POST'
+  );
 };
 
 /************************************* */
@@ -97,22 +102,29 @@ export const cut = async ({ headers, hash, ...params }): Promise<Data> => {
 /************************************* */
 
 export const getArchiveList = async ({ headers, query, ...params }: any) => {
-  const { data } = await instance.get(`${namespace}/archive/${query}`, {
+  return httpRequest(`${namespace}/archive/${query}`, {
     headers
   });
-  return data;
 };
 
-export const archiveRestore = async (params: string): Promise<Data> => {
-  const { data } = await instance.post(
-    `${namespace}/archive/restore/${params}`
+export const archiveRestore = async ({ headers, ...params }): Promise<Data> => {
+  return httpRequest(
+    `${namespace}/archive/restore/${params.variables}`,
+    {
+      headers
+    },
+    'POST'
   );
-  return data;
 };
 
-export const archiveDelete = async (params: string): Promise<Data> => {
-  const { data } = await instance.post(`${namespace}/archive/delete/${params}`);
-  return data;
+export const archiveDelete = async ({ headers, ...params }): Promise<Data> => {
+  return httpRequest(
+    `${namespace}/archive/delete/${params.variables}`,
+    {
+      headers
+    },
+    'POST'
+  );
 };
 
 /************************************* */

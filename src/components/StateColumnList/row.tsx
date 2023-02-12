@@ -8,6 +8,7 @@ import { formatBytes, brifStr } from '../../utils/index';
 interface IProps {
   list: any;
   setHash: React.Dispatch<React.SetStateAction<string>>;
+  tabType: number;
 }
 
 const Row: FunctionComponent<IProps> = ({ list = [], setHash }) => {
@@ -25,7 +26,11 @@ const Row: FunctionComponent<IProps> = ({ list = [], setHash }) => {
       <tbody>
         {list.map((item, index) => (
           <tr key={index}>
-            <th scope='row' style={{cursor: "pointer"}} onClick={() => setHash(item.hash)}>
+            <th
+              scope='row'
+              style={{ cursor: 'pointer' }}
+              onClick={() => setHash(item.hash)}
+            >
               {brifStr(item.name)}
             </th>
             <td className='dirLtr text-center'>

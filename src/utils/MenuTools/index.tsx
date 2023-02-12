@@ -25,17 +25,25 @@ import Modal from '../rightClick/Modal';
 import { OperationTypes } from '../../config/types';
 import { Context } from '../../store/index';
 import { download } from '../../config/api';
+import { TabTypes } from '../../config/types';
+import { useArchiveDelete, useArchiveRestor } from '../../config/hooks';
+import { objectToQueryString } from '../../utils/index';
 
 interface IProps {
   item: { name: string; hash: string; extension: string };
+  tabType: number;
 }
 
-const MenuTools: React.FunctionComponent<IProps> = ({ item, ...props }) => {
+const MenuTools: React.FunctionComponent<IProps> = ({
+  item,
+  tabType,
+  ...props
+}) => {
   const {
     itemHash,
     setItemHash,
     setOperationType: setActionType,
-    
+    currentHash
   } = useContext(Context);
 
   const [isOpen, setIsOpen] = useState<boolean>(false);
@@ -45,6 +53,8 @@ const MenuTools: React.FunctionComponent<IProps> = ({ item, ...props }) => {
   const toggleModal: () => void = () => setIsOpenModal(!isOpenModal);
   const toggle: () => void = () => setIsOpen(!isOpen);
 
+  const archiveDelete = useArchiveDelete(currentHash);
+  const archiveRestor = useArchiveRestor(currentHash);
   const clickHandler = (type) => {
     switch (type) {
       case OperationTypes.Remove:
@@ -68,6 +78,12 @@ const MenuTools: React.FunctionComponent<IProps> = ({ item, ...props }) => {
         download(item?.hash).then((blob) => {
           FileSaver.saveAs(blob, `${item?.hash}.${extension}`);
         });
+        break;
+      case OperationTypes.RemoveArchive:
+        archiveDelete.mutateAsync(objectToQueryString(item.hash));
+        break;
+      case OperationTypes.RestoreArchive:
+        archiveRestor.mutateAsync(item.hash);
         break;
     }
   };
@@ -144,12 +160,29 @@ const MenuTools: React.FunctionComponent<IProps> = ({ item, ...props }) => {
             icon={faTrashAlt}
             enTitle='delete'
           />
-          <DropdownItem divider />
+          {/* <DropdownItem divider />
           <MenuItem
             title='اشتراک گذازی یک فایل'
             icon={faShareAlt}
             enTitle='share'
-          />
+          /> */}
+          {tabType == TabTypes.ArchiveList ? (
+            <React.Fragment>
+              <DropdownItem divider />
+              <MenuItem
+                clickHandler={() => clickHandler(OperationTypes.RemoveArchive)}
+                title='حذف دائمی'
+                icon={faTrashAlt}
+              />
+              <MenuItem
+                clickHandler={() => clickHandler(OperationTypes.RestoreArchive)}
+                title='بازیابی'
+                icon={faTrashAlt}
+              />
+            </React.Fragment>
+          ) : (
+            ''
+          )}
         </DropdownMenu>
       </Dropdown>
     </React.Fragment>

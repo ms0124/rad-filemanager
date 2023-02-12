@@ -16,5 +16,12 @@ export enum OperationTypes {
   Cut = 4,
   Copy = 5,
   Paste = 6,
-  Download = 7
+  Download = 7,
+  RemoveArchive = 8,
+  RestoreArchive = 9
+}
+
+export enum TabTypes {
+  FileList = 1,
+  ArchiveList = 2
 }

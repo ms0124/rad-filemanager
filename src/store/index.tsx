@@ -10,8 +10,8 @@ export interface AppContextInterface {
   currentHash: string;
   setCurrentHash: (hash: string) => void;
 
-  itemHash: string | undefined;
-  setItemHash: (hash: string | undefined) => void;
+  itemHash: string;
+  setItemHash: (hash: string) => void;
 
   operationType: number | null;
   setOperationType: (operationType: number) => void;

@@ -38,9 +38,9 @@ export const useGetFolderContent = (hash: string) => {
   );
 };
 
-export const useGetFolderContentChildren = (hash: string, params: {} = {}) => {
+export const useGetFolderContentChildren = (hash: string, query: string = "") => {
   return useQuery(
-    ['folderContentChildren', { headers: getHeader(false), hash, params }],
+    ['folderContentChildren', { headers: getHeader(false), hash, query }],
     ({ queryKey }) => api.getFolderContentChildren(queryKey[1])
   );
 };
@@ -123,4 +123,29 @@ export const useArchiveList = (query: string) => {
     ['archiveList', { headers: getHeader(false), query }],
     ({ queryKey }) => api.getArchiveList(queryKey[1])
   );
+};
+
+export const useArchiveDelete = (folderHash) => {
+  const headers = getHeader(false);
+  return useMutation({
+    mutationFn: (variables: string) =>
+      api.archiveDelete({ headers, variables }),
+    onSuccess: (_, variables) => {
+      queryClient.refetchQueries({
+        queryKey: ['folderContentChildren', { hash: folderHash, headers }]
+      });
+    }
+  });
+};
+export const useArchiveRestor = (folderHash) => {
+  const headers = getHeader(false);
+  return useMutation({
+    mutationFn: (variables: string) =>
+      api.archiveRestore({ headers, variables }),
+    onSuccess: (_, variables) => {
+      queryClient.refetchQueries({
+        queryKey: ['folderContentChildren', { hash: folderHash, headers }]
+      });
+    }
+  });
 };
