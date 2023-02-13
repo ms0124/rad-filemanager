@@ -38,11 +38,11 @@ module.exports = (env, argv) => {
     },
     devServer: {
       static: {
-        directory: path.join(__dirname, '/dist'),
+        directory: path.join(__dirname, '/dist')
       },
       compress: true,
       port: 3000,
-      allowedHosts: "all",
+      allowedHosts: 'all',
       historyApiFallback: true,
       hot: false,
       // inline: true,
@@ -50,14 +50,14 @@ module.exports = (env, argv) => {
       https: false,
       liveReload: false,
       devMiddleware: {
-        writeToDisk: true,
-      },
+        writeToDisk: true
+      }
+    },
+    optimization: {
+      minimize: false
+      // minimizer: [
+      //   new TerserPlugin()
+      // ]
     }
-    // optimization: {
-    //   minimize: true,
-    //   minimizer: [
-    //     new TerserPlugin()
-    //   ]
-    // }
   };
 };
