@@ -20,7 +20,7 @@ interface Props {
   };
 }
 
-export function FileManagerReact({ ...props }: Props) {
+const FileManagerReact = ({ ...props }: Props) =>{
   const [isList, setIsList] = useState<boolean>(true);
   const [breadCrumb, setBreadCrumb] = useState<[]>([]);
   const [currentHash, setCurrentHash] = useState<string>('root');
@@ -68,4 +68,4 @@ const FileManager = (props: any, elementId: any) => {
 
 (window as any).FileManager = FileManager;
 
-export { FileManager };
+export { FileManager,FileManagerReact };
