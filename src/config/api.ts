@@ -56,13 +56,19 @@ export const renameFileAndFolder = async ({ headers, hash, newName }) => {
 /********* U P L O A D *****************/
 /************************************* */
 
-export const upload = async (params, image = false, onUploadProgress) => {
+export const upload = async (
+  params,
+  image = false,
+  onUploadProgress,
+  headers
+) => {
   return await instance.post(
     `${namespace}/upload${image ? '/image' : ''}`,
     params,
     {
       headers: {
-        'Content-Type': 'multipart/form-data'
+        'Content-Type': 'multipart/form-data',
+        ...headers
       },
       onUploadProgress
     }

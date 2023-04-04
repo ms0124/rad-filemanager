@@ -18,6 +18,7 @@ import { queryClient } from '../../config/config';
 
 import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
+import { getHeader } from '../../config/hooks';
 
 interface Props {
   modal: boolean;
@@ -30,13 +31,14 @@ interface fileListInterface {
 
 const FilesDragAndDrop: FunctionComponent<Props> = ({ modal, toggleModal }) => {
   const { currentHash } = useContext(Context);
+  const headers = getHeader(false);
 
   const [element, setElement] = useState<HTMLDivElement | null>(null);
   const [hoverFile, setHoverFile] = useState(false);
   const [isUpload, setIsUpload] = useState(false);
   const [fileList, setFileList] = useState<fileListInterface[]>([]);
-  const [progress, setProgress] = useState<number>(0);
-
+  const [progress, setProgress] = useState<{}>({});
+  const progressRef = useRef({});
   const inputRef = useRef<HTMLInputElement | null>(null);
 
   useEffect(() => {
@@ -51,30 +53,47 @@ const FilesDragAndDrop: FunctionComponent<Props> = ({ modal, toggleModal }) => {
     };
   }, [element]);
 
-  const onUpload = (files) => {
+  const onUpload = (file) => {
     let formData = new FormData();
+    setFileList((prevFileList) => [...prevFileList, file]);
+    setProgress((prevProgress) => ({ ...prevProgress, [file.name]: 0 }));
+    progressRef.current = { ...progressRef.current, [file.name]: 0 };
 
-    formData.append('file', files[0]);
+    formData.append('file', file);
     formData.append('folderHash', currentHash);
     formData.append('isPublic', 'true');
-    const onUploadProgress = (progressEvent) => {
-      const { loaded, total, progress } = progressEvent;
 
-      let progressPercent = (100 * loaded) / total;
-      setProgress(parseInt(progressPercent.toFixed()));
-      if (progress == 1) {
-        setTimeout(() => {
+    upload(formData, false, (e) => onUploadProgress(e, file), headers).then(
+      (res) => {
+        // if progress is 100 percent or more progress is complete.
+        const progressComplete = Object.values(progressRef.current).every(
+          (item: number) => item >= 100
+        );
+        if (progressComplete) {
+          // get list of file again
+          queryClient.refetchQueries({
+            queryKey: ['folderContentChildren', { hash: currentHash , headers }]
+          });
+          // reset of my parameters
           setFileList([]);
-          setProgress(0);
+          setProgress({});
           toggleModal();
-        }, 2500);
+        }
       }
+    );
+  };
+  const onUploadProgress = (progressEvent, file) => {
+    const { loaded, total, progress } = progressEvent;
+
+    let progressPercent = (100 * loaded) / total;
+    setProgress((prevProgress) => ({
+      ...prevProgress,
+      [file.name]: parseInt(progressPercent.toFixed())
+    }));
+    progressRef.current = {
+      ...progressRef.current,
+      [file.name]: parseInt(progressPercent.toFixed())
     };
-    upload(formData, false, onUploadProgress).then(() => {
-      queryClient.refetchQueries({
-        queryKey: ['folderContentChildren', currentHash]
-      });
-    });
   };
   const handleDragOver = (e: any) => {
     e.preventDefault();
@@ -89,20 +108,25 @@ const FilesDragAndDrop: FunctionComponent<Props> = ({ modal, toggleModal }) => {
 
     setHoverFile(false);
     if (files && files.length) {
-      onUpload(files);
       setIsUpload(true);
-      setFileList(files);
+
+      for (let file of files) {
+        onUpload(file);
+      }
     }
   };
 
   const handleOnChangesInputFiles = (event) => {
     const files = event.target.files;
     if (files && files.length) {
-      onUpload(files);
       setIsUpload(true);
-      setFileList(files);
+
+      for (let file of files) {
+        onUpload(file);
+      }
     }
   };
+
   return (
     <Modal
       isOpen={modal}
@@ -128,13 +152,13 @@ const FilesDragAndDrop: FunctionComponent<Props> = ({ modal, toggleModal }) => {
                     <span>{item.name}</span>
                     <div style={{ width: 25, height: 25 }}>
                       <CircularProgressbar
-                        value={progress}
+                        value={progress[item.name]}
                         styles={buildStyles({
                           textSize: '30px',
                           pathColor: '#000000',
                           textColor: '#000000'
                         })}
-                        text={`${progress} %`}
+                        text={`${progress[item.name]} %`}
                       />
                     </div>
                   </div>
@@ -156,6 +180,7 @@ const FilesDragAndDrop: FunctionComponent<Props> = ({ modal, toggleModal }) => {
             <input
               ref={inputRef}
               type='file'
+              multiple
               style={{ display: 'none', width: '100%', height: '100%' }}
               onChange={handleOnChangesInputFiles}
             />
