@@ -1,6 +1,12 @@
 import './style.scss';
 
-import React, { FunctionComponent, useState, useContext, useRef } from 'react';
+import React, {
+  useEffect,
+  FunctionComponent,
+  useState,
+  useContext,
+  useRef
+} from 'react';
 import { Nav, NavItem, NavLink, TabContent, TabPane } from 'reactstrap';
 
 import Search from '../Search/index';
@@ -13,6 +19,8 @@ import SortingMenu from '../sortingMenu/';
 import { TabTypes } from '../../config/types';
 import { Context } from '../../store/index';
 import { PAGE_SIZE } from '../../config/config';
+import SearchTab from '../SearchTab';
+
 interface Props {}
 
 const Tab: FunctionComponent<Props> = () => {
@@ -25,7 +33,9 @@ const Tab: FunctionComponent<Props> = () => {
     archive: 0,
     file: 0
   });
-  const { config } = useContext(Context);
+  const [searchText, setSearchText] = useState<string>('');
+
+  const { config, setCurrentTab } = useContext(Context);
 
   // const total = useRef<{ archive: number; file: number }>({archive:0, file:0});
   const total = useRef<number>(0);
@@ -33,6 +43,17 @@ const Tab: FunctionComponent<Props> = () => {
   const handleTab = (tab: number) => setActiveTab(tab);
 
   const setTotal = (val) => (total.current = val);
+
+  useEffect(() => {
+    // if type in input search deselect another tabs
+    if (searchText) {
+      handleTab(TabTypes.SearchList);
+      setCurrentTab(TabTypes.SearchList);
+    } else {
+      handleTab(TabTypes.FileList);
+      setCurrentTab(TabTypes.FileList);
+    }
+  }, [searchText]);
 
   return (
     <div>
@@ -43,6 +64,7 @@ const Tab: FunctionComponent<Props> = () => {
       >
         <NavItem>
           <NavLink
+            disabled={activeTab === TabTypes.SearchList}
             active={activeTab === TabTypes.FileList}
             onClick={() => handleTab(TabTypes.FileList)}
           >
@@ -51,6 +73,7 @@ const Tab: FunctionComponent<Props> = () => {
         </NavItem>
         <NavItem>
           <NavLink
+            disabled={activeTab === TabTypes.SearchList}
             active={activeTab === TabTypes.ArchiveList}
             onClick={() => handleTab(TabTypes.ArchiveList)}
           >
@@ -58,7 +81,7 @@ const Tab: FunctionComponent<Props> = () => {
           </NavLink>
         </NavItem>
         <NavItem className='menu-items'>
-          <Search />
+          <Search setSearchText={setSearchText} />
           <StateColumnList />
           <Upload />
         </NavItem>
@@ -105,6 +128,13 @@ const Tab: FunctionComponent<Props> = () => {
         >
           {activeTab === TabTypes.ArchiveList ? (
             <ArchiveTab setTotal={setTotal} offset={offset.archive} />
+          ) : (
+            ''
+          )}
+        </TabPane>
+        <TabPane tabId={TabTypes.SearchList} style={{ height: config?.height }}>
+          {activeTab === TabTypes.SearchList ? (
+            <SearchTab searchText={searchText} />
           ) : (
             ''
           )}

@@ -22,12 +22,16 @@
         margin-left: 15px;
       }
       .nav-item {
+        margin-left: 1px;
         .nav-link {
           cursor: pointer;
+          border-color: transparent;
+          color: $color-gray;
+          background-color: $color-gray-light;
+          border-bottom: 4px solid $color-gray-light;
+          border-radius: 0px;
           &:hover {
-            border-color: transparent;
-            color: $color-gray;
-            background-color: $color-gray-light;
+            filter: brightness(85%);
           }
           &.active {
             // border-color: #fff !important;

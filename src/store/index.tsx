@@ -16,6 +16,9 @@ export interface AppContextInterface {
   operationType: number | null;
   setOperationType: (operationType: number) => void;
 
+  currentTab: number;
+  setCurrentTab: (tabType: number) => void;
+
   header: { clientId: string; accessToken: string };
 
   config?: { width: number; height: number } | null;

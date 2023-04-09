@@ -20,12 +20,13 @@ interface Props {
   };
 }
 
-const FileManagerReact = ({ ...props }: Props) =>{
+const FileManagerReact = ({ ...props }: Props) => {
   const [isList, setIsList] = useState<boolean>(true);
   const [breadCrumb, setBreadCrumb] = useState<[]>([]);
   const [currentHash, setCurrentHash] = useState<string>('root');
   const [itemHash, setItemHash] = useState<string>('');
   const [operationType, setOperationType] = useState<number | null>(null);
+  const [currentTab, setCurrentTab] = useState<number>(1);
 
   const [config, setConfig] = useState<any>(props.config);
   const [header, setHeader] = useState<any>(props.header);
@@ -41,6 +42,8 @@ const FileManagerReact = ({ ...props }: Props) =>{
     setItemHash,
     operationType,
     setOperationType,
+    currentTab,
+    setCurrentTab,
     config,
     header
   };
@@ -53,7 +56,7 @@ const FileManagerReact = ({ ...props }: Props) =>{
       </QueryClientProvider>
     </Context.Provider>
   );
-}
+};
 
 const FileManager = (props: any, elementId: any) => {
   ReactDOM.render(
@@ -68,4 +71,4 @@ const FileManager = (props: any, elementId: any) => {
 
 (window as any).FileManager = FileManager;
 
-export { FileManager,FileManagerReact };
+export { FileManager, FileManagerReact };

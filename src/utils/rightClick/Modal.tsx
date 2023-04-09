@@ -1,12 +1,19 @@
 import React, { useState, useRef, useContext } from 'react';
-import { Modal, ModalBody, ModalHeader, Input, Button } from 'reactstrap';
+import {
+  Modal,
+  ModalBody,
+  ModalHeader,
+  Input,
+  Button,
+  Spinner
+} from 'reactstrap';
 import classNames from 'classnames';
 import { OperationTypes } from '../../config/types';
 import { Context } from '../../store/index';
 import { useCreateNewFolder } from '../../config/hooks';
 import {
   useDeleteFileAndFolder,
-  useRenameFileAndFolder,
+  useRenameFileAndFolder
 } from '../../config/hooks';
 interface IProps {
   title: string;
@@ -42,13 +49,23 @@ const Index: React.FC<IProps> = ({
     if (type === OperationTypes.Remove) name = ''; // inputRef.current?.value;
     switch (type) {
       case OperationTypes.NewFolder:
-        createNewFolder.mutateAsync({ name, parentHash: currentHash });
+        createNewFolder
+          .mutateAsync({ name, parentHash: currentHash })
+          .finally(() => {
+            if (isOpen) setTimeout(() => toggle(), 1500);
+          });
         break;
       case OperationTypes.Remove:
-        deleteFileAndFolder.mutateAsync({hash: item?.hash});
+        deleteFileAndFolder.mutateAsync({ hash: item?.hash }).finally(() => {
+          if (isOpen) setTimeout(() => toggle(), 1500);
+        });
         break;
       case OperationTypes.Rename:
-        renameFileAndFolder.mutateAsync({ hash: item?.hash, newName: name });
+        renameFileAndFolder
+          .mutateAsync({ hash: item?.hash, newName: name })
+          .finally(() => {
+            if (isOpen) setTimeout(() => toggle(), 1500);
+          });
         break;
     }
   };
@@ -85,7 +102,14 @@ const Index: React.FC<IProps> = ({
             {btnNoText}
           </Button>
           <Button onClick={execute} color='primary'>
-            {btnOkText}
+            {btnOkText}{" "}
+            {deleteFileAndFolder.isLoading ||
+            renameFileAndFolder.isLoading ||
+            renameFileAndFolder.isLoading ? (
+              <Spinner />
+            ) : (
+              ''
+            )}
           </Button>
         </div>
       </ModalBody>

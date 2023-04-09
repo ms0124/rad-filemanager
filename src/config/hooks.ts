@@ -38,7 +38,10 @@ export const useGetFolderContent = (hash: string) => {
   );
 };
 
-export const useGetFolderContentChildren = (hash: string, query: string = "") => {
+export const useGetFolderContentChildren = (
+  hash: string,
+  query: string = ''
+) => {
   return useQuery(
     ['folderContentChildren', { headers: getHeader(false), hash, query }],
     ({ queryKey }) => api.getFolderContentChildren(queryKey[1])
@@ -148,4 +151,11 @@ export const useArchiveRestor = (folderHash) => {
       });
     }
   });
+};
+
+export const useSearchList = (query: string) => {
+  return useQuery(
+    ['searchList', { headers: getHeader(false), query }],
+    ({ queryKey }) => api.search(queryKey[1])
+  );
 };

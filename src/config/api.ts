@@ -151,3 +151,13 @@ export const download = async (hash) => {
 export const downloadThumbnail = async (hash) => {
   return await instance.get(`${namespace}/download/${hash}/thumbnail`);
 };
+
+/************************************* */
+/*********** S E A R C H ***************/
+/************************************* */
+
+export const search = async ({ headers, query }: any) => {
+  return await httpRequest(`${namespace}/search/${query}`, {
+    headers
+  });
+};

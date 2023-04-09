@@ -23,5 +23,6 @@ export enum OperationTypes {
 
 export enum TabTypes {
   FileList = 1,
-  ArchiveList = 2
+  ArchiveList = 2,
+  SearchList = 3
 }

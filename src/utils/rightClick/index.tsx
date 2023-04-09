@@ -5,7 +5,7 @@ import { Nav, NavItem } from 'reactstrap';
 import { faFolder } from '@fortawesome/free-regular-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
-import { OperationTypes } from '../../config/types';
+import { OperationTypes, TabTypes } from '../../config/types';
 import Modal from './Modal';
 import { Context } from '../../store/index';
 import { useCopy, useCut } from '../../config/hooks';
@@ -19,7 +19,8 @@ const App: React.FunctionComponent<RightClickProps> = ({ query }) => {
     setItemHash,
     itemHash,
     operationType: actionType,
-    currentHash
+    currentHash,
+    currentTab
   } = useContext(Context);
   const [isOpen, setIsopen] = useState<boolean>(false);
   const [operationType, setOperationType] = useState<number>();
@@ -88,7 +89,7 @@ const App: React.FunctionComponent<RightClickProps> = ({ query }) => {
 
         if (OperationTypes.Cut === actionType)
           cut.mutateAsync({ hash: itemHash, destFolderHash: currentHash });
-        setItemHash("");
+        setItemHash('');
         setIsShown(false);
         break;
     }
@@ -109,7 +110,7 @@ const App: React.FunctionComponent<RightClickProps> = ({ query }) => {
       ) : (
         ''
       )}
-      {isShown && (
+      {isShown && currentTab !== TabTypes.SearchList && (
         <div
           style={{ top: position.y, left: position.x }}
           className='context-menu'
