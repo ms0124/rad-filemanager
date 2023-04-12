@@ -1,6 +1,6 @@
 import './style.scss';
 
-import React, { useEffect, useRef } from 'react';
+import React, { useContext } from 'react';
 import { Row, Col } from 'reactstrap';
 import moment from 'moment-jalaali';
 
@@ -12,6 +12,8 @@ import MenuTools from '../../utils/MenuTools/';
 import { formatBytes } from '../../utils/index';
 import { RightClick } from '../../utils';
 import { downloadThumbnail } from '../../config/api';
+import { TabTypes } from '../../config/types';
+import { Context } from '../../store/index';
 // import Empty from './empty';
 interface IProps {
   list: any;
@@ -24,6 +26,8 @@ const Column: React.FunctionComponent<IProps> = ({
   setHash,
   tabType
 }) => {
+  const { setSearchText } = useContext(Context);
+
   return (
     <React.Fragment>
       <RightClick query='.m-4' />
@@ -32,6 +36,9 @@ const Column: React.FunctionComponent<IProps> = ({
           <Col xs={3} md={3} lg={3} key={index}>
             <div
               onDoubleClick={() => {
+                if (TabTypes.SearchList) {
+                  setSearchText('');
+                }
                 item.extension ? null : setHash(item.hash);
               }}
               className='col'

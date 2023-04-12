@@ -27,6 +27,7 @@ const FileManagerReact = ({ ...props }: Props) => {
   const [itemHash, setItemHash] = useState<string>('');
   const [operationType, setOperationType] = useState<number | null>(null);
   const [currentTab, setCurrentTab] = useState<number>(1);
+  const [searchText, setSearchText] = useState<string>('');
 
   const [config, setConfig] = useState<any>(props.config);
   const [header, setHeader] = useState<any>(props.header);
@@ -44,6 +45,8 @@ const FileManagerReact = ({ ...props }: Props) => {
     setOperationType,
     currentTab,
     setCurrentTab,
+    searchText,
+    setSearchText,
     config,
     header
   };

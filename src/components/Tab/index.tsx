@@ -24,6 +24,7 @@ import SearchTab from '../SearchTab';
 interface Props {}
 
 const Tab: FunctionComponent<Props> = () => {
+  const { searchText } = useContext(Context);
   const [activeTab, setActiveTab] = useState(TabTypes.FileList);
   const [page, setPage] = useState<{ archive: number; file: number }>({
     archive: 1,
@@ -33,9 +34,8 @@ const Tab: FunctionComponent<Props> = () => {
     archive: 0,
     file: 0
   });
-  const [searchText, setSearchText] = useState<string>('');
 
-  const { config, setCurrentTab } = useContext(Context);
+  const { config, setCurrentTab, currentTab } = useContext(Context);
 
   // const total = useRef<{ archive: number; file: number }>({archive:0, file:0});
   const total = useRef<number>(0);
@@ -81,7 +81,7 @@ const Tab: FunctionComponent<Props> = () => {
           </NavLink>
         </NavItem>
         <NavItem className='menu-items'>
-          <Search setSearchText={setSearchText} />
+          <Search />
           <StateColumnList />
           <Upload />
         </NavItem>
@@ -133,11 +133,7 @@ const Tab: FunctionComponent<Props> = () => {
           )}
         </TabPane>
         <TabPane tabId={TabTypes.SearchList} style={{ height: config?.height }}>
-          {activeTab === TabTypes.SearchList ? (
-            <SearchTab searchText={searchText} />
-          ) : (
-            ''
-          )}
+          {activeTab === TabTypes.SearchList ? <SearchTab /> : ''}
         </TabPane>
       </TabContent>
       <BreadCrumb />

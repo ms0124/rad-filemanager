@@ -22,7 +22,7 @@ interface IProps {
 }
 
 const FileTab: FunctionComponent<IProps> = ({ offset, setTotal }) => {
-  const { isList, setBreadCrumb, currentHash, setCurrentHash } =
+  const { isList, setBreadCrumb, currentHash, setCurrentHash, currentTab } =
     useContext(Context);
   const [listData, setListData] = useState<any>([]);
   let { data, isLoading } = useGetFolderContentChildren(
@@ -30,7 +30,7 @@ const FileTab: FunctionComponent<IProps> = ({ offset, setTotal }) => {
     objectToQueryString({ size: PAGE_SIZE, offset })
   );
 
-  if (data?.result?.breadcrumb) {
+  if (data?.result?.breadcrumb && currentTab !== TabTypes.SearchList) {
     setBreadCrumb(data?.result?.breadcrumb);
   }
 

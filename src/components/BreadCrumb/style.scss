@@ -12,6 +12,11 @@
   }
   &__item {
     // padding: 8px;
+    &--disabled{
+      cursor: default;
+      user-select: none;
+      color: grey;
+    }
     &:hover {
       color: #ff9b3f;
       cursor: pointer;

@@ -1,10 +1,13 @@
-import React, { FunctionComponent } from 'react';
+import React, { FunctionComponent, useContext } from 'react';
 import { Table } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faKey, faGlobe } from '@fortawesome/free-solid-svg-icons';
 import moment from 'moment-jalaali';
 
 import { formatBytes, brifStr } from '../../utils/index';
+import { Context } from '../../store/index';
+import { TabTypes } from '../../config/types';
+
 interface IProps {
   list: any;
   setHash: React.Dispatch<React.SetStateAction<string>>;
@@ -12,6 +15,8 @@ interface IProps {
 }
 
 const Row: FunctionComponent<IProps> = ({ list = [], setHash }) => {
+  const { setSearchText } = useContext(Context);
+
   return (
     <Table>
       <thead>
@@ -29,7 +34,12 @@ const Row: FunctionComponent<IProps> = ({ list = [], setHash }) => {
             <th
               scope='row'
               style={{ cursor: 'pointer' }}
-              onClick={() => setHash(item.hash)}
+              onDoubleClick={() => {
+                if (TabTypes.SearchList) {
+                  setSearchText('');
+                }
+                item.extension ? null : setHash(item.hash);
+              }}
             >
               {brifStr(item.name)}
             </th>

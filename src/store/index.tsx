@@ -5,9 +5,9 @@ export interface AppContextInterface {
   setIsList: (isList: boolean) => void;
 
   breadCrumb: any;
-  setBreadCrumb: (breadCrumbArray: []) => void;
+  setBreadCrumb: (breadCrumbArray: any) => void;
 
-  currentHash: string;
+  currentHash: string; // hash folder
   setCurrentHash: (hash: string) => void;
 
   itemHash: string;
@@ -18,6 +18,9 @@ export interface AppContextInterface {
 
   currentTab: number;
   setCurrentTab: (tabType: number) => void;
+
+  searchText: string;
+  setSearchText: (searchText: string) => void;
 
   header: { clientId: string; accessToken: string };
 

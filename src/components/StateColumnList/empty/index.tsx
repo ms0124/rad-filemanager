@@ -1,15 +1,19 @@
-import './style.scss'
-import { RightClick } from '../../../utils'
+import './style.scss';
+import { RightClick } from '../../../utils';
 
-import React, { FunctionComponent } from 'react'
+import React, { FunctionComponent } from 'react';
 
-const Empty: FunctionComponent = () => {
+interface IProps {
+  text?: string;
+}
+
+const Empty: FunctionComponent<IProps> = ({ text = '' }) => {
   return (
     <React.Fragment>
       <RightClick query='.empty' />
-      <div className='empty'>این پوشه خالیست!</div>
+      <div className='empty'>{text ? text : 'این پوشه خالیست!'}</div>
     </React.Fragment>
-  )
-}
+  );
+};
 
-export default Empty
+export default Empty;
