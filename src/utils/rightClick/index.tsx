@@ -9,6 +9,7 @@ import { OperationTypes, TabTypes } from '../../config/types';
 import Modal from './Modal';
 import { Context } from '../../store/index';
 import { useCopy, useCut } from '../../config/hooks';
+import CheckPermissions from '../../components/CheckPermissions';
 
 interface RightClickProps {
   query: string;
@@ -111,36 +112,47 @@ const App: React.FunctionComponent<RightClickProps> = ({ query }) => {
         ''
       )}
       {isShown && currentTab !== TabTypes.SearchList && (
-        <div
-          style={{ top: position.y, left: position.x }}
-          className='context-menu'
+        <CheckPermissions
+          permissions={['drives_folder_create', 'drives_copy', 'drives_cut']}
         >
-          <Nav vertical>
-            <NavItem>
-              <FontAwesomeIcon icon={faFolder} className='context-menu__icon' />
-              <span
-                className='context-menu__text'
-                onClick={() => clickHandler(OperationTypes.NewFolder)}
-              >
-                پوشه جدید
-              </span>
-            </NavItem>
-            {itemHash ? (
-              <NavItem onClick={() => clickHandler(OperationTypes.Paste)}>
-                <FontAwesomeIcon
-                  icon={faFolder}
-                  className='context-menu__icon'
-                />
-                <span className='context-menu__text'>جایگذاری</span>
+          <div
+            style={{ top: position.y, left: position.x }}
+            className='context-menu'
+          >
+            <Nav vertical>
+              <CheckPermissions permissions={['drives_folder_create']}>
+                <NavItem>
+                  <FontAwesomeIcon
+                    icon={faFolder}
+                    className='context-menu__icon'
+                  />
+                  <span
+                    className='context-menu__text'
+                    onClick={() => clickHandler(OperationTypes.NewFolder)}
+                  >
+                    پوشه جدید
+                  </span>
+                </NavItem>
+              </CheckPermissions>
+              {itemHash ? (
+                <CheckPermissions permissions={['drives_copy', 'drives_cut']}>
+                  <NavItem onClick={() => clickHandler(OperationTypes.Paste)}>
+                    <FontAwesomeIcon
+                      icon={faFolder}
+                      className='context-menu__icon'
+                    />
+                    <span className='context-menu__text'>جایگذاری</span>
+                  </NavItem>
+                </CheckPermissions>
+              ) : (
+                ''
+              )}
+              <NavItem>
+                {/* <FontAwesomeIcon icon={faPaste} className='' /> */}
               </NavItem>
-            ) : (
-              ''
-            )}
-            <NavItem>
-              {/* <FontAwesomeIcon icon={faPaste} className='' /> */}
-            </NavItem>
-          </Nav>
-        </div>
+            </Nav>
+          </div>
+        </CheckPermissions>
       )}
     </React.Fragment>
   );

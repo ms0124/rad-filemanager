@@ -6,6 +6,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCloudUploadAlt } from '@fortawesome/free-solid-svg-icons';
 
 import FileDragAndDrop from './fileDragAndDrop ';
+import CheckPermissions from '../../components/CheckPermissions/index';
 
 const Upload = () => {
   const [modal, setModal] = useState(false);
@@ -16,14 +17,13 @@ const Upload = () => {
 
   return (
     <React.Fragment>
-      <Button className='btn-upload mb-2' onClick={handleModalToggle}>
-        <FontAwesomeIcon icon={faCloudUploadAlt} /> بارگذاری
-      </Button>
+      <CheckPermissions permissions={['drives_upload', 'drives_upload_image']}>
+        <Button className='btn-upload mb-2' onClick={handleModalToggle}>
+          <FontAwesomeIcon icon={faCloudUploadAlt} /> بارگذاری
+        </Button>
+      </CheckPermissions>
       {modal && (
-        <FileDragAndDrop
-          modal={modal}
-          toggleModal={handleModalToggle}
-        />
+        <FileDragAndDrop modal={modal} toggleModal={handleModalToggle} />
       )}
     </React.Fragment>
   );

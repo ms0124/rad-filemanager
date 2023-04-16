@@ -16,8 +16,9 @@ interface Props {
     accessToken: string;
   };
   config: {
-    height: string;
+    height?: string;
   };
+  permissions: string[];
 }
 
 const FileManagerReact = ({ ...props }: Props) => {
@@ -28,6 +29,7 @@ const FileManagerReact = ({ ...props }: Props) => {
   const [operationType, setOperationType] = useState<number | null>(null);
   const [currentTab, setCurrentTab] = useState<number>(1);
   const [searchText, setSearchText] = useState<string>('');
+  const [permissions, setPermissions] = useState<string[]>(props.permissions);
 
   const [config, setConfig] = useState<any>(props.config);
   const [header, setHeader] = useState<any>(props.header);
@@ -47,6 +49,8 @@ const FileManagerReact = ({ ...props }: Props) => {
     setCurrentTab,
     searchText,
     setSearchText,
+
+    permissions,
     config,
     header
   };

@@ -20,6 +20,7 @@ import { TabTypes } from '../../config/types';
 import { Context } from '../../store/index';
 import { PAGE_SIZE } from '../../config/config';
 import SearchTab from '../SearchTab';
+import CheckPermissions from '../CheckPermissions';
 
 interface Props {}
 
@@ -120,14 +121,21 @@ const Tab: FunctionComponent<Props> = () => {
         }}
       >
         <TabPane tabId={TabTypes.FileList} style={{ height: config?.height }}>
-          <FileTab setTotal={setTotal} offset={offset.file} />
+          <CheckPermissions
+            permissions={['drives_folder_children']}
+            showMessage
+          >
+            <FileTab setTotal={setTotal} offset={offset.file} />
+          </CheckPermissions>
         </TabPane>
         <TabPane
           tabId={TabTypes.ArchiveList}
           style={{ height: config?.height }}
         >
           {activeTab === TabTypes.ArchiveList ? (
-            <ArchiveTab setTotal={setTotal} offset={offset.archive} />
+            <CheckPermissions permissions={['drives_archive_list']} showMessage>
+              <ArchiveTab setTotal={setTotal} offset={offset.archive} />
+            </CheckPermissions>
           ) : (
             ''
           )}

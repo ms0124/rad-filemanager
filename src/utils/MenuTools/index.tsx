@@ -28,6 +28,7 @@ import { download } from '../../config/api';
 import { TabTypes } from '../../config/types';
 import { useArchiveDelete, useArchiveRestor } from '../../config/hooks';
 import { objectToQueryString } from '../../utils/index';
+import CheckPermissions from '../../components/CheckPermissions';
 
 interface IProps {
   item: { name: string; hash: string; extension: string };
@@ -129,37 +130,47 @@ const MenuTools: React.FunctionComponent<IProps> = ({
         <DropdownMenu {...props} end className='dropdown-menu-wrapper'>
           {/* <MenuItem title={'پخش ویدئو'} icon={faPlayCircle} />
           <MenuItem title='اطلاعات فایل' icon={faCircleInfo} /> */}
-          <MenuItem
-            clickHandler={() => clickHandler(OperationTypes.Download)}
-            title='دانلود فایل'
-            icon={faDownload}
-            type={OperationTypes.Download}
-          />
+          <CheckPermissions permissions={['drives_download']}>
+            <MenuItem
+              clickHandler={() => clickHandler(OperationTypes.Download)}
+              title='دانلود فایل'
+              icon={faDownload}
+              type={OperationTypes.Download}
+            />
+          </CheckPermissions>
           <DropdownItem divider />
-          <MenuItem
-            clickHandler={() => clickHandler(OperationTypes.Rename)}
-            title='تغییر نام'
-            icon={faEdit}
-            enTitle='rename'
-          />
-          <MenuItem
-            clickHandler={() => clickHandler(OperationTypes.Copy)}
-            title='کپی'
-            icon={faCopy}
-            enTitle='copy'
-          />
-          <MenuItem
-            clickHandler={() => clickHandler(OperationTypes.Cut)}
-            title='جابه‌جایی'
-            icon={faArrowsAlt}
-            enTitle='move'
-          />
-          <MenuItem
-            clickHandler={() => clickHandler(OperationTypes.Remove)}
-            title='حذف'
-            icon={faTrashAlt}
-            enTitle='delete'
-          />
+          <CheckPermissions permissions={['drives_rename']}>
+            <MenuItem
+              clickHandler={() => clickHandler(OperationTypes.Rename)}
+              title='تغییر نام'
+              icon={faEdit}
+              enTitle='rename'
+            />
+          </CheckPermissions>
+          <CheckPermissions permissions={['drives_copy']}>
+            <MenuItem
+              clickHandler={() => clickHandler(OperationTypes.Copy)}
+              title='کپی'
+              icon={faCopy}
+              enTitle='copy'
+            />
+          </CheckPermissions>
+          <CheckPermissions permissions={['drives_cut']}>
+            <MenuItem
+              clickHandler={() => clickHandler(OperationTypes.Cut)}
+              title='جابه‌جایی'
+              icon={faArrowsAlt}
+              enTitle='move'
+            />
+          </CheckPermissions>
+          <CheckPermissions permissions={['drives_delete']}>
+            <MenuItem
+              clickHandler={() => clickHandler(OperationTypes.Remove)}
+              title='حذف'
+              icon={faTrashAlt}
+              enTitle='delete'
+            />
+          </CheckPermissions>
           {/* <DropdownItem divider />
           <MenuItem
             title='اشتراک گذازی یک فایل'
@@ -168,17 +179,32 @@ const MenuTools: React.FunctionComponent<IProps> = ({
           /> */}
           {tabType == TabTypes.ArchiveList ? (
             <React.Fragment>
-              <DropdownItem divider />
-              <MenuItem
-                clickHandler={() => clickHandler(OperationTypes.RemoveArchive)}
-                title='حذف دائمی'
-                icon={faTrashAlt}
-              />
-              <MenuItem
-                clickHandler={() => clickHandler(OperationTypes.RestoreArchive)}
-                title='بازیابی'
-                icon={faTrashAlt}
-              />
+              <CheckPermissions
+                permissions={[
+                  'drives_archive_delete',
+                  'drives_archive_restore'
+                ]}
+              >
+                <DropdownItem divider />
+                <CheckPermissions permissions={['drives_archive_delete']}>
+                  <MenuItem
+                    clickHandler={() =>
+                      clickHandler(OperationTypes.RemoveArchive)
+                    }
+                    title='حذف دائمی'
+                    icon={faTrashAlt}
+                  />
+                </CheckPermissions>
+                <CheckPermissions permissions={['drives_archive_restore']}>
+                  <MenuItem
+                    clickHandler={() =>
+                      clickHandler(OperationTypes.RestoreArchive)
+                    }
+                    title='بازیابی'
+                    icon={faTrashAlt}
+                  />
+                </CheckPermissions>
+              </CheckPermissions>
             </React.Fragment>
           ) : (
             ''

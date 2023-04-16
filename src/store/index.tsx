@@ -22,6 +22,8 @@ export interface AppContextInterface {
   searchText: string;
   setSearchText: (searchText: string) => void;
 
+  permissions: string[];
+
   header: { clientId: string; accessToken: string };
 
   config?: { width: number; height: number } | null;
