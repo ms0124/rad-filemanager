@@ -7,20 +7,20 @@ declare module '*.css' {
   export default content;
 }
 
-interface SvgrComponent extends React.StatelessComponent<React.SVGAttributes<SVGElement>> {}
+interface SvgrComponent
+  extends React.StatelessComponent<React.SVGAttributes<SVGElement>> {}
 
-declare module '*.png'{
+declare module '*.png' {
   const src: string;
   export default src;
-  }
+}
 declare module '*.svg' {
   const svgUrl: string;
   const svgComponent: SvgrComponent;
   export default svgUrl;
-  export { svgComponent as ReactComponent }
+  export { svgComponent as ReactComponent };
 }
 // declare module '*.eot';
 // declare module '*.ttf';
 // declare module '*.woff';
 // declare module '*.woff2';
-

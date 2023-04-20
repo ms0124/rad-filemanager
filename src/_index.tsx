@@ -29,26 +29,26 @@ const FileManagerReact: React.FC<Props> = ({ ...props }) => {
     operationType,
     setOperationType
   };
-  // return "aaaa"
-  return (
-    <Context.Provider value={defaultValues}>
-      <QueryClientProvider client={queryClient}>
-        <App {...props} />
-      </QueryClientProvider>
-    </Context.Provider>
-  );
+  return "aaaa"
+  // return (
+  //   <Context.Provider value={defaultValues}>
+  //     <QueryClientProvider client={queryClient}>
+  //       <App {...props} />
+  //     </QueryClientProvider>
+  //   </Context.Provider>
+  // );
 };
 
 function FileManager(props: any, elementId: any) {
-  // return "bbbb"
-  ReactDOM.render(
-    <React.StrictMode>
-      <QueryClientProvider client={queryClient}>
-        <App {...props} />
-      </QueryClientProvider>
-    </React.StrictMode>,
-    document.getElementById(elementId)
-  );
+  return "bbbb"
+  // ReactDOM.render(
+  //   <React.StrictMode>
+  //     <QueryClientProvider client={queryClient}>
+  //       <App {...props} />
+  //     </QueryClientProvider>
+  //   </React.StrictMode>,
+  //   document.getElementById(elementId)
+  // );
 }
 
 (window as any).FileManager = FileManager;

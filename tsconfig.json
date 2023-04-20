@@ -2,8 +2,8 @@
   "compilerOptions": {
     "typeRoots" : ["node_modules/@types", "src/types"],
     "outDir": "dist",
-    "module": "esnext",
-    "lib": ["dom", "esnext"],
+    "module": "ES6",
+    "lib": ["dom", "ES6"],
     "moduleResolution": "node",
     "jsx": "react",
     "sourceMap": true,
