@@ -1,63 +1,176 @@
-const TerserPlugin = require('terser-webpack-plugin');
+const HtmlWebPackPlugin = require('html-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+//const getLocalIdent = require('css-loader/lib/getLocalIdent');
+const BundleAnalyzerPlugin =
+  require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+const webpack = require('webpack');
 const path = require('path');
-module.exports = (env, argv) => {
-  return {
-    mode: argv.mode === 'development' ? 'development' : 'production',
-    watch: argv.mode === 'development',
-    entry: { index: ['./src/index.tsx'] },
-    output: {
-      path: path.join(__dirname, '/dist')
-    },
-    resolve: {
-      // Add `.ts` and `.tsx` as a resolvable extension.
-      extensions: ['.ts', '.tsx', '.js'],
-      // Add support for TypeScripts fully qualified ESM imports.
-      extensionAlias: {
-        '.js': ['.js', '.ts'],
-        '.cjs': ['.cjs', '.cts'],
-        '.mjs': ['.mjs', '.mts']
-      }
+
+module.exports = (e, argv) => {
+  const mode = argv.mode;
+  const define = argv.define;
+  let base = {
+    devServer: {
+      compress: true,
+      public: 'localhost',
+      port: 3000,
+      historyApiFallback: true
     },
     module: {
       rules: [
-        // all files with a `.ts`, `.cts`, `.mts` or `.tsx` extension will be handled by `ts-loader`
-        { test: /\.([cm]?ts|tsx)$/, loader: 'ts-loader' },
         {
-          test: /(\.scss$)|(\.css$)/,
-          use: ['style-loader', 'css-loader', 'sass-loader']
+          test: /\.js$/,
+          include: [path.resolve(__dirname, 'src')],
+
+          use: {
+            loader: 'babel-loader',
+            options: {
+              presets: ['@babel/preset-env', '@babel/preset-react'],
+              plugins: [
+                '@babel/plugin-proposal-object-rest-spread',
+                [
+                  '@babel/plugin-proposal-decorators',
+                  {
+                    legacy: true
+                  }
+                ],
+                ['@babel/plugin-proposal-class-properties', { loose: true }]
+              ]
+            }
+          }
         },
         {
-          test: /\.(png|jpe?g|gif)$/i,
+          test: /\.html$/,
           use: [
             {
-              loader: 'file-loader'
+              loader: 'html-loader',
+              options: { minimize: true }
             }
           ]
+        },
+        {
+          test: /\.scss$/,
+          use: [
+            'style-loader', // creates style nodes from JS strings
+            {
+              loader: 'css-loader',
+              options: {
+                modules: {
+                  localIdentName:
+                    mode === 'production' ? '[hash:base64:5]' : '[local]',
+                  getLocalIdent: (
+                    loaderContext,
+                    localIdentName,
+                    localName,
+                    options
+                  ) => {
+                    if (mode === 'production') {
+                      return loaderContext.resourcePath.includes(
+                        'ModalMedia'
+                      ) ||
+                        loaderContext.resourcePath.includes('emoji') ||
+                        localName.includes('leaflet') ||
+                        localName.includes('Toastify')
+                        ? localName
+                        : null;
+                    }
+                    return null;
+                  }
+                }
+              }
+            },
+            {
+              loader: 'sass-loader',
+              options: {
+                additionalData: '@import "../variables.scss";',
+                sassOptions: {
+                  includePaths: [__dirname, 'styles']
+                }
+              }
+            }
+          ]
+        },
+        {
+          test: /\.(png|jpg|gif|ttf|eot|woff2|woff|mp3|svg)$/,
+          exclude:
+            /((oneone|talk-logo|layers|layers-2x|marker-icon|marker-icon-2x|marker-shadow|map-fake)\.png)|(cover\.jpg)|((callingTone|ringtone)\.mp3)/,
+          use: [
+            {
+              loader: 'url-loader',
+              options: {
+                limit: 2000,
+                name: 'assets/[hash].[ext]'
+              }
+            }
+          ]
+        },
+        {
+          test: /((oneone|talk-logo|layers|layers-2x|marker-icon|marker-icon-2x|marker-shadow|map-fake)\.png)|(cover\.jpg)|((callingTone|ringtone)\.mp3)/,
+          use: {
+            loader: 'file-loader',
+            options: {
+              name: 'assets/[name].[ext]'
+            }
+          }
         }
       ]
     },
-    devServer: {
-      static: {
-        directory: path.join(__dirname, '/dist'),
-      },
-      compress: true,
-      port: 3000,
-      allowedHosts: "all",
-      historyApiFallback: true,
-      hot: false,
-      // inline: true,
-      open: true,
-      https: false,
-      liveReload: false,
-      devMiddleware: {
-        writeToDisk: true,
-      },
+    plugins: [
+      new HtmlWebPackPlugin({
+        template: './index.html',
+        filename: './index.html'
+      }),
+      new MiniCssExtractPlugin({
+        filename: '[name].css',
+        chunkFilename: '[id].css'
+      }),
+      new webpack.ProvidePlugin({
+        process: 'process/browser'
+      })
+      //new BundleAnalyzerPlugin()
+    ],
+    resolve: {
+      fallback: {
+        path: false,
+        buffer: false,
+        tls: false,
+        stream: false
+      }
     }
-    // optimization: {
-    //   minimize: true,
-    //   minimizer: [
-    //     new TerserPlugin()
-    //   ]
-    // }
   };
+
+  //IF MODE IS PRODUCTION
+  if (mode === 'production') {
+    base.externals = [
+      // nodeExternals(),
+      {
+        react: {
+          root: 'React',
+          commonjs2: 'react',
+          commonjs: 'react',
+          amd: 'react'
+        },
+        'react-dom': {
+          root: 'ReactDOM',
+          commonjs2: 'react-dom',
+          commonjs: 'react-dom',
+          amd: 'react-dom'
+        }
+      }
+    ];
+    base.output = {
+      path: __dirname + '/dist',
+      filename: 'index.js',
+      library: 'index',
+      libraryTarget: 'umd'
+    };
+  } else if (define === 'TEST') {
+    base.devtool = 'source-map';
+    base.entry = './src/test';
+  } else {
+    base.devtool = 'source-map';
+    base.entry = './src/dev';
+  }
+
+  return base;
 };

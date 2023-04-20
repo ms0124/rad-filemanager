@@ -2,11 +2,10 @@
   "name": "rad-filemanager",
   "version": "1.0.0",
   "description": "rad filemanager",
-  "author": "",
+  "author": "Moslem Seyd Mohammadi",
   "license": "MIT",
   "repository": "/rad-filemanager",
   "main": "dist/index.js",
-  "source": "src/index.tsx",
   "engines": {
     "node": ">=10"
   },
