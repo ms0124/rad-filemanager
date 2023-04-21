@@ -98,6 +98,9 @@ module.exports = (env, argv) => {
         process: 'process/browser'
       })
     ],
+    performance: {
+      hints: false
+    },
     devServer: {
       static: {
         directory: path.join(__dirname, '/dist')
