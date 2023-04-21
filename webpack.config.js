@@ -17,13 +17,13 @@ module.exports = (env, argv) => {
     },
     resolve: {
       // Add `.ts` and `.tsx` as a resolvable extension.
-      // extensions: ['.ts', '.tsx', '.js'],
+      extensions: ['.ts', '.tsx', '.js'],
       // // Add support for TypeScripts fully qualified ESM imports.
-      // extensionAlias: {
-      //   '.js': ['.js', '.ts'],
-      //   '.cjs': ['.cjs', '.cts'],
-      //   '.mjs': ['.mjs', '.mts']
-      // },
+      extensionAlias: {
+        '.js': ['.js', '.ts'],
+        '.cjs': ['.cjs', '.cts'],
+        '.mjs': ['.mjs', '.mts']
+      },
       fallback: {
         path: false,
         buffer: false,
@@ -36,6 +36,7 @@ module.exports = (env, argv) => {
         // all files with a `.ts`, `.cts`, `.mts` or `.tsx` extension will be handled by `ts-loader`
         {
           test: /\.(js|[cm]?ts|tsx)$/,
+          exclude: /node_modules/,
           include: [path.resolve(__dirname, 'src')],
 
           use: {
@@ -43,8 +44,15 @@ module.exports = (env, argv) => {
             options: {
               presets: [
                 // '@babel/preset-react',
-                '@babel/preset-env',
-                '@babel/preset-typescript'
+                '@babel/react',
+                '@babel/preset-typescript',
+                [
+                  '@babel/preset-env',
+                  {
+                    useBuiltIns: 'usage',
+                    corejs: 3
+                  }
+                ]
               ],
               plugins: [
                 '@babel/plugin-transform-typescript',
@@ -71,11 +79,7 @@ module.exports = (env, argv) => {
           test: /\.(png|jpg|gif|ttf|eot|woff2|woff|mp3|svg)$/,
           use: [
             {
-              loader: 'url-loader',
-              options: {
-                limit: 2000,
-                name: 'assets/[hash].[ext]'
-              }
+              loader: 'url-loader'
             }
           ]
         }
