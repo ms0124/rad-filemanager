@@ -11,8 +11,7 @@
   },
   "scripts": {
     "start": "webpack --config webpack.config.js --mode development",
-    "build": "webpack --config webpack.config.js",
-    "build1": "webpack --mode production",
+    "build": "webpack --mode production",
     "serve": "webpack-dev-server --config test.webpack.config.js --mode development",
     "prepare": "run-s build",
     "test": "run-s test:unit test:lint test:build",
