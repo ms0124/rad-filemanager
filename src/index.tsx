@@ -54,7 +54,7 @@ const FileManagerReact = ({ ...props }: Props) => {
     config,
     header
   };
-
+  // return "aaaa"
   return (
     <Context.Provider value={defaultValues}>
       <QueryClientProvider client={queryClient}>
@@ -65,7 +65,8 @@ const FileManagerReact = ({ ...props }: Props) => {
   );
 };
 
-const FileManager = (props: any, elementId: any) => {
+function FileManager(props: any, elementId: any) {
+  // return "bbbb"
   ReactDOM.render(
     <React.StrictMode>
       <QueryClientProvider client={queryClient}>
