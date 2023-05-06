@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faKey, faGlobe } from '@fortawesome/free-solid-svg-icons';
 import moment from 'moment-jalaali';
 
-import { formatBytes, brifStr } from '../../utils/index';
+import { formatBytes, brifStr, getBs } from '../../utils/index';
 import { Context } from '../../store/index';
 import { TabTypes } from '../../config/types';
 
@@ -18,14 +18,14 @@ const Row: FunctionComponent<IProps> = ({ list = [], setHash }) => {
   const { setSearchText } = useContext(Context);
 
   return (
-    <Table>
+    <Table cssModule={getBs()}>
       <thead>
         <tr>
-          <th className='text-center'>نام فایل</th>
-          <th className='text-center'>تاریخ ایجاد</th>
-          <th className='text-center'>تاریخ ویرایش</th>
-          <th className='text-center'>حجم فایل</th>
-          <th className='text-center'>وضعیت اشتراک گذاری</th>
+          <th className={`${getBs()['text-center']}`}>نام فایل</th>
+          <th className={`${getBs()['text-center']}`}>تاریخ ایجاد</th>
+          <th className={`${getBs()['text-center']}`}>تاریخ ویرایش</th>
+          <th className={`${getBs()['text-center']}`}>حجم فایل</th>
+          <th className={`${getBs()['text-center']}`}>وضعیت اشتراک گذاری</th>
         </tr>
       </thead>
       <tbody>

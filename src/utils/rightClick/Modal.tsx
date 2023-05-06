@@ -15,6 +15,7 @@ import {
   useDeleteFileAndFolder,
   useRenameFileAndFolder
 } from '../../config/hooks';
+import { getBs } from '../../utils/index';
 interface IProps {
   title: string;
   isOpen: boolean;
@@ -75,10 +76,11 @@ const Index: React.FC<IProps> = ({
       isOpen={isOpen}
       toggle={toggle}
       centered={true}
-      className='modal-operation'
+      className={`${getBs()['modal-operation']}`}
+      cssModule={getBs()}
     >
-      <ModalHeader>{title}</ModalHeader>
-      <ModalBody>
+      <ModalHeader cssModule={getBs()}>{title}</ModalHeader>
+      <ModalBody cssModule={getBs()}>
         {type === OperationTypes.Remove ? (
           ''
         ) : (
@@ -87,26 +89,37 @@ const Index: React.FC<IProps> = ({
             placeholder={placeholder}
             defaultValue={type === OperationTypes.Rename ? item?.name : ''}
             onDoubleClick={(e) => e.stopPropagation()}
+            cssModule={getBs()}
           />
         )}
         <div
           className={classNames(
-            'd-flex mt-4',
+            `${getBs()['d-flex']}  ${getBs()['mt-4']}`,
             {
-              'justify-content-end': type === OperationTypes.NewFolder
+              [`${getBs()['justify-content-end']}`]:
+                type === OperationTypes.NewFolder
             },
-            { 'justify-content-center': type !== OperationTypes.NewFolder }
+            {
+              [`${getBs()['justify-content-center']}`]:
+                type !== OperationTypes.NewFolder
+            }
           )}
         >
-          <Button onClick={toggle} className='ms-3' color='danger' outline>
+          <Button
+            cssModule={getBs()}
+            onClick={toggle}
+            className={`${getBs()['ms-3']}`}
+            color='danger'
+            outline
+          >
             {btnNoText}
           </Button>
-          <Button onClick={execute} color='primary'>
-            {btnOkText}{" "}
+          <Button cssModule={getBs()} onClick={execute} color='primary'>
+            {btnOkText}{' '}
             {deleteFileAndFolder.isLoading ||
             renameFileAndFolder.isLoading ||
             renameFileAndFolder.isLoading ? (
-              <Spinner />
+              <Spinner cssModule={getBs()} />
             ) : (
               ''
             )}

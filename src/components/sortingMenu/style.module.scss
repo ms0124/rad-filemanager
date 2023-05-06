@@ -5,6 +5,7 @@
   color: #737373;
   max-height: 50px;
   border-bottom: 1px solid #e1e1e1;
+
   &__text {
     margin-left: 12px;
   }
@@ -66,4 +67,13 @@
       }
     }
   }
+}
+
+
+
+.fix-top {
+  position: fixed;
+  left: 0;
+  right: 0;
+  z-index: 2;
 }

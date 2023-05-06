@@ -1,3 +1,5 @@
+import styles from './style.module.scss';
+
 import React, {
   FunctionComponent,
   useEffect,
@@ -19,6 +21,7 @@ import { queryClient } from '../../config/config';
 import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
 import { getHeader } from '../../config/hooks';
+import { getBs } from '../../utils/index';
 
 interface Props {
   modal: boolean;
@@ -44,11 +47,13 @@ const FilesDragAndDrop: FunctionComponent<Props> = ({ modal, toggleModal }) => {
   useEffect(() => {
     if (!element) return;
     element.addEventListener('dragover', handleDragOver);
+    element.addEventListener('dragleave', handleDragLeave);
     element.addEventListener('drop', handleDrop);
 
     return () => {
       if (!element) return;
       element.removeEventListener('dragover', handleDragOver);
+      element.removeEventListener('dragleave', handleDragLeave);
       element.removeEventListener('drop', handleDrop);
     };
   }, [element]);
@@ -72,7 +77,7 @@ const FilesDragAndDrop: FunctionComponent<Props> = ({ modal, toggleModal }) => {
         if (progressComplete) {
           // get list of file again
           queryClient.refetchQueries({
-            queryKey: ['folderContentChildren', { hash: currentHash , headers }]
+            queryKey: ['folderContentChildren', { hash: currentHash, headers }]
           });
           // reset of my parameters
           setFileList([]);
@@ -99,6 +104,11 @@ const FilesDragAndDrop: FunctionComponent<Props> = ({ modal, toggleModal }) => {
     e.preventDefault();
     e.stopPropagation();
     if (!hoverFile) setHoverFile(true);
+  };
+  const handleDragLeave = (e: any) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (!hoverFile) setHoverFile(false);
   };
 
   const handleDrop = (e: any) => {
@@ -129,26 +139,35 @@ const FilesDragAndDrop: FunctionComponent<Props> = ({ modal, toggleModal }) => {
 
   return (
     <Modal
+      cssModule={getBs()}
       isOpen={modal}
       toggle={toggleModal}
-      className={isUpload ? 'modal-container upload-toast' : 'modal-container'}
+      className={
+        isUpload
+          ? `${styles['modal-container']} ${styles['upload-toast']}`
+          : `${styles['modal-container']}`
+      }
       centered={true}
     >
       {isUpload ? (
         <React.Fragment>
-          <ModalHeader>
+          <ModalHeader cssModule={getBs()}>
             <span>بارگذاری</span>
             <FontAwesomeIcon
               icon={faTimes}
               onClick={toggleModal}
-              className='icon-times'
+              className={styles['icon-times']}
             />
           </ModalHeader>
-          <ModalBody>
+          <ModalBody cssModule={getBs()}>
             {fileList &&
               Object.values(fileList).map((item) => {
                 return (
-                  <div className='d-flex justify-content-between'>
+                  <div
+                    className={`${getBs()['d-flex']} ${
+                      getBs()['justify-content-between']
+                    }`}
+                  >
                     <span>{item.name}</span>
                     <div style={{ width: 25, height: 25 }}>
                       <CircularProgressbar
@@ -169,12 +188,15 @@ const FilesDragAndDrop: FunctionComponent<Props> = ({ modal, toggleModal }) => {
       ) : (
         <div ref={setElement}>
           <ModalBody
+            cssModule={getBs()}
             onClick={() => {
               inputRef.current?.click();
             }}
-            className='drag-here'
+            className={styles['drag-here']}
             style={{
-              backgroundColor: hoverFile ? 'rgba(97, 132, 255, 0.2)' : ''
+              backgroundColor: hoverFile
+                ? 'rgba(97, 132, 255, 0.2)'
+                : 'rgba(255, 255, 255, 1)'
             }}
           >
             <input

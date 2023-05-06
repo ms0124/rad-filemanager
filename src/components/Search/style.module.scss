@@ -1,0 +1,22 @@
+.search-wrapper {
+  width: auto;
+  height: 20px;
+  margin-right: auto;
+  margin-left: auto;
+  
+  &__icon {
+    background-color: transparent;
+    border-left: 1px solid transparent;
+    border-bottom-left-radius: 0;
+    border-top-left-radius: 0;
+    border-top-right-radius: 8px !important;
+    border-bottom-right-radius: 8px !important;
+  }
+  &__input {
+    border-right: 1px solid transparent;
+    border-bottom-right-radius: 0;
+    border-top-right-radius: 0;
+    border-bottom-left-radius: 8px !important;
+    border-top-left-radius: 8px !important;
+  }
+}

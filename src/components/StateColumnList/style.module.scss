@@ -1,6 +1,8 @@
 .state-column-list {
   display: flex;
   align-items: center;
+  margin-left: auto;
+  margin-right: auto;
   &:hover {
     cursor: pointer;
   }

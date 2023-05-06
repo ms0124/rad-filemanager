@@ -23,7 +23,31 @@ module.exports = (env, argv) => {
         // all files with a `.ts`, `.cts`, `.mts` or `.tsx` extension will be handled by `ts-loader`
         { test: /\.([cm]?ts|tsx)$/, loader: 'ts-loader' },
         {
-          test: /(\.scss$)|(\.css$)/,
+          test: /(\.module.scss$)|(\.module.css$)|(bootstrap.min.scss$)|(bootstrap.min.css$)/,
+          use: [
+            {
+              loader: 'style-loader'
+            },
+            {
+              loader: 'css-loader',
+              options: {
+                // importLoaders: 1,
+                modules: {
+                  mode: 'local'
+                }
+              }
+            },
+            {
+              loader: 'sass-loader'
+            }
+          ]
+        },
+        {
+          test: /(ReactToastify.scss$)|(ReactToastify.css$)/,
+          use: ['style-loader', 'css-loader', 'sass-loader']
+        },
+        {
+          test: /(styles.scss$)|(styles.css$)/,
           use: ['style-loader', 'css-loader', 'sass-loader']
         },
         {
@@ -38,11 +62,11 @@ module.exports = (env, argv) => {
     },
     devServer: {
       static: {
-        directory: path.join(__dirname, '/dist'),
+        directory: path.join(__dirname, '/dist')
       },
       compress: true,
       port: 3000,
-      allowedHosts: "all",
+      allowedHosts: 'all',
       historyApiFallback: true,
       hot: false,
       // inline: true,
@@ -50,8 +74,8 @@ module.exports = (env, argv) => {
       https: false,
       liveReload: false,
       devMiddleware: {
-        writeToDisk: true,
-      },
+        writeToDisk: true
+      }
     }
     // optimization: {
     //   minimize: true,

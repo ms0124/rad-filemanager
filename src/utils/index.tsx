@@ -1,19 +1,14 @@
+import bs from 'bootstrap/dist/css/bootstrap.min.css';
+
 import RightClick from './rightClick/index';
 import { instance } from '../config/config';
 import { AxiosResponse } from 'axios';
 import { toast } from 'react-toastify';
 export { Loading } from './loading/index';
-// interface IHeaders{
-//   'Client-Id': string;
-//   'Access-Token': string;
-// }
 
-// interface IMassage {
-//   message: {
-//     isSuccess: boolean;
-//     messsage: string;
-//   };
-// }
+export const getBs = () => {
+  return bs;
+};
 
 export const httpRequest = (
   url,

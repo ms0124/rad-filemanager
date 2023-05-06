@@ -1,4 +1,6 @@
-import './style.scss';
+import styles from './style.module.scss';
+
+import '../../sass/style.module.scss';
 
 import React, {
   useEffect,
@@ -8,7 +10,9 @@ import React, {
   useRef
 } from 'react';
 import { Nav, NavItem, NavLink, TabContent, TabPane } from 'reactstrap';
+import classNames from 'classnames';
 
+import { getBs } from '../../utils/index';
 import Search from '../Search/index';
 import StateColumnList from '../StateColumnList/index';
 import FileTab from '../FileTab/index';
@@ -60,28 +64,61 @@ const Tab: FunctionComponent<Props> = () => {
     <div>
       <Nav
         tabs
-        className='fix-top'
-        style={{ top: 0, backgroundColor: '#f2f2f2' }}
+        className={`${styles['fix-top']} ${styles['nav-wrapper']}`}
+        cssModule={getBs()}
       >
-        <NavItem>
+        <NavItem
+          cssModule={getBs()}
+          className={`${styles['nav-wrapper__tab-item']} ${styles['nav-wrapper__item']}`}
+        >
           <NavLink
-            disabled={activeTab === TabTypes.SearchList}
+            // disabled={activeTab === TabTypes.SearchList}
             active={activeTab === TabTypes.FileList}
             onClick={() => handleTab(TabTypes.FileList)}
+            className={classNames(
+              styles['nav-wrapper__link'],
+              {
+                [styles['nav-wrapper__tab-item--active']]:
+                  activeTab === TabTypes.FileList
+              },
+              {
+                [styles['nav-wrapper__tab-item--disabled']]:
+                  activeTab === TabTypes.SearchList
+              }
+            )}
+            cssModule={getBs()}
           >
             فایل ها
           </NavLink>
         </NavItem>
-        <NavItem>
+        <NavItem
+          cssModule={getBs()}
+          className={`${styles['nav-wrapper__tab-item']} ${styles['nav-wrapper__item']}`}
+        >
           <NavLink
-            disabled={activeTab === TabTypes.SearchList}
+            // disabled={activeTab === TabTypes.SearchList}
             active={activeTab === TabTypes.ArchiveList}
             onClick={() => handleTab(TabTypes.ArchiveList)}
+            className={classNames(
+              styles['nav-wrapper__link'],
+              {
+                [styles['nav-wrapper__tab-item--active']]:
+                  activeTab === TabTypes.ArchiveList
+              },
+              {
+                [styles['nav-wrapper__tab-item--disabeld']]:
+                  activeTab === TabTypes.SearchList
+              }
+            )}
+            cssModule={getBs()}
           >
             آرشیو
           </NavLink>
         </NavItem>
-        <NavItem className='menu-items'>
+        <NavItem
+          className={`${styles['nav-wrapper__container']} ${styles['nav-wrapper__item']}`}
+          cssModule={getBs()}
+        >
           <Search />
           <StateColumnList />
           <Upload />
@@ -90,7 +127,8 @@ const Tab: FunctionComponent<Props> = () => {
       <SortingMenu />
       <TabContent
         activeTab={activeTab}
-        style={{ marginTop: 120, overflow: 'scroll' }}
+        style={{ marginTop: 0, overflow: 'scroll' }}
+        cssModule={getBs()}
         onScroll={(e) => {
           const { target } = e;
           const scrollHeight: number = (target as HTMLDivElement).scrollHeight;
@@ -120,7 +158,11 @@ const Tab: FunctionComponent<Props> = () => {
             }
         }}
       >
-        <TabPane tabId={TabTypes.FileList} style={{ height: config?.height }}>
+        <TabPane
+          tabId={TabTypes.FileList}
+          style={{ height: config?.height }}
+          cssModule={getBs()}
+        >
           <CheckPermissions
             permissions={['drives_folder_children']}
             showMessage
@@ -129,6 +171,7 @@ const Tab: FunctionComponent<Props> = () => {
           </CheckPermissions>
         </TabPane>
         <TabPane
+          cssModule={getBs()}
           tabId={TabTypes.ArchiveList}
           style={{ height: config?.height }}
         >
@@ -140,7 +183,11 @@ const Tab: FunctionComponent<Props> = () => {
             ''
           )}
         </TabPane>
-        <TabPane tabId={TabTypes.SearchList} style={{ height: config?.height }}>
+        <TabPane
+          cssModule={getBs()}
+          tabId={TabTypes.SearchList}
+          style={{ height: config?.height }}
+        >
           {activeTab === TabTypes.SearchList ? <SearchTab /> : ''}
         </TabPane>
       </TabContent>

@@ -1,4 +1,4 @@
-import './style.scss';
+import styles from './style.module.scss';
 
 import React, { useState, useEffect, useContext } from 'react';
 import { Nav, NavItem } from 'reactstrap';
@@ -117,17 +117,17 @@ const App: React.FunctionComponent<RightClickProps> = ({ query }) => {
         >
           <div
             style={{ top: position.y, left: position.x }}
-            className='context-menu'
+            className={styles['context-menu']}
           >
             <Nav vertical>
               <CheckPermissions permissions={['drives_folder_create']}>
                 <NavItem>
                   <FontAwesomeIcon
                     icon={faFolder}
-                    className='context-menu__icon'
+                    className={styles['context-menu__icon']}
                   />
                   <span
-                    className='context-menu__text'
+                    className={styles['context-menu__text']}
                     onClick={() => clickHandler(OperationTypes.NewFolder)}
                   >
                     پوشه جدید
@@ -139,9 +139,11 @@ const App: React.FunctionComponent<RightClickProps> = ({ query }) => {
                   <NavItem onClick={() => clickHandler(OperationTypes.Paste)}>
                     <FontAwesomeIcon
                       icon={faFolder}
-                      className='context-menu__icon'
+                      className={styles['context-menu__icon']}
                     />
-                    <span className='context-menu__text'>جایگذاری</span>
+                    <span className={styles['context-menu__text']}>
+                      جایگذاری
+                    </span>
                   </NavItem>
                 </CheckPermissions>
               ) : (

@@ -1,4 +1,4 @@
-import './style.scss';
+import styles from './style.module.scss';
 
 import React, { useContext } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -13,18 +13,18 @@ const StateColumnList = () => {
   };
 
   return (
-    <span className='state-column-list'>
+    <span className={styles['state-column-list']}>
       <span>شیوه نمایش</span>
       <FontAwesomeIcon
         icon={faColumns}
         size='2x'
-        className='state-column-list__column'
+        className={styles['state-column-list__column']}
         onClick={() => handleClick(true)}
       />
       <FontAwesomeIcon
         icon={faListAlt}
         size='2x'
-        className='state-column-list__list'
+        className={styles['state-column-list__list']}
         onClick={() => handleClick(false)}
       />
     </span>

@@ -1,9 +1,8 @@
-import 'bootstrap/dist/css/bootstrap.css';
 import 'react-toastify/dist/ReactToastify.css';
 
 import ReactDOM from 'react-dom';
 import React, { useState } from 'react';
-import './sass/style.scss';
+import './sass/style.module.scss';
 import App from './components/FileManager/index';
 import { Context, AppContextInterface } from './store/index';
 import { QueryClientProvider } from 'react-query';
@@ -54,7 +53,6 @@ const FileManagerReact = ({ ...props }: Props) => {
     config,
     header
   };
-  // return "aaaa"
   return (
     <Context.Provider value={defaultValues}>
       <QueryClientProvider client={queryClient}>
@@ -75,7 +73,7 @@ function FileManager(props: any, elementId: any) {
     </React.StrictMode>,
     document.getElementById(elementId)
   );
-};
+}
 
 (window as any).FileManager = FileManager;
 

@@ -1,4 +1,4 @@
-import './style.scss';
+import styles from './style.module.scss';
 
 import React, { useState, useContext } from 'react';
 import {
@@ -29,6 +29,7 @@ import { TabTypes } from '../../config/types';
 import { useArchiveDelete, useArchiveRestor } from '../../config/hooks';
 import { objectToQueryString } from '../../utils/index';
 import CheckPermissions from '../../components/CheckPermissions';
+import { getBs } from '../../utils/index';
 
 interface IProps {
   item: { name: string; hash: string; extension: string };
@@ -117,8 +118,17 @@ const MenuTools: React.FunctionComponent<IProps> = ({
       ) : (
         ''
       )}
-      <Dropdown isOpen={isOpen} toggle={toggle} direction={'down'}>
-        <DropdownToggle tag='div' className='col__icon-3 fas fa-caret-up'>
+      <Dropdown
+        cssModule={getBs()}
+        isOpen={isOpen}
+        toggle={toggle}
+        direction={'down'}
+      >
+        <DropdownToggle
+          cssModule={getBs()}
+          tag='div'
+          className='col__icon-3 fas fa-caret-up'
+        >
           <FontAwesomeIcon
             onClick={toggle}
             data-toggle='dropdown'
@@ -127,7 +137,12 @@ const MenuTools: React.FunctionComponent<IProps> = ({
             icon={faEllipsisH}
           />
         </DropdownToggle>
-        <DropdownMenu {...props} end className='dropdown-menu-wrapper'>
+        <DropdownMenu
+          cssModule={getBs()}
+          {...props}
+          end
+          className={styles['dropdown-menu-wrapper']}
+        >
           {/* <MenuItem title={'پخش ویدئو'} icon={faPlayCircle} />
           <MenuItem title='اطلاعات فایل' icon={faCircleInfo} /> */}
           <CheckPermissions permissions={['drives_download']}>
@@ -138,7 +153,7 @@ const MenuTools: React.FunctionComponent<IProps> = ({
               type={OperationTypes.Download}
             />
           </CheckPermissions>
-          <DropdownItem divider />
+          <DropdownItem cssModule={getBs()} divider />
           <CheckPermissions permissions={['drives_rename']}>
             <MenuItem
               clickHandler={() => clickHandler(OperationTypes.Rename)}
@@ -185,7 +200,7 @@ const MenuTools: React.FunctionComponent<IProps> = ({
                   'drives_archive_restore'
                 ]}
               >
-                <DropdownItem divider />
+                <DropdownItem cssModule={getBs()} divider />
                 <CheckPermissions permissions={['drives_archive_delete']}>
                   <MenuItem
                     clickHandler={() =>

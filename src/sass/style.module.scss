@@ -1,0 +1,21 @@
+@import 'variables';
+@import 'typography';
+
+:global(#filemanager-container) {
+
+  font-family: IRANSans;
+  color: $color-gray;
+  .dirLtr {
+    direction: ltr;
+  }
+  .dirRtl {
+    direction: rtl;
+  }
+}
+:global(.dropdown-menu) {
+  border-radius: 4px;
+  margin-top: 4px;
+  .dropdown-item {
+    text-align: right;
+  }
+}

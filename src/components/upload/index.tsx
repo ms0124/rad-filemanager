@@ -1,4 +1,4 @@
-import './style.scss';
+import styles from './style.module.scss';
 
 import React, { useState } from 'react';
 import { Button } from 'reactstrap';
@@ -7,6 +7,7 @@ import { faCloudUploadAlt } from '@fortawesome/free-solid-svg-icons';
 
 import FileDragAndDrop from './fileDragAndDrop ';
 import CheckPermissions from '../../components/CheckPermissions/index';
+import { getBs } from '../../utils/index';
 
 const Upload = () => {
   const [modal, setModal] = useState(false);
@@ -18,7 +19,11 @@ const Upload = () => {
   return (
     <React.Fragment>
       <CheckPermissions permissions={['drives_upload', 'drives_upload_image']}>
-        <Button className='btn-upload mb-2' onClick={handleModalToggle}>
+        <Button
+          cssModule={getBs()}
+          className={`${styles['btn-upload']} ${getBs()['my-auto']}`}
+          onClick={handleModalToggle}
+        >
           <FontAwesomeIcon icon={faCloudUploadAlt} /> بارگذاری
         </Button>
       </CheckPermissions>

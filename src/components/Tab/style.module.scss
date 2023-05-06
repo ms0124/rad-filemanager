@@ -1,0 +1,114 @@
+@import '../../sass/variables';
+
+.fix-top {
+  position: static;
+  left: 0;
+  right: 0;
+  z-index: 2;
+}
+/*
+
+.nav-item {
+  margin-left: 1px;
+  .tab-item {
+    cursor: pointer;
+    border-color: transparent;
+    color: $color-gray;
+    background-color: $color-gray-light;
+    border-bottom: 4px solid $color-gray-light;
+    border-radius: 0px;
+    &:hover {
+      filter: brightness(85%);
+    }
+    &.active {
+      border-bottom: 4px solid $color-orange;
+      color: $color-orange;
+      background-color: $color-orange-light;
+    }
+  }
+}
+.nav {
+  &.nav-tabs {
+    color: $color-gray;
+    padding-top: 15px;
+    .nav-items {
+      display: flex;
+      justify-content: space-between;
+      flex-grow: 1;
+      margin-right: 20px;
+      margin-left: 15px;
+    }
+
+    .input-group {
+      width: auto;
+      height: 20px;
+      .input-group-text {
+        background-color: transparent;
+        border-left: 1px solid transparent;
+        border-bottom-left-radius: 0;
+        border-top-left-radius: 0;
+        border-top-right-radius: 8px !important;
+        border-bottom-right-radius: 8px !important;
+      }
+      input {
+        &.form-control {
+          border-right: 1px solid transparent;
+          border-bottom-right-radius: 0;
+          border-top-right-radius: 0;
+
+          border-bottom-left-radius: 8px !important;
+          border-top-left-radius: 8px !important;
+        }
+      }
+    }
+  }
+}
+*/
+
+//*****************************************
+//***** After css Module ******************
+//*****************************************
+
+.nav-wrapper {
+  background-color: #f2f2f2;
+  top: 0;
+  padding-top: 15px;
+  &__container {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    flex-grow: 1;
+    margin-right: 20px;
+    margin-left: 15px;
+  }
+
+  &__item {
+  }
+  &__tab-item {
+    cursor: pointer;
+    border-color: transparent !important;
+    color: $color-gray !important;
+    background-color: $color-gray-light;
+    border-bottom: 4px solid $color-gray-light;
+    border-radius: 0px;
+    &:hover {
+      filter: brightness(85%);
+    }
+    &--active {
+      border-bottom: 4px solid $color-orange !important;
+      color: $color-orange !important;
+      background-color: $color-orange-light !important;
+    }
+    &--disabled {
+      color: $color-gray !important;
+    }
+    .nav-wrapper__link {
+      color: $color-gray;
+      &:hover {
+        color: $color-gray;
+      }
+    }
+  }
+  &__link {
+  }
+}

@@ -1,7 +1,10 @@
+import styles from './style.module.scss';
+
 import React from 'react';
 import { useGetUserStorage } from '../../config/hooks';
 import { formatBytes } from '../../utils/index';
 import CheckPermissions from '../CheckPermissions';
+import { getBs } from '../../utils/index';
 
 const UserStorage: React.FunctionComponent = () => {
   const { data, isLoading } = useGetUserStorage();
@@ -23,7 +26,7 @@ const UserStorage: React.FunctionComponent = () => {
     <React.Fragment>
       <CheckPermissions permissions={['drives_storage']}>
         <div
-          className='d-flex justify-content-between'
+          className={`${getBs()['d-flex']} ${getBs['justify-content-between']}`}
           style={{ fontSize: '12px' }}
         >
           <span>فضای پرشده</span>
@@ -33,16 +36,16 @@ const UserStorage: React.FunctionComponent = () => {
             <span>{storageLimit}</span>
           </div>
         </div>
-        <div className='user-storage'>
-          <div className='user-storage__wrapper'>
-            <div className='user-storage__wrapper--bar'>
+        <div className={styles['user-storage']}>
+          <div className={styles['user-storage__wrapper']}>
+            <div className={styles['user-storage__wrapper--bar']}>
               <span
-                className='user-storage__wrapper--fill'
+                className={styles['user-storage__wrapper--fill']}
                 style={{ width: `${percent}%` }}
               ></span>
             </div>
           </div>
-          <span className='user-storage__percent'>{percent}%</span>
+          <span className={styles['user-storage__percent']}>{percent}%</span>
         </div>
       </CheckPermissions>
     </React.Fragment>

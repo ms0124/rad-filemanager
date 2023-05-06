@@ -1,4 +1,4 @@
-import './style.scss';
+import styles from './style.module.scss';
 
 import React, { FunctionComponent, useState } from 'react';
 import {
@@ -17,7 +17,7 @@ import {
   faAngleDown
 } from '@fortawesome/free-solid-svg-icons';
 import classNames from 'classnames';
-
+import { getBs } from '../../utils/index';
 import UserStorage from './UserStorage';
 
 interface SortingMenuItemProps {
@@ -33,16 +33,17 @@ const SortingMenuItem: FunctionComponent<SortingMenuItemProps> = ({
 }) => {
   return (
     <NavItem
-      className={classNames('sorting-menu__arrange', {
-        'sorting-menu__arrange--up': isUp
+      cssModule={getBs()}
+      className={classNames(styles['sorting-menu__arrange'], {
+        [styles['sorting-menu__arrange--up']]: isUp
       })}
       onClick={handleSort}
     >
       <span>{name}</span>
       {isUp ? (
-        <FontAwesomeIcon icon={faSortUp} className='me-2' />
+        <FontAwesomeIcon icon={faSortUp} className={getBs()['me-2']} />
       ) : (
-        <FontAwesomeIcon icon={faSortDown} className='me-2' />
+        <FontAwesomeIcon icon={faSortDown} className={getBs()['me-2']} />
       )}
     </NavItem>
   );
@@ -58,19 +59,36 @@ const DropDownElement: FunctionComponent<DropDownElementProps> = ({
   toggle
 }) => {
   return (
-    <Dropdown isOpen={isOpen} toggle={toggle} className='sort-dropdown'>
-      <DropdownToggle color='none'>
+    <Dropdown
+      cssModule={getBs()}
+      isOpen={isOpen}
+      toggle={toggle}
+      className={styles['sort-dropdown']}
+    >
+      <DropdownToggle color='none' cssModule={getBs()}>
         نام
-        <FontAwesomeIcon icon={faAngleDown} className='me-2' />
+        <FontAwesomeIcon icon={faAngleDown} className={styles['me-2']} />
       </DropdownToggle>
-      <DropdownMenu end={true} container='body'>
-        <DropdownItem className='sort-dropdown__item' onClick={() => toggle}>
+      <DropdownMenu end={true} container='body' cssModule={getBs()}>
+        <DropdownItem
+          cssModule={getBs()}
+          className={styles['sort-dropdown__item']}
+          onClick={() => toggle}
+        >
           پوشه ها
         </DropdownItem>
-        <DropdownItem className='sort-dropdown__item' onClick={() => toggle}>
+        <DropdownItem
+          cssModule={getBs()}
+          className={styles['sort-dropdown__item']}
+          onClick={() => toggle}
+        >
           فایل ها
         </DropdownItem>
-        <DropdownItem className='sort-dropdown__item' onClick={() => toggle}>
+        <DropdownItem
+          cssModule={getBs()}
+          className={styles['sort-dropdown__item']}
+          onClick={() => toggle}
+        >
           عکس ها
         </DropdownItem>
       </DropdownMenu>
@@ -99,11 +117,18 @@ const SortingMenu: FunctionComponent = () => {
     setDropDowmIsOpen((isOpen) => !isOpen);
   };
   return (
-    <div className='sorting-menu fix-top' style={{ top: 62 }}>
-      <Nav>
-        <NavItem>
+    <div className={classNames(styles['sorting-menu'])}>
+      <Nav cssModule={getBs()} style={{ alignItems: 'center' }}>
+        <NavItem cssModule={getBs()}>
           <FontAwesomeIcon icon={faSort} />
-          <span className='me-2 sorting-menu__text'>ترتیب بر اساس</span>
+          <span
+            className={classNames(
+              getBs()['me-2'],
+              styles['sorting-menu__text']
+            )}
+          >
+            ترتیب بر اساس
+          </span>
         </NavItem>
         <SortingMenuItem
           isUp={sort.byName}
@@ -120,11 +145,30 @@ const SortingMenu: FunctionComponent = () => {
           name='سایز'
           handleSort={handleSortBySize}
         />
-        <NavItem className='divider-vertical sorting-menu__divider' />
-        <NavItem>نوع فایل</NavItem>
+        <NavItem
+          cssModule={getBs()}
+          className={classNames(
+            styles['divider-vertical'],
+            styles['sorting-menu__divider']
+          )}
+        />
+        <NavItem cssModule={getBs()}>نوع فایل</NavItem>
         <DropDownElement isOpen={dropDowmIsOpen} toggle={handleToggle} />
-        <NavItem className='divider-vertical sorting-menu__divider' />
-        <NavItem className='pt-0 me-auto ms-2'>
+        <NavItem
+          cssModule={getBs()}
+          className={classNames(
+            styles['divider-vertical'],
+            styles['sorting-menu__divider']
+          )}
+        />
+        <NavItem
+          cssModule={getBs()}
+          className={classNames(
+            getBs()['pt-0'],
+            getBs()['me-auto'],
+            getBs()['ms-2']
+          )}
+        >
           <UserStorage />
         </NavItem>
       </Nav>
