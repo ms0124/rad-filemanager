@@ -6,13 +6,13 @@
   justify-content: space-between;
   align-items: center;
   padding-right: 15px;
-
+  padding-left: 15px;
   &__your-path {
     color: #777;
   }
   &__item {
     // padding: 8px;
-    &--disabled{
+    &--disabled {
       cursor: default;
       user-select: none;
       color: grey;
@@ -22,7 +22,7 @@
       cursor: pointer;
     }
   }
-  &__copyright{
+  &__copyright {
     padding-left: 10px;
   }
 }

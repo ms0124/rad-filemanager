@@ -116,6 +116,7 @@ const SortingMenu: FunctionComponent = () => {
   const handleToggle = () => {
     setDropDowmIsOpen((isOpen) => !isOpen);
   };
+  
   return (
     <div className={classNames(styles['sorting-menu'])}>
       <Nav cssModule={getBs()} style={{ alignItems: 'center' }}>
@@ -161,12 +162,16 @@ const SortingMenu: FunctionComponent = () => {
             styles['sorting-menu__divider']
           )}
         />
+        { console.log(  getBs()['pt-0'],
+            getBs()['mr-auto'],
+            getBs()['ms-2'])
+        }
         <NavItem
           cssModule={getBs()}
           className={classNames(
             getBs()['pt-0'],
-            getBs()['me-auto'],
-            getBs()['ms-2']
+            getBs()['mr-auto'],
+            getBs()['pl-4']
           )}
         >
           <UserStorage />
