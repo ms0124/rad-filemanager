@@ -7,7 +7,7 @@ import { toast } from 'react-toastify';
 export { Loading } from './loading/index';
 
 export const getBs = () => {
-  return bs;
+  return bs || {};
 };
 
 export const httpRequest = (

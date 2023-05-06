@@ -1,6 +1,6 @@
 {
   "name": "rad-filemanager",
-  "version": "0.0.6",
+  "version": "0.0.8",
   "description": "rad filemanager",
   "author": "Moslem Seyd Mohammadi",
   "license": "MIT",
@@ -22,7 +22,8 @@
   },
   "peerDependencies": {
     "react": "^17.0.2",
-    "react-dom": "^17.0.2"
+    "react-dom": "^17.0.2",
+    "reactstrap": ">=8.1.1"
   },
   "devDependencies": {
     "@babel/plugin-transform-typescript": "^7.21.3",
@@ -69,6 +70,7 @@
     "process": "^0.11.10",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
+    "reactstrap": "^8.1.1",
     "resolve-url-loader": "^3.1.2",
     "rollup-plugin-img": "^1.1.0",
     "sass": "^1.57.1",
@@ -98,7 +100,6 @@
     "node-sass": "^7.0.1",
     "react-circular-progressbar": "^2.0.4",
     "react-query": "^3.39.2",
-    "react-toastify": "^8.0.0",
-    "reactstrap": "^9.0.2"
+    "react-toastify": "^8.0.0"
   }
 }
