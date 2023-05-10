@@ -72,6 +72,10 @@ module.exports = (env, argv) => {
         },
         // { test: /\.([cm]?ts|tsx)$/, loader: 'ts-loader' },
         {
+          test: /(bootstrap\.min\.css$)/,
+          use: ['url-loader']
+        },
+        {
           test: /(\.scss$)|(\.css$)/,
           use: ['style-loader', 'css-loader', 'sass-loader']
         },
