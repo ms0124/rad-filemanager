@@ -26,7 +26,7 @@ const UserStorage: React.FunctionComponent = () => {
     <React.Fragment>
       <CheckPermissions permissions={['drives_storage']}>
         <div
-          className={`${getBs()['d-flex']} ${getBs['justify-content-between']}`}
+          className={`${getBs()['d-flex']} ${getBs()['justify-content-between']}`}
           style={{ fontSize: '12px' }}
         >
           <span>فضای پرشده</span>

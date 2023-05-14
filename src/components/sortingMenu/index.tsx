@@ -162,10 +162,6 @@ const SortingMenu: FunctionComponent = () => {
             styles['sorting-menu__divider']
           )}
         />
-        { console.log(  getBs()['pt-0'],
-            getBs()['mr-auto'],
-            getBs()['ms-2'])
-        }
         <NavItem
           cssModule={getBs()}
           className={classNames(
