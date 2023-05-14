@@ -27,7 +27,7 @@ const Column: React.FunctionComponent<IProps> = ({
   setHash,
   tabType
 }) => {
-  const { setSearchText } = useContext(Context);
+  const { setSearchText, onSelect } = useContext(Context);
 
   return (
     <React.Fragment>
@@ -36,6 +36,9 @@ const Column: React.FunctionComponent<IProps> = ({
         {list.map((item, index) => (
           <Col cssModule={getBs()} xs={3} md={3} lg={3} key={index}>
             <div
+              onClick={() => {
+                if (onSelect) onSelect(item);
+              }}
               onDoubleClick={() => {
                 if (TabTypes.SearchList) {
                   setSearchText('');
@@ -62,7 +65,6 @@ const Column: React.FunctionComponent<IProps> = ({
                     />
                   )}
                 </div>
-                {/* {console.log("ddd ", downloadThumbnail(item.hash))} */}
                 {item.extension ? (
                   item.thumbnail === 'THUMBNAIL_EXIST_PNG' ? (
                     <img

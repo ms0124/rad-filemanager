@@ -14,10 +14,8 @@ const App: FunctionComponent = () => {
       ></div> */}
       <Row cssModule={getBs()}>
         <FileManagerReact
-          header={{
-            clientId: '17959574q2f0347718971594ccd86f3f4',
-            accessToken: '44fa70a1044541c9ba0d24537af7aa1a.XzIwMjM1'
-          }}
+          clientId='17959574q2f0347718971594ccd86f3f4'
+          accessToken='f2771765c7aa4139b5ba9e42b8442a6b.XzIwMjM1'
           permissions={[
             'drives_upload',
             'drives_upload_image',
@@ -32,6 +30,7 @@ const App: FunctionComponent = () => {
             'drives_archive_list'
           ]}
           config={{ height: '400px' }}
+          onSelect={(a) => console.log(a)}
         />
       </Row>
     </>

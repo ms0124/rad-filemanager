@@ -10,14 +10,13 @@ import { queryClient } from './config/config';
 import { ToastContainer } from 'react-toastify';
 
 interface Props {
-  header: {
-    clientId: string;
-    accessToken: string;
-  };
+  clientId: string;
+  accessToken: string;
   config: {
     height?: string;
   };
   permissions: string[];
+  onSelect?: any;
 }
 
 const FileManagerReact = ({ ...props }: Props) => {
@@ -29,9 +28,13 @@ const FileManagerReact = ({ ...props }: Props) => {
   const [currentTab, setCurrentTab] = useState<number>(1);
   const [searchText, setSearchText] = useState<string>('');
   const [permissions, setPermissions] = useState<string[]>(props.permissions);
+  const [onSelect, setOnSelect] = useState(() => props.onSelect);
 
   const [config, setConfig] = useState<any>(props.config);
-  const [header, setHeader] = useState<any>(props.header);
+  const [header, setHeader] = useState<any>({
+    clientId: props.clientId,
+    accessToken: props.accessToken
+  });
 
   const defaultValues: AppContextInterface = {
     isList,
@@ -51,7 +54,8 @@ const FileManagerReact = ({ ...props }: Props) => {
 
     permissions,
     config,
-    header
+    header,
+    onSelect
   };
   return (
     <Context.Provider value={defaultValues}>
@@ -64,13 +68,49 @@ const FileManagerReact = ({ ...props }: Props) => {
 };
 
 function FileManager(props: any, elementId: any) {
-  // return "bbbb"
+  const [isList, setIsList] = useState<boolean>(true);
+  const [breadCrumb, setBreadCrumb] = useState<[]>([]);
+  const [currentHash, setCurrentHash] = useState<string>('root');
+  const [itemHash, setItemHash] = useState<string>('');
+  const [operationType, setOperationType] = useState<number | null>(null);
+  const [currentTab, setCurrentTab] = useState<number>(1);
+  const [searchText, setSearchText] = useState<string>('');
+  const [permissions, setPermissions] = useState<string[]>(props.permissions);
+
+  const [config, setConfig] = useState<any>(props.config);
+  const [header, setHeader] = useState<any>({
+    clientId: props.clientId,
+    accessToken: props.accessToken
+  });
+  const [onSelect, setOnSelect] = useState(() => props.onSelect);
+
+  const defaultValues: AppContextInterface = {
+    isList,
+    setIsList,
+    breadCrumb,
+    setBreadCrumb,
+    currentHash,
+    setCurrentHash,
+    itemHash,
+    setItemHash,
+    operationType,
+    setOperationType,
+    currentTab,
+    setCurrentTab,
+    searchText,
+    setSearchText,
+
+    permissions,
+    config,
+    header,
+    onSelect
+  };
   ReactDOM.render(
-    <React.StrictMode>
+    <Context.Provider value={defaultValues}>
       <QueryClientProvider client={queryClient}>
         <App {...props} />
       </QueryClientProvider>
-    </React.StrictMode>,
+    </Context.Provider>,
     document.getElementById(elementId)
   );
 }

@@ -15,7 +15,7 @@ interface IProps {
 }
 
 const Row: FunctionComponent<IProps> = ({ list = [], setHash }) => {
-  const { setSearchText } = useContext(Context);
+  const { setSearchText, onSelect } = useContext(Context);
 
   return (
     <Table cssModule={getBs()}>
@@ -33,6 +33,9 @@ const Row: FunctionComponent<IProps> = ({ list = [], setHash }) => {
           <tr key={index}>
             <th
               scope='row'
+              onClick={() => {
+                if (onSelect) onSelect(item);
+              }}
               style={{ cursor: 'pointer' }}
               onDoubleClick={() => {
                 if (TabTypes.SearchList) {
