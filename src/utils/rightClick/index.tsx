@@ -113,14 +113,14 @@ const App: React.FunctionComponent<RightClickProps> = ({ query }) => {
       )}
       {isShown && currentTab !== TabTypes.SearchList && (
         <CheckPermissions
-          permissions={['drives_folder_create', 'drives_copy', 'drives_cut']}
+          permissions={['folder_create', 'copy', 'cut']}
         >
           <div
             style={{ top: position.y, left: position.x }}
             className={styles['context-menu']}
           >
             <Nav vertical>
-              <CheckPermissions permissions={['drives_folder_create']}>
+              <CheckPermissions permissions={['folder_create']}>
                 <NavItem>
                   <FontAwesomeIcon
                     icon={faFolder}
@@ -135,7 +135,7 @@ const App: React.FunctionComponent<RightClickProps> = ({ query }) => {
                 </NavItem>
               </CheckPermissions>
               {itemHash ? (
-                <CheckPermissions permissions={['drives_copy', 'drives_cut']}>
+                <CheckPermissions permissions={['copy', 'cut']}>
                   <NavItem onClick={() => clickHandler(OperationTypes.Paste)}>
                     <FontAwesomeIcon
                       icon={faFolder}

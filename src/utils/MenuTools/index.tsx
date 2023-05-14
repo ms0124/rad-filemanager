@@ -145,7 +145,7 @@ const MenuTools: React.FunctionComponent<IProps> = ({
         >
           {/* <MenuItem title={'پخش ویدئو'} icon={faPlayCircle} />
           <MenuItem title='اطلاعات فایل' icon={faCircleInfo} /> */}
-          <CheckPermissions permissions={['drives_download']}>
+          <CheckPermissions permissions={['download']}>
             <MenuItem
               clickHandler={() => clickHandler(OperationTypes.Download)}
               title='دانلود فایل'
@@ -154,7 +154,7 @@ const MenuTools: React.FunctionComponent<IProps> = ({
             />
           </CheckPermissions>
           <DropdownItem cssModule={getBs()} divider />
-          <CheckPermissions permissions={['drives_rename']}>
+          <CheckPermissions permissions={['rename']}>
             <MenuItem
               clickHandler={() => clickHandler(OperationTypes.Rename)}
               title='تغییر نام'
@@ -162,7 +162,7 @@ const MenuTools: React.FunctionComponent<IProps> = ({
               enTitle='rename'
             />
           </CheckPermissions>
-          <CheckPermissions permissions={['drives_copy']}>
+          <CheckPermissions permissions={['copy']}>
             <MenuItem
               clickHandler={() => clickHandler(OperationTypes.Copy)}
               title='کپی'
@@ -170,7 +170,7 @@ const MenuTools: React.FunctionComponent<IProps> = ({
               enTitle='copy'
             />
           </CheckPermissions>
-          <CheckPermissions permissions={['drives_cut']}>
+          <CheckPermissions permissions={['cut']}>
             <MenuItem
               clickHandler={() => clickHandler(OperationTypes.Cut)}
               title='جابه‌جایی'
@@ -178,7 +178,7 @@ const MenuTools: React.FunctionComponent<IProps> = ({
               enTitle='move'
             />
           </CheckPermissions>
-          <CheckPermissions permissions={['drives_delete']}>
+          <CheckPermissions permissions={['delete']}>
             <MenuItem
               clickHandler={() => clickHandler(OperationTypes.Remove)}
               title='حذف'

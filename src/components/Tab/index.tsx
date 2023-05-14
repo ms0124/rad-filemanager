@@ -163,10 +163,7 @@ const Tab: FunctionComponent<Props> = () => {
           style={{ height: config?.height }}
           cssModule={getBs()}
         >
-          <CheckPermissions
-            permissions={['drives_folder_children']}
-            showMessage
-          >
+          <CheckPermissions permissions={['folder_children']} showMessage>
             <FileTab setTotal={setTotal} offset={offset.file} />
           </CheckPermissions>
         </TabPane>
@@ -176,7 +173,7 @@ const Tab: FunctionComponent<Props> = () => {
           style={{ height: config?.height }}
         >
           {activeTab === TabTypes.ArchiveList ? (
-            <CheckPermissions permissions={['drives_archive_list']} showMessage>
+            <CheckPermissions permissions={['archive_list']} showMessage>
               <ArchiveTab setTotal={setTotal} offset={offset.archive} />
             </CheckPermissions>
           ) : (

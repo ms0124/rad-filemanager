@@ -15,7 +15,12 @@ const CheckPermissions: React.FunctionComponent<IProps> = ({
 }) => {
   const { permissions: globalPermissions } = useContext(Context);
 
-  if (permissions.length === 1 && permissions[0] === 'full') {
+  if (
+    globalPermissions &&
+    Array.isArray(globalPermissions) &&
+    globalPermissions.length == 1 &&
+    globalPermissions[0] == 'full'
+  ) {
     return <>{children}</>;
   }
   let permissionsLength = permissions.length;

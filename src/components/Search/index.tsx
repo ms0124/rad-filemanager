@@ -14,7 +14,7 @@ const Search: FunctionComponent<Props> = () => {
   const { setSearchText, searchText } = useContext(Context);
 
   return (
-    <CheckPermissions permissions={['drives_search']}>
+    <CheckPermissions permissions={['search']}>
       <InputGroup
         className={styles['search-wrapper']}
         cssModule={getBs()}

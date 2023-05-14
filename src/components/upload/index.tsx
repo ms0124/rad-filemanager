@@ -18,7 +18,7 @@ const Upload = () => {
 
   return (
     <React.Fragment>
-      <CheckPermissions permissions={['drives_upload', 'drives_upload_image']}>
+      <CheckPermissions permissions={['upload', 'upload_image']}>
         <Button
           cssModule={getBs()}
           className={`${styles['btn-upload']} ${getBs()['my-auto']}`}
