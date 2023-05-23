@@ -1,4 +1,5 @@
 import styles from './style.module.scss';
+import utilStyles from "../../sass/style.module.scss";
 
 import React, {
   FunctionComponent,
@@ -164,8 +165,8 @@ const FilesDragAndDrop: FunctionComponent<Props> = ({ modal, toggleModal }) => {
               Object.values(fileList).map((item) => {
                 return (
                   <div
-                    className={`${getBs()['d-flex']} ${
-                      getBs()['justify-content-between']
+                    className={`${utilStyles['d-flex']} ${
+                      utilStyles['justify-content-between']
                     }`}
                   >
                     <span>{item.name}</span>

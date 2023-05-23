@@ -1,3 +1,6 @@
+import styles from "./style.module.scss";
+import utilStyles from "../../sass/style.module.scss";
+
 import React, { useState, useRef, useContext } from 'react';
 import {
   Modal,
@@ -76,7 +79,7 @@ const Index: React.FC<IProps> = ({
       isOpen={isOpen}
       toggle={toggle}
       centered={true}
-      className={`${getBs()['modal-operation']}`}
+      className={`${styles['modal-operation']}`}
       cssModule={getBs()}
     >
       <ModalHeader cssModule={getBs()}>{title}</ModalHeader>
@@ -94,13 +97,13 @@ const Index: React.FC<IProps> = ({
         )}
         <div
           className={classNames(
-            `${getBs()['d-flex']}  ${getBs()['mt-4']}`,
+            `${utilStyles['d-flex']}  ${utilStyles['mt-4']}`,
             {
-              [`${getBs()['justify-content-end']}`]:
+              [`${utilStyles['justify-content-end']}`]:
                 type === OperationTypes.NewFolder
             },
             {
-              [`${getBs()['justify-content-center']}`]:
+              [`${utilStyles['justify-content-center']}`]:
                 type !== OperationTypes.NewFolder
             }
           )}
@@ -108,7 +111,7 @@ const Index: React.FC<IProps> = ({
           <Button
             cssModule={getBs()}
             onClick={toggle}
-            className={`${getBs()['ms-3']}`}
+            className={`${utilStyles['ms-3']}`}
             color='danger'
             outline
           >

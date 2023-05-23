@@ -1,4 +1,5 @@
 import styles from './style.module.scss';
+import utilStyles from '../../sass/style.module.scss';
 
 import React, { useState } from 'react';
 import { Button } from 'reactstrap';
@@ -21,7 +22,7 @@ const Upload = () => {
       <CheckPermissions permissions={['upload', 'upload_image']}>
         <Button
           cssModule={getBs()}
-          className={`${styles['btn-upload']} ${getBs()['my-auto']}`}
+          className={`${styles['btn-upload']} ${utilStyles['my-auto']}`}
           onClick={handleModalToggle}
         >
           <FontAwesomeIcon icon={faCloudUploadAlt} /> بارگذاری

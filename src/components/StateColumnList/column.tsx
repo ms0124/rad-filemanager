@@ -1,8 +1,10 @@
 import styles from './style.module.scss';
+import utilStyles from '../../sass/style.module.scss';
 
-import React, { useContext } from 'react';
+import React, { useContext, useRef } from 'react';
 import { Row, Col } from 'reactstrap';
 import moment from 'moment-jalaali';
+import classnames from 'classnames';
 
 import n from './n.png';
 import folder from './folder.png';
@@ -28,15 +30,32 @@ const Column: React.FunctionComponent<IProps> = ({
   tabType
 }) => {
   const { setSearchText, onSelect } = useContext(Context);
-
+  const slectedRef = useRef<(HTMLDivElement | null)[]>([]);
   return (
     <React.Fragment>
       <RightClick query='.m-4' />
-      <Row cssModule={getBs()} className={`${getBs()['m-4']}`}>
+      <Row cssModule={getBs()} className={`${utilStyles['m-4']}`}>
         {list.map((item, index) => (
           <Col cssModule={getBs()} xs={3} md={3} lg={3} key={index}>
             <div
+              ref={(ref) => (slectedRef.current[index] = ref)}
               onClick={() => {
+                if (!onSelect) return; /// if onSelect undefined this function will dont work
+                if (!item.extension && !item.isPublic) return; // for folder dont select
+                if (
+                  slectedRef.current[index]?.style.backgroundColor ===
+                  'cornflowerblue'
+                ) {
+                  slectedRef.current[index]!.style!.backgroundColor =
+                    'rgb(250,250,250)';
+                } else {
+                  slectedRef.current.map(
+                    (item) =>
+                      (item!.style!.backgroundColor = 'rgb(250,250,250)')
+                  );
+                  slectedRef.current[index]!.style!.backgroundColor =
+                    'cornflowerblue';
+                }
                 if (onSelect) onSelect(item);
               }}
               onDoubleClick={() => {
@@ -48,7 +67,7 @@ const Column: React.FunctionComponent<IProps> = ({
               className={styles['col']}
               style={item.extension ? {} : { cursor: 'pointer' }}
             >
-              <div className={styles['col__img-wrapper']}>
+              <div className={classnames(styles['col__img-wrapper'])}>
                 <div className={styles['col__menu-wrapper']}>
                   <MenuTools item={item} tabType={tabType} />
                 </div>

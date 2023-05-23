@@ -46,6 +46,9 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    &--selected {
+      background-color: cornflowerblue;
+    }
   }
   &__icon-3 {
     position: absolute;
@@ -55,6 +58,9 @@
     color: #b5b5b5;
     // color: red;
     user-select: auto;
+    &.fas.fa-caret-up::before{
+      content: "";
+    }
   }
   &__img {
     border-top-left-radius: 8px;

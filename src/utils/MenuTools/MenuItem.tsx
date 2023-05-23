@@ -1,5 +1,6 @@
 import styles from './style.module.scss';
-
+import utilStyles from "../../sass/style.module.scss"; 
+  
 import React from 'react';
 import { DropdownItem } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -31,9 +32,9 @@ const MenuItem: React.FunctionComponent<IProps> = ({
         target='_blank'
         className={`${styles['dropdown-menu-wrapper__item']}`}
       >
-        <FontAwesomeIcon icon={icon} className={getBs()['ml-1']} />
+        <FontAwesomeIcon icon={icon} className={utilStyles['ms-1']} />
         <span>{title}</span>
-        {enTitle ? <span className={getBs()['me-auto']}>{enTitle}</span> : ''}
+        {enTitle ? <span className={utilStyles['me-auto']}>{enTitle}</span> : ''}
       </DropdownItem>
     </React.Fragment>
   );

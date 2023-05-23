@@ -1,4 +1,5 @@
 import styles from './style.module.scss';
+import utilStyles from '../../sass/style.module.scss';
 
 import React from 'react';
 import classnames from 'classnames';
@@ -13,7 +14,7 @@ export const Loading: React.FunctionComponent<IProps> = ({
 }) => {
   return (
     <div className={classnames({ [styles['center-page']]: wholePage })}>
-      <div className={`${styles['flow']} ${getBs()['mx-auto']}`}>
+      <div className={`${styles['flow']} ${utilStyles['mx-auto']}`}>
         <div className={`${styles['flow-dot']}`}></div>
         <div className={`${styles['flow-dot']}`}></div>
         <div className={`${styles['flow-dot']}`}></div>

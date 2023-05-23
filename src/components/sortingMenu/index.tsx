@@ -1,5 +1,7 @@
 import styles from './style.module.scss';
+import utilStyles from "../../sass/style.module.scss";
 
+import utilsStyles from "../../sass/style.module.scss";
 import React, { FunctionComponent, useState } from 'react';
 import {
   Nav,
@@ -41,9 +43,9 @@ const SortingMenuItem: FunctionComponent<SortingMenuItemProps> = ({
     >
       <span>{name}</span>
       {isUp ? (
-        <FontAwesomeIcon icon={faSortUp} className={getBs()['me-2']} />
+        <FontAwesomeIcon icon={faSortUp} className={utilStyles['me-2']} />
       ) : (
-        <FontAwesomeIcon icon={faSortDown} className={getBs()['me-2']} />
+        <FontAwesomeIcon icon={faSortDown} className={utilStyles['me-2']} />
       )}
     </NavItem>
   );
@@ -67,7 +69,7 @@ const DropDownElement: FunctionComponent<DropDownElementProps> = ({
     >
       <DropdownToggle color='none' cssModule={getBs()}>
         نام
-        <FontAwesomeIcon icon={faAngleDown} className={styles['me-2']} />
+        <FontAwesomeIcon icon={faAngleDown} className={utilStyles['me-2']} />
       </DropdownToggle>
       <DropdownMenu end={true} container='body' cssModule={getBs()}>
         <DropdownItem
@@ -124,7 +126,7 @@ const SortingMenu: FunctionComponent = () => {
           <FontAwesomeIcon icon={faSort} />
           <span
             className={classNames(
-              getBs()['me-2'],
+              utilsStyles['me-2'],
               styles['sorting-menu__text']
             )}
           >
@@ -165,9 +167,9 @@ const SortingMenu: FunctionComponent = () => {
         <NavItem
           cssModule={getBs()}
           className={classNames(
-            getBs()['pt-0'],
-            getBs()['mr-auto'],
-            getBs()['pl-4']
+            utilsStyles['pt-0'],
+            utilsStyles['me-auto'],
+            utilsStyles['ps-4']
           )}
         >
           <UserStorage />

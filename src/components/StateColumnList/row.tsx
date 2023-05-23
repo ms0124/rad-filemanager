@@ -1,4 +1,6 @@
-import React, { FunctionComponent, useContext } from 'react';
+import utilStyles from '../../sass/style.module.scss';
+
+import React, { FunctionComponent, useContext, useRef } from 'react';
 import { Table } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faKey, faGlobe } from '@fortawesome/free-solid-svg-icons';
@@ -16,25 +18,40 @@ interface IProps {
 
 const Row: FunctionComponent<IProps> = ({ list = [], setHash }) => {
   const { setSearchText, onSelect } = useContext(Context);
-
+  const slectedRef = useRef<(HTMLDivElement | null)[]>([]);
   return (
     <Table cssModule={getBs()}>
       <thead>
         <tr>
-          <th className={`${getBs()['text-center']}`}>نام فایل</th>
-          <th className={`${getBs()['text-center']}`}>تاریخ ایجاد</th>
-          <th className={`${getBs()['text-center']}`}>تاریخ ویرایش</th>
-          <th className={`${getBs()['text-center']}`}>حجم فایل</th>
-          <th className={`${getBs()['text-center']}`}>وضعیت اشتراک گذاری</th>
+          <th className={`${utilStyles['text-center']}`}>نام فایل</th>
+          <th className={`${utilStyles['text-center']}`}>تاریخ ایجاد</th>
+          <th className={`${utilStyles['text-center']}`}>تاریخ ویرایش</th>
+          <th className={`${utilStyles['text-center']}`}>حجم فایل</th>
+          <th className={`${utilStyles['text-center']}`}>وضعیت اشتراک گذاری</th>
         </tr>
       </thead>
       <tbody>
         {list.map((item, index) => (
-          <tr key={index}>
+          <tr key={index} ref={(ref) => (slectedRef.current[index] = ref)}>
             <th
               scope='row'
               onClick={() => {
-                if (onSelect) onSelect(item);
+                if (!item.extension && !item.isPublic) return;
+                if (
+                  slectedRef.current[index]?.style.backgroundColor ===
+                  'cornflowerblue'
+                ) {
+                  slectedRef.current[index]!.style!.backgroundColor =
+                    'rgb(250,250,250)';
+                } else {
+                  slectedRef.current.map(
+                    (item) =>
+                      (item!.style!.backgroundColor = 'rgb(250,250,250)')
+                  );
+                  slectedRef.current[index]!.style!.backgroundColor =
+                    'cornflowerblue';
+                  if (onSelect) onSelect(item);
+                }
               }}
               style={{ cursor: 'pointer' }}
               onDoubleClick={() => {
@@ -46,15 +63,17 @@ const Row: FunctionComponent<IProps> = ({ list = [], setHash }) => {
             >
               {brifStr(item.name)}
             </th>
-            <td className='dirLtr text-center'>
+            <td className={`dirLtr ${utilStyles['text-center']}`}>
               {moment(item.created).format('jYYYY/jMM/jDD HH:mm:ss')}
             </td>
-            <td className='dirLtr text-center'>
+            <td className={`dirLtr ${utilStyles['text-center']}`}>
               {' '}
               {moment(item.updated).format('jYYYY/jMM/jDD HH:mm:ss')}
             </td>
-            <td className='dirLtr text-center'>{formatBytes(item.size)}</td>
-            <td className='text-center'>
+            <td className={`dirLtr ${utilStyles['text-center']}`}>
+              {formatBytes(item.size)}
+            </td>
+            <td className={`${utilStyles['text-center']}`}>
               {item.isPublic ? (
                 <FontAwesomeIcon icon={faGlobe} />
               ) : (

@@ -1,4 +1,5 @@
 import styles from './style.module.scss';
+import utilStyles from "../../sass/style.module.scss";
 
 import React, { useContext } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -6,7 +7,7 @@ import { faAngleLeft } from '@fortawesome/free-solid-svg-icons';
 import { Context } from '../../store/index';
 import classnames from 'classnames';
 import { TabTypes } from '../../config/types';
-import { getBs } from '../../utils/index';
+
 const index = () => {
   const {
     breadCrumb,
@@ -49,7 +50,7 @@ const index = () => {
               item?.disabled ? null : setCurrentHash(item.hash);
             }}
           >
-            <FontAwesomeIcon icon={faAngleLeft} className={getBs()['px-2']} />
+            <FontAwesomeIcon icon={faAngleLeft} className={utilStyles['px-2']} />
             <span>{item?.name}</span>
           </span>
         ))}

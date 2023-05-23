@@ -1,10 +1,10 @@
 import styles from './style.module.scss';
-
+import utilsStyles from "../../sass/style.module.scss";
 import React from 'react';
 import { useGetUserStorage } from '../../config/hooks';
 import { formatBytes } from '../../utils/index';
 import CheckPermissions from '../CheckPermissions';
-import { getBs } from '../../utils/index';
+
 
 const UserStorage: React.FunctionComponent = () => {
   const { data, isLoading } = useGetUserStorage();
@@ -26,7 +26,7 @@ const UserStorage: React.FunctionComponent = () => {
     <React.Fragment>
       <CheckPermissions permissions={['storage']}>
         <div
-          className={`${getBs()['d-flex']} ${getBs()['justify-content-between']}`}
+          className={`${utilsStyles['d-flex']} ${utilsStyles['justify-content-between']}`}
           style={{ fontSize: '12px' }}
         >
           <span>فضای پرشده</span>
