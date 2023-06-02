@@ -32,6 +32,7 @@ const Search: FunctionComponent<Props> = () => {
           cssModule={getBs()}
           value={searchText}
           className={styles['search-wrapper__input']}
+          placeholder='جستجو'
           onChange={(event) => {
             const { value } = event.target;
             setSearchText(value);

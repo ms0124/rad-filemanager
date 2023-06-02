@@ -1,10 +1,11 @@
-@import '../../sass/variables';
+$color-orange: #ff9b3f;
+$color-gray: #b5b5b5;
 
 .btn-upload {
-  background-color: $color-orange;
+  background-color: $color-orange  !important;
   color: #fff;
   &:focus {
-    background-color: $color-orange;
+    background-color: $color-orange !important;
     color: #fff;
   }
 }
