@@ -72,13 +72,41 @@ module.exports = (env, argv) => {
         },
         // { test: /\.([cm]?ts|tsx)$/, loader: 'ts-loader' },
         {
-          test: /(bootstrap\.min\.css$)/,
-          use: ['url-loader']
+          test: /(\.module.scss$)|(\.module.css$)|(bootstrap.min.scss$)|(bootstrap.min.css$)/,
+          use: [
+            {
+              loader: 'style-loader'
+            },
+            {
+              loader: 'css-loader',
+              options: {
+                // importLoaders: 1,
+                modules: {
+                  mode: 'local'
+                }
+              }
+            },
+            {
+              loader: 'sass-loader'
+            }
+          ]
         },
         {
-          test: /(\.scss$)|(\.css$)/,
+          test: /(ReactToastify.scss$)|(ReactToastify.css$)/,
           use: ['style-loader', 'css-loader', 'sass-loader']
         },
+        {
+          test: /(styles.scss$)|(styles.css$)/,
+          use: ['style-loader', 'css-loader', 'sass-loader']
+        },
+        // {
+        //   test: /(bootstrap\.min\.css$)/,
+        //   use: ['url-loader']
+        // },
+        // {
+        //   test: /(\.scss$)|(\.css$)/,
+        //   use: ['style-loader', 'css-loader', 'sass-loader']
+        // },
         {
           test: /\.(png|jpg|gif|ttf|eot|woff2|woff|mp3|svg)$/,
           use: [
