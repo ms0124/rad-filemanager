@@ -11,12 +11,12 @@ import { Context } from '../../store/index';
 import { TabTypes } from '../../config/types';
 
 interface IProps {
-  list: any;
+  pages: any;
   setHash: React.Dispatch<React.SetStateAction<string>>;
   tabType: number;
 }
 
-const Row: FunctionComponent<IProps> = ({ list = [], setHash }) => {
+const Row: FunctionComponent<IProps> = ({ pages = [], setHash }) => {
   const { setSearchText, onSelect } = useContext(Context);
   const slectedRef = useRef<(HTMLDivElement | null)[]>([]);
   return (
@@ -31,57 +31,60 @@ const Row: FunctionComponent<IProps> = ({ list = [], setHash }) => {
         </tr>
       </thead>
       <tbody>
-        {list.map((item, index) => (
-          <tr key={index} ref={(ref) => (slectedRef.current[index] = ref)}>
-            <th
-              scope='row'
-              onClick={() => {
-                if (!item.extension && !item.isPublic) return;
-                if (
-                  slectedRef.current[index]?.style.backgroundColor ===
-                  'cornflowerblue'
-                ) {
-                  slectedRef.current[index]!.style!.backgroundColor =
-                    'rgb(250,250,250)';
-                } else {
-                  slectedRef.current.map(
-                    (item) =>
-                      (item!.style!.backgroundColor = 'rgb(250,250,250)')
-                  );
-                  slectedRef.current[index]!.style!.backgroundColor =
-                    'cornflowerblue';
-                  if (onSelect) onSelect(item);
-                }
-              }}
-              style={{ cursor: 'pointer' }}
-              onDoubleClick={() => {
-                if (TabTypes.SearchList) {
-                  setSearchText('');
-                }
-                item.extension ? null : setHash(item.hash);
-              }}
-            >
-              {brifStr(item.name)}
-            </th>
-            <td className={`dirLtr ${utilStyles['text-center']}`}>
-              {moment(item.created).format('jYYYY/jMM/jDD HH:mm:ss')}
-            </td>
-            <td className={`dirLtr ${utilStyles['text-center']}`}>
-              {' '}
-              {moment(item.updated).format('jYYYY/jMM/jDD HH:mm:ss')}
-            </td>
-            <td className={`dirLtr ${utilStyles['text-center']}`}>
-              {formatBytes(item.size)}
-            </td>
-            <td className={`${utilStyles['text-center']}`}>
-              {item.isPublic ? (
-                <FontAwesomeIcon icon={faGlobe} />
-              ) : (
-                <FontAwesomeIcon icon={faKey} />
-              )}
-            </td>
-          </tr>
-        ))}
+        {pages.map((page) => {
+          const _data = page?.result?.list ? page?.result?.list : page?.result;
+          return _data.map((item, index) => (
+            <tr key={index} ref={(ref) => (slectedRef.current[index] = ref)}>
+              <th
+                scope='row'
+                onClick={() => {
+                  if (!item.extension && !item.isPublic) return;
+                  if (
+                    slectedRef.current[index]?.style.backgroundColor ===
+                    'cornflowerblue'
+                  ) {
+                    slectedRef.current[index]!.style!.backgroundColor =
+                      'rgb(250,250,250)';
+                  } else {
+                    slectedRef.current.map(
+                      (item) =>
+                        (item!.style!.backgroundColor = 'rgb(250,250,250)')
+                    );
+                    slectedRef.current[index]!.style!.backgroundColor =
+                      'cornflowerblue';
+                    if (onSelect) onSelect(item);
+                  }
+                }}
+                style={{ cursor: 'pointer' }}
+                onDoubleClick={() => {
+                  if (TabTypes.SearchList) {
+                    setSearchText('');
+                  }
+                  item.extension ? null : setHash(item.hash);
+                }}
+              >
+                {brifStr(item.name)}
+              </th>
+              <td className={`dirLtr ${utilStyles['text-center']}`}>
+                {moment(item.created).format('jYYYY/jMM/jDD HH:mm:ss')}
+              </td>
+              <td className={`dirLtr ${utilStyles['text-center']}`}>
+                {' '}
+                {moment(item.updated).format('jYYYY/jMM/jDD HH:mm:ss')}
+              </td>
+              <td className={`dirLtr ${utilStyles['text-center']}`}>
+                {formatBytes(item.size)}
+              </td>
+              <td className={`${utilStyles['text-center']}`}>
+                {item.isPublic ? (
+                  <FontAwesomeIcon icon={faGlobe} />
+                ) : (
+                  <FontAwesomeIcon icon={faKey} />
+                )}
+              </td>
+            </tr>
+          ));
+        })}
       </tbody>
     </Table>
   );

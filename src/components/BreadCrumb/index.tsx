@@ -1,5 +1,5 @@
 import styles from './style.module.scss';
-import utilStyles from "../../sass/style.module.scss";
+import utilStyles from '../../sass/style.module.scss';
 
 import React, { useContext } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -33,29 +33,37 @@ const index = () => {
         >
           همه فایل ها{' '}
         </span>
-        {breadCrumb.reverse().map((item, index) => (
-          <span
-            className={classnames(
-              { [styles['bread-crumb__item']]: !item?.disabled },
-              {
-                [styles['bread-crumb__item--disabled']]: item?.disabled
-              }
-            )}
-            key={index}
-            onClick={() => {
-              // for after search with click go to file tab
-              if (TabTypes.SearchList) {
-                setSearchText('');
-              }
-              item?.disabled ? null : setCurrentHash(item.hash);
-            }}
-          >
-            <FontAwesomeIcon icon={faAngleLeft} className={utilStyles['px-2']} />
-            <span>{item?.name}</span>
-          </span>
-        ))}
+        {breadCrumb
+          ?.reverse()
+          ?.filter((item, index) =>
+            item?.attributes ? item?.attributes[0] !== 'ROOT_FOLDER' : true
+          )
+          ?.map((item, index) => (
+            <span
+              className={classnames(
+                { [styles['bread-crumb__item']]: !item?.disabled },
+                {
+                  [styles['bread-crumb__item--disabled']]: item?.disabled
+                }
+              )}
+              key={index}
+              onClick={() => {
+                // for after search with click go to file tab
+                if (!item?.disabled && TabTypes.SearchList) {
+                  setSearchText('');
+                }
+                item?.disabled ? null : setCurrentHash(item.hash);
+              }}
+            >
+              <FontAwesomeIcon
+                icon={faAngleLeft}
+                className={utilStyles['px-2']}
+              />
+              <span>{item?.name}</span>
+            </span>
+          ))}
       </div>
-      <div className={styles['bread-crumb__copyright']}>copy right</div>
+      {/* <div className={styles['bread-crumb__copyright']}>copy right</div> */}
     </div>
   );
 };

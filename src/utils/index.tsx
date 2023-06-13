@@ -52,7 +52,7 @@ const resultServ = (res, message) => {
   }
 };
 
-const brifStr = (str: string, length: number = 20): string => {
+const brifStr = (str: string = '', length: number = 20): string => {
   return str.length >= length ? str.substr(0, length) + ' ...' : str;
 };
 

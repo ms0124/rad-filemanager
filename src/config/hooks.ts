@@ -1,8 +1,9 @@
-import { useQuery, useMutation } from 'react-query';
-import { queryClient } from './config';
+import { useQuery, useMutation, useInfiniteQuery } from 'react-query';
+import { queryClient, PAGE_SIZE } from './config';
 import * as api from './api';
-import { useContext } from 'react';
+import { useContext, useState, useEffect } from 'react';
 import { Context } from '../store';
+import { objectToQueryString } from '../utils/';
 
 /************************************* */
 /********* get Header ***************/
@@ -40,11 +41,32 @@ export const useGetFolderContent = (hash: string) => {
 
 export const useGetFolderContentChildren = (
   hash: string,
-  query: string = ''
+  query: string = '',
+  headers: any
 ) => {
-  return useQuery(
-    ['folderContentChildren', { headers: getHeader(false), hash, query }],
-    ({ queryKey }) => api.getFolderContentChildren(queryKey[1])
+  return useInfiniteQuery(
+    ['folderContentChildren', hash],
+    ({ pageParam = { size: PAGE_SIZE, offset: 0 }, queryKey }) => {
+      return api.getFolderContentChildren({
+        headers,
+        hash: queryKey[1],
+        query: objectToQueryString(pageParam)
+      });
+    },
+    {
+      getNextPageParam: (lastPage, allPages) => {
+        const total = lastPage?.count ? lastPage?.count : 0;
+        let page = allPages.length === 0 ? 1 : allPages.length;
+        const offset = PAGE_SIZE * page;
+        if (offset >= total) {
+          return undefined;
+        }
+        return {
+          size: PAGE_SIZE,
+          offset: offset
+        };
+      }
+    }
   );
 };
 
@@ -62,7 +84,7 @@ export const useCreateNewFolder = () => {
     onSuccess: (data, variables, context) => {
       const { parentHash } = variables;
       queryClient.refetchQueries({
-        queryKey: ['folderContentChildren', { hash: parentHash, headers }]
+        queryKey: ['folderContentChildren', parentHash]
       });
     }
   });
@@ -76,7 +98,7 @@ export const useDeleteFileAndFolder = (folderHash) => {
     onSuccess: (_, variables) => {
       const { hash } = variables;
       queryClient.refetchQueries({
-        queryKey: ['folderContentChildren', { hash: folderHash, headers }]
+        queryKey: ['folderContentChildren', folderHash]
       });
     }
   });
@@ -89,7 +111,7 @@ export const useRenameFileAndFolder = (folderHash) => {
       api.renameFileAndFolder({ headers, ...variables }),
     onSuccess: (_, variables) => {
       queryClient.refetchQueries({
-        queryKey: ['folderContentChildren', { hash: folderHash, headers }]
+        queryKey: ['folderContentChildren', folderHash]
       });
     }
   });
@@ -102,7 +124,7 @@ export const useCopy = (folderHash) => {
       api.copy({ headers, ...variables }),
     onSuccess: (_, variables) => {
       queryClient.refetchQueries({
-        queryKey: ['folderContentChildren', { hash: folderHash, headers }]
+        queryKey: ['folderContentChildren', folderHash]
       });
     }
   });
@@ -115,18 +137,37 @@ export const useCut = (folderHash) => {
       api.cut({ headers, ...variables }),
     onSuccess: (_, variables) => {
       queryClient.refetchQueries({
-        queryKey: ['folderContentChildren', { hash: folderHash, headers }]
+        queryKey: ['folderContentChildren', folderHash]
       });
     }
   });
 };
 
-export const useArchiveList = (query: string) => {
-  return useQuery(
-    ['archiveList', { headers: getHeader(false), query }],
-    ({ queryKey }) => api.getArchiveList(queryKey[1])
+export const useArchiveList = (headers: any) => {
+  return useInfiniteQuery(['archiveList'],
+  ({ pageParam = { size: PAGE_SIZE, offset: 0 } }) => {
+    return api.getArchiveList({
+      headers,
+      query: objectToQueryString(pageParam)
+    });
+  },
+  {
+    getNextPageParam: (lastPage, allPages) => {
+      const total = lastPage?.count ? lastPage?.count : 0;
+      let page = allPages.length === 0 ? 1 : allPages.length;
+      const offset = PAGE_SIZE * page;
+      if (offset >= total) {
+        return undefined;
+      }
+      return {
+        size: PAGE_SIZE,
+        offset: offset
+      };
+    }
+  }
   );
 };
+
 
 export const useArchiveDelete = (folderHash) => {
   const headers = getHeader(false);
@@ -158,4 +199,18 @@ export const useSearchList = (query: string) => {
     ['searchList', { headers: getHeader(false), query }],
     ({ queryKey }) => api.search(queryKey[1])
   );
+};
+
+export const useDebounce = (value, delay) => {
+  const [debouncedValue, setDebouncedValue] = useState(value);
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedValue(value);
+    }, delay);
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [value, delay]);
+
+  return debouncedValue;
 };

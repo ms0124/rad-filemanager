@@ -146,14 +146,14 @@ const MenuTools: React.FunctionComponent<IProps> = ({
           {/* <MenuItem title={'پخش ویدئو'} icon={faPlayCircle} />
           <MenuItem title='اطلاعات فایل' icon={faCircleInfo} /> */}
           <CheckPermissions permissions={['download']}>
-            <MenuItem
+            {item?.extension && <MenuItem
               clickHandler={() => clickHandler(OperationTypes.Download)}
               title='دانلود فایل'
               icon={faDownload}
               type={OperationTypes.Download}
-            />
+            />}
           </CheckPermissions>
-          <DropdownItem cssModule={getBs()} divider />
+          {item.extension && <DropdownItem cssModule={getBs()} divider />}
           <CheckPermissions permissions={['rename']}>
             <MenuItem
               clickHandler={() => clickHandler(OperationTypes.Rename)}

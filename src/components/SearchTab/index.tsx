@@ -6,16 +6,16 @@ import { Loading, objectToQueryString } from '../../utils/index';
 import Row from '../StateColumnList/row';
 import { Context } from '../../store/index';
 import Column from '../StateColumnList/column';
-import { useSearchList } from '../../config/hooks';
+import { useSearchList, useDebounce } from '../../config/hooks';
 
 interface IProps {}
 
 const SearchTab: React.FunctionComponent<IProps> = () => {
   const { isList, setCurrentHash, setBreadCrumb, searchText } =
     useContext(Context);
-
+  const debonceSearch = useDebounce(searchText, 500);
   const { data, isLoading } = useSearchList(
-    objectToQueryString({ title: searchText, desc: true })
+    objectToQueryString({ title: debonceSearch, desc: true })
   );
 
   useEffect(() => {
@@ -29,21 +29,22 @@ const SearchTab: React.FunctionComponent<IProps> = () => {
   //   listData = data.result;
   // }
 
-  const listData =
+  let pagesArray: any = [ { result: { list: [] } } ];
+  pagesArray[0].result.list =
     data && data?.result && Array.isArray(data.result) ? data.result : [];
 
   return (
     <React.Fragment>
-      {listData.length ? (
+      {pagesArray[0].result.list.length && !isLoading ? (
         isList ? (
           <Column
-            list={listData}
+            pages={pagesArray}
             setHash={setCurrentHash}
             tabType={TabTypes.FileList}
           />
         ) : (
           <Row
-            list={listData}
+            pages={pagesArray}
             setHash={setCurrentHash}
             tabType={TabTypes.FileList}
           />

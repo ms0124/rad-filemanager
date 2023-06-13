@@ -1,61 +1,62 @@
+import utilStyles from '../../sass/style.module.scss';
 import React, {
   FunctionComponent,
   useContext,
   useEffect,
   useState
 } from 'react';
+import { useInView } from 'react-intersection-observer';
 
 import Row from '../StateColumnList/row';
 import { Context } from '../../store/index';
 import Column from '../StateColumnList/column';
 import Empty from '../StateColumnList/empty';
 
-import { useArchiveList } from '../../config/hooks';
+import { useArchiveList, getHeader } from '../../config/hooks';
 import { Loading, objectToQueryString } from '../../utils/';
 import { TabTypes } from '../../config/types';
+import Empety from '../StateColumnList/empty';
 
-interface IProps {
-  setTotal: (val: number) => void;
-  offset: number;
-}
+interface IProps {}
 
-const ArchiveTab: FunctionComponent<IProps> = ({ setTotal, offset }) => {
+const ArchiveTab: FunctionComponent<IProps> = () => {
   const { isList, setCurrentHash } = useContext(Context);
-  const [listData, setListData] = useState<any>([]);
-
-  const { data, isLoading } = useArchiveList(
-    objectToQueryString({ offset: offset, size: 50 })
-  );
+  // const [listData, setListData] = useState<any>([]);
+  const { ref, inView } = useInView();
+  let { data, isLoading, isFetching, fetchNextPage, hasNextPage } =
+    useArchiveList(getHeader(false));
 
   useEffect(() => {
-    if (data && data.count) setTotal(data.count);
-    if (data) {
-      const _result = data?.result ? data?.result : [];
-      setListData((prev) => [...prev, ..._result]);
+    if (inView && hasNextPage) {
+      fetchNextPage();
     }
-  }, [data]);
+  }, [inView, hasNextPage]);
 
-  // const listData: any = data?.result ? data?.result : [];
   return (
     <React.Fragment>
-      {listData.length > 0 ? (
-        isList ? (
-          <Column
-            list={listData}
-            setHash={setCurrentHash}
-            tabType={TabTypes.ArchiveList}
-          />
-        ) : (
-          <Row
-            list={listData}
-            setHash={setCurrentHash}
-            tabType={TabTypes.ArchiveList}
-          />
-        )
+      {data?.pages && data?.pages?.length > 0 ? (
+        <React.Fragment>
+          {isList ? (
+            <Column
+              pages={data?.pages}
+              setHash={setCurrentHash}
+              tabType={TabTypes.ArchiveList}
+            />
+          ) : (
+            <Row
+              pages={data?.pages}
+              setHash={setCurrentHash}
+              tabType={TabTypes.ArchiveList}
+            />
+          )}
+          <div className={utilStyles['mb-4']} ref={ref}>
+            {isFetching ? <Loading /> : '.'}
+          </div>
+        </React.Fragment>
       ) : isLoading ? (
         <Loading wholePage />
       ) : (
-        <Empty />
+        <Empety />
       )}
     </React.Fragment>
   );

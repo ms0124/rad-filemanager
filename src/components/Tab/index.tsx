@@ -31,14 +31,6 @@ interface Props {}
 const Tab: FunctionComponent<Props> = () => {
   const { searchText } = useContext(Context);
   const [activeTab, setActiveTab] = useState(TabTypes.FileList);
-  const [page, setPage] = useState<{ archive: number; file: number }>({
-    archive: 1,
-    file: 1
-  });
-  const [offset, setOffSet] = useState<{ archive: number; file: number }>({
-    archive: 0,
-    file: 0
-  });
 
   const { config, setCurrentTab, currentTab } = useContext(Context);
 
@@ -129,34 +121,6 @@ const Tab: FunctionComponent<Props> = () => {
         activeTab={activeTab}
         style={{ marginTop: 0, overflow: 'scroll' }}
         cssModule={getBs()}
-        onScroll={(e) => {
-          const { target } = e;
-          const scrollHeight: number = (target as HTMLDivElement).scrollHeight;
-          const offsetHeight: number = (target as HTMLDivElement).offsetHeight;
-          const scrollTop: number = (target as HTMLDivElement).scrollTop;
-          if (activeTab === TabTypes.ArchiveList) {
-            if (
-              offsetHeight + scrollTop >= scrollHeight &&
-              2 * PAGE_SIZE * (page.archive - 1) <= total.current
-            ) {
-              let _offset =
-                page.archive === 1 ? PAGE_SIZE : PAGE_SIZE * (page.archive - 1);
-              const _page = page.archive + 1;
-              setPage((prev) => ({ ...prev, archive: _page }));
-              setOffSet((prev) => ({ ...prev, archive: _offset }));
-            }
-          } else if (activeTab === TabTypes.FileList)
-            if (
-              offsetHeight + scrollTop >= scrollHeight &&
-              2 * PAGE_SIZE * (page.file - 1) <= total.current
-            ) {
-              let _offset =
-                page.file === 1 ? PAGE_SIZE : PAGE_SIZE * (page.file - 1);
-              const _page = page.file + 1;
-              setPage((prev) => ({ ...prev, file: _page }));
-              setOffSet((prev) => ({ ...prev, file: _offset }));
-            }
-        }}
       >
         <TabPane
           tabId={TabTypes.FileList}
@@ -164,7 +128,8 @@ const Tab: FunctionComponent<Props> = () => {
           cssModule={getBs()}
         >
           <CheckPermissions permissions={['folder_children']} showMessage>
-            <FileTab setTotal={setTotal} offset={offset.file} />
+            <FileTab setTotal={setTotal}
+            />
           </CheckPermissions>
         </TabPane>
         <TabPane
@@ -174,7 +139,7 @@ const Tab: FunctionComponent<Props> = () => {
         >
           {activeTab === TabTypes.ArchiveList ? (
             <CheckPermissions permissions={['archive_list']} showMessage>
-              <ArchiveTab setTotal={setTotal} offset={offset.archive} />
+              <ArchiveTab />
             </CheckPermissions>
           ) : (
             ''
