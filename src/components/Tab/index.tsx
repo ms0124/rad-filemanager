@@ -37,7 +37,10 @@ const Tab: FunctionComponent<Props> = () => {
   // const total = useRef<{ archive: number; file: number }>({archive:0, file:0});
   const total = useRef<number>(0);
 
-  const handleTab = (tab: number) => setActiveTab(tab);
+  const handleTab = (tab: number) => {
+    setCurrentTab(tab);
+    setActiveTab(tab);
+  };
 
   const setTotal = (val) => (total.current = val);
 
@@ -51,6 +54,7 @@ const Tab: FunctionComponent<Props> = () => {
       setCurrentTab(TabTypes.FileList);
     }
   }, [searchText]);
+console.log(styles);
 
   return (
     <div>
@@ -59,6 +63,8 @@ const Tab: FunctionComponent<Props> = () => {
         className={`${styles['fix-top']} ${styles['nav-wrapper']}`}
         cssModule={getBs()}
       >
+        {console.log({sss:styles['nav-wrapper__item']})}
+        
         <NavItem
           cssModule={getBs()}
           className={`${styles['nav-wrapper__tab-item']} ${styles['nav-wrapper__item']}`}
@@ -128,8 +134,7 @@ const Tab: FunctionComponent<Props> = () => {
           cssModule={getBs()}
         >
           <CheckPermissions permissions={['folder_children']} showMessage>
-            <FileTab setTotal={setTotal}
-            />
+            <FileTab setTotal={setTotal} />
           </CheckPermissions>
         </TabPane>
         <TabPane

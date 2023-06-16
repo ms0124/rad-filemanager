@@ -5,7 +5,7 @@
   color: #737373;
   max-height: 50px;
   border-bottom: 1px solid #e1e1e1;
-
+  padding-right: 15px;
   &__text {
     margin-left: 12px;
   }
@@ -31,18 +31,7 @@
       padding-bottom: 8px;
     }
   }
-  .sort-dropdown {
-    border: 1px solid #b5b5b5;
-    border-radius: 8px;
-    margin-right: 8px;
-    height: 35px;
-    margin-top: auto;
-    margin-bottom: auto;
-    button {
-      padding-bottom: 0;
-      color: #b5b5b5;;
-    }
-  }
+  
 
   .user-storage {
     display: flex;
@@ -69,7 +58,21 @@
   }
 }
 
-
+.sort-dropdown {
+  border: 1px solid #b5b5b5;
+  border-radius: 8px;
+  margin-right: 8px;
+  height: 35px;
+  margin-top: auto;
+  margin-bottom: auto;
+  &__item{
+    text-align: right;
+  }
+  button {
+    padding-bottom: 0;
+    color: #b5b5b5;;
+  }
+}
 
 .fix-top {
   position: fixed;

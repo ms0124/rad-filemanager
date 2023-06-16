@@ -78,7 +78,7 @@ const Index: React.FC<IProps> = ({
     <Modal
       isOpen={isOpen}
       toggle={toggle}
-      centered={true}
+      // centered={true}
       className={`${styles['modal-operation']}`}
       cssModule={getBs()}
     >

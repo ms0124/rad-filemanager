@@ -1,7 +1,8 @@
 import styles from './style.module.scss';
+import utilStyles from '../../sass/style.module.scss';
 
 import React, { FunctionComponent, useState, useContext } from 'react';
-import { InputGroup, InputGroupText, Input } from 'reactstrap';
+import { InputGroup, InputGroupText, Input, InputGroupAddon } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSearch } from '@fortawesome/free-solid-svg-icons';
 import { Context } from '../../store/index';
@@ -28,10 +29,11 @@ const Search: FunctionComponent<Props> = () => {
         >
           <FontAwesomeIcon icon={faSearch} />
         </InputGroupText>
+
         <Input
           cssModule={getBs()}
           value={searchText}
-          className={styles['search-wrapper__input']}
+          className={`${styles['search-wrapper__input']}`}
           placeholder='جستجو'
           onChange={(event) => {
             const { value } = event.target;

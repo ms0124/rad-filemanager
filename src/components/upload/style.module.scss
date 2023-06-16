@@ -2,11 +2,29 @@ $color-orange: #ff9b3f;
 $color-gray: #b5b5b5;
 
 .btn-upload {
-  background-color: $color-orange  !important;
+  background-color: $color-orange !important;
   color: #fff;
   &:focus {
     background-color: $color-orange !important;
     color: #fff;
+  }
+}
+
+.upload-toast {
+  width: 400px;
+  position: fixed;
+  bottom: 25px;
+  left: 25px;
+  &__header{
+    background-color: #6184ff;
+    h5{
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+      color: white;
+    }
+    
   }
 }
 

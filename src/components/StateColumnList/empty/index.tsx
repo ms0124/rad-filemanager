@@ -10,8 +10,8 @@ interface IProps {
 const Empty: FunctionComponent<IProps> = ({ text = '' }) => {
   return (
     <React.Fragment>
-      <RightClick query='.empty' />
-      <div className={styles['empty']}>{text ? text : 'این پوشه خالیست!'}</div>
+      <RightClick query='#rightclick' />
+      <div id="rightclick" className={styles['empty']}>{text ? text : 'این پوشه خالیست!'}</div>
     </React.Fragment>
   );
 };

@@ -59,7 +59,7 @@
     // color: red;
     user-select: auto;
     &.fas.fa-caret-up::before{
-      content: "";
+      content: "" !important;
     }
   }
   &__img {

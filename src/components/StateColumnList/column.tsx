@@ -28,7 +28,7 @@ const Column: React.FunctionComponent<IProps> = ({
   setHash,
   tabType
 }) => {
-  const { setSearchText, onSelect } = useContext(Context);
+  const { setSearchText, onSelect, currentTab } = useContext(Context);
   const slectedRef = useRef<(HTMLDivElement | null)[]>([]);
 
   return (
@@ -49,7 +49,7 @@ const Column: React.FunctionComponent<IProps> = ({
                   if (!onSelect) return; /// if onSelect undefined this function will dont work
                   if (!item.extension && !item.isPublic) return; // for folder dont select
                   e.stopPropagation();
-                  
+
                   if (
                     slectedRef.current[index]?.style?.backgroundColor ===
                     'cornflowerblue'
@@ -70,6 +70,8 @@ const Column: React.FunctionComponent<IProps> = ({
                   if (TabTypes.SearchList) {
                     setSearchText('');
                   }
+                  if (currentTab == TabTypes.ArchiveList) return;
+
                   item.extension ? null : setHash(item.hash);
                 }}
                 className={styles['col']}

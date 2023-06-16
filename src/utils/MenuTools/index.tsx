@@ -127,7 +127,7 @@ const MenuTools: React.FunctionComponent<IProps> = ({
         <DropdownToggle
           cssModule={getBs()}
           tag='div'
-          className='col__icon-3 fas fa-caret-up'
+          className={styles['col__icon-3'] + 'col__icon-3'}
         >
           <FontAwesomeIcon
             onClick={toggle}
@@ -146,12 +146,14 @@ const MenuTools: React.FunctionComponent<IProps> = ({
           {/* <MenuItem title={'پخش ویدئو'} icon={faPlayCircle} />
           <MenuItem title='اطلاعات فایل' icon={faCircleInfo} /> */}
           <CheckPermissions permissions={['download']}>
-            {item?.extension && <MenuItem
-              clickHandler={() => clickHandler(OperationTypes.Download)}
-              title='دانلود فایل'
-              icon={faDownload}
-              type={OperationTypes.Download}
-            />}
+            {item?.extension && (
+              <MenuItem
+                clickHandler={() => clickHandler(OperationTypes.Download)}
+                title='دانلود فایل'
+                icon={faDownload}
+                type={OperationTypes.Download}
+              />
+            )}
           </CheckPermissions>
           {item.extension && <DropdownItem cssModule={getBs()} divider />}
           <CheckPermissions permissions={['rename']}>

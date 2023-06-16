@@ -1,5 +1,5 @@
 import styles from './style.module.scss';
-import utilStyles from "../../sass/style.module.scss";
+import utilStyles from '../../sass/style.module.scss';
 
 import React, {
   FunctionComponent,
@@ -21,7 +21,11 @@ import { queryClient } from '../../config/config';
 
 import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
-import { getHeader } from '../../config/hooks';
+import {
+  getHeader,
+  useGetFolderContent,
+  useGetFolderContentChildren
+} from '../../config/hooks';
 import { getBs } from '../../utils/index';
 
 interface Props {
@@ -69,8 +73,8 @@ const FilesDragAndDrop: FunctionComponent<Props> = ({ modal, toggleModal }) => {
     formData.append('folderHash', currentHash);
     formData.append('isPublic', 'true');
 
-    upload(formData, false, (e) => onUploadProgress(e, file), headers).then(
-      (res) => {
+    upload(formData, false, (e) => onUploadProgress(e, file), headers)
+      .then((res) => {
         // if progress is 100 percent or more progress is complete.
         const progressComplete = Object.values(progressRef.current).every(
           (item: number) => item >= 100
@@ -85,8 +89,12 @@ const FilesDragAndDrop: FunctionComponent<Props> = ({ modal, toggleModal }) => {
           setProgress({});
           toggleModal();
         }
-      }
-    );
+      })
+      .finally(() => {
+        queryClient.refetchQueries({
+          queryKey: ['folderContentChildren', currentHash]
+        });
+      });
   };
   const onUploadProgress = (progressEvent, file) => {
     const { loaded, total, progress } = progressEvent;
@@ -143,16 +151,17 @@ const FilesDragAndDrop: FunctionComponent<Props> = ({ modal, toggleModal }) => {
       cssModule={getBs()}
       isOpen={modal}
       toggle={toggleModal}
-      className={
-        isUpload
-          ? `${styles['modal-container']} ${styles['upload-toast']}`
-          : `${styles['modal-container']}`
-      }
-      centered={true}
+      contentClassName={isUpload ? styles['upload-toast'] : ''}
+      className={styles['modal-container']}
+      size='sm'
+      // centered={true}
     >
       {isUpload ? (
         <React.Fragment>
-          <ModalHeader cssModule={getBs()}>
+          <ModalHeader
+            cssModule={getBs()}
+            className={isUpload ? styles['upload-toast__header'] + "   header " : ''}
+          >
             <span>بارگذاری</span>
             <FontAwesomeIcon
               icon={faTimes}
@@ -165,9 +174,7 @@ const FilesDragAndDrop: FunctionComponent<Props> = ({ modal, toggleModal }) => {
               Object.values(fileList).map((item) => {
                 return (
                   <div
-                    className={`${utilStyles['d-flex']} ${
-                      utilStyles['justify-content-between']
-                    }`}
+                    className={`${utilStyles['d-flex']} ${utilStyles['justify-content-between']}`}
                   >
                     <span>{item.name}</span>
                     <div style={{ width: 25, height: 25 }}>
@@ -208,7 +215,7 @@ const FilesDragAndDrop: FunctionComponent<Props> = ({ modal, toggleModal }) => {
               onChange={handleOnChangesInputFiles}
             />
             <FontAwesomeIcon icon={faCloudUploadAlt} size='8x' />
-            <div>فایل مورد نظر را در اینجا رها کنید.</div>
+            <h5>فایل مورد نظر را در اینجا رها کنید.</h5>
           </ModalBody>
         </div>
       )}
