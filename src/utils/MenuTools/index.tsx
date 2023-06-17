@@ -127,7 +127,7 @@ const MenuTools: React.FunctionComponent<IProps> = ({
         <DropdownToggle
           cssModule={getBs()}
           tag='div'
-          className={styles['col__icon-3'] + 'col__icon-3'}
+          className={styles['col__icon-3'] + ' col__icon-3'}
         >
           <FontAwesomeIcon
             onClick={toggle}
@@ -141,7 +141,7 @@ const MenuTools: React.FunctionComponent<IProps> = ({
           cssModule={getBs()}
           {...props}
           end
-          className={styles['dropdown-menu-wrapper']}
+          className={styles['dropdown-menu-wrapper'] }
         >
           {/* <MenuItem title={'پخش ویدئو'} icon={faPlayCircle} />
           <MenuItem title='اطلاعات فایل' icon={faCircleInfo} /> */}
@@ -150,7 +150,7 @@ const MenuTools: React.FunctionComponent<IProps> = ({
               <MenuItem
                 clickHandler={() => clickHandler(OperationTypes.Download)}
                 title='دانلود فایل'
-                icon={faDownload}
+                icon={'rad-filemanager_arrow-up'}
                 type={OperationTypes.Download}
               />
             )}
@@ -160,7 +160,7 @@ const MenuTools: React.FunctionComponent<IProps> = ({
             <MenuItem
               clickHandler={() => clickHandler(OperationTypes.Rename)}
               title='تغییر نام'
-              icon={faEdit}
+              icon={'rad-filemanager_call-answer'}
               enTitle='rename'
             />
           </CheckPermissions>
@@ -168,7 +168,7 @@ const MenuTools: React.FunctionComponent<IProps> = ({
             <MenuItem
               clickHandler={() => clickHandler(OperationTypes.Copy)}
               title='کپی'
-              icon={faCopy}
+              icon={'rad-filemanager_arrow-right'}
               enTitle='copy'
             />
           </CheckPermissions>
@@ -176,7 +176,7 @@ const MenuTools: React.FunctionComponent<IProps> = ({
             <MenuItem
               clickHandler={() => clickHandler(OperationTypes.Cut)}
               title='جابه‌جایی'
-              icon={faArrowsAlt}
+              icon={'rad-filemanager_dislike'}
               enTitle='move'
             />
           </CheckPermissions>
@@ -184,7 +184,7 @@ const MenuTools: React.FunctionComponent<IProps> = ({
             <MenuItem
               clickHandler={() => clickHandler(OperationTypes.Remove)}
               title='حذف'
-              icon={faTrashAlt}
+              icon={'rad-filemanager_left-quotes-sign'}
               enTitle='delete'
             />
           </CheckPermissions>
@@ -209,7 +209,7 @@ const MenuTools: React.FunctionComponent<IProps> = ({
                       clickHandler(OperationTypes.RemoveArchive)
                     }
                     title='حذف دائمی'
-                    icon={faTrashAlt}
+                    fontAwesomeIcon={faTrashAlt}
                   />
                 </CheckPermissions>
                 <CheckPermissions permissions={['drives_archive_restore']}>
@@ -218,7 +218,7 @@ const MenuTools: React.FunctionComponent<IProps> = ({
                       clickHandler(OperationTypes.RestoreArchive)
                     }
                     title='بازیابی'
-                    icon={faTrashAlt}
+                    fontAwesomeIcon={faTrashAlt}
                   />
                 </CheckPermissions>
               </CheckPermissions>

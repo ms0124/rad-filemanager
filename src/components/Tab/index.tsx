@@ -54,7 +54,6 @@ const Tab: FunctionComponent<Props> = () => {
       setCurrentTab(TabTypes.FileList);
     }
   }, [searchText]);
-console.log(styles);
 
   return (
     <div>

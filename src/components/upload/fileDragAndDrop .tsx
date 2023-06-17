@@ -153,14 +153,16 @@ const FilesDragAndDrop: FunctionComponent<Props> = ({ modal, toggleModal }) => {
       toggle={toggleModal}
       contentClassName={isUpload ? styles['upload-toast'] : ''}
       className={styles['modal-container']}
-      size='sm'
+      // size='lg'
       // centered={true}
     >
       {isUpload ? (
         <React.Fragment>
           <ModalHeader
             cssModule={getBs()}
-            className={isUpload ? styles['upload-toast__header'] + "   header " : ''}
+            className={
+              isUpload ? styles['upload-toast__header'] + '   header ' : ''
+            }
           >
             <span>بارگذاری</span>
             <FontAwesomeIcon
@@ -214,7 +216,10 @@ const FilesDragAndDrop: FunctionComponent<Props> = ({ modal, toggleModal }) => {
               style={{ display: 'none', width: '100%', height: '100%' }}
               onChange={handleOnChangesInputFiles}
             />
-            <FontAwesomeIcon icon={faCloudUploadAlt} size='8x' />
+            <i
+              style={{ fontSize: '90px' }}
+              className={'rad-filemanager-icon rad-filemanager_like_1'}
+            />
             <h5>فایل مورد نظر را در اینجا رها کنید.</h5>
           </ModalBody>
         </div>

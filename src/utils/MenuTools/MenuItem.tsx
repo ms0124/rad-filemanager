@@ -1,6 +1,6 @@
 import styles from './style.module.scss';
-import utilStyles from "../../sass/style.module.scss"; 
-  
+import utilStyles from '../../sass/style.module.scss';
+
 import React from 'react';
 import { DropdownItem } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -8,7 +8,8 @@ import * as FontAwesomeIconTypes from '@fortawesome/fontawesome-common-types';
 import { OperationTypes } from '../../config/types';
 import { getBs } from '../../utils/index';
 interface IProps {
-  icon: FontAwesomeIconTypes.IconDefinition;
+  fontAwesomeIcon?: FontAwesomeIconTypes.IconDefinition;
+  icon?: string;
   title: string;
   enTitle?: string;
   clickHandler?: () => void;
@@ -19,6 +20,7 @@ const MenuItem: React.FunctionComponent<IProps> = ({
   icon,
   title,
   enTitle,
+  fontAwesomeIcon,
   clickHandler,
   type
 }) => {
@@ -32,9 +34,17 @@ const MenuItem: React.FunctionComponent<IProps> = ({
         target='_blank'
         className={`${styles['dropdown-menu-wrapper__item']}`}
       >
-        <FontAwesomeIcon icon={icon} className={utilStyles['ms-1']} />
+        {fontAwesomeIcon ? (
+          <FontAwesomeIcon icon={fontAwesomeIcon} className={utilStyles['ms-1']} />
+        ) : (
+          <i className={`rad-filemanager-icon ${icon}`} />
+        )}
         <span>{title}</span>
-        {enTitle ? <span className={utilStyles['me-auto']}>{enTitle}</span> : ''}
+        {enTitle ? (
+          <span className={`${utilStyles['me-auto']} ${styles['dropdown-menu-wrapper__item--en']}`}>{enTitle}</span>
+        ) : (
+          ''
+        )}
       </DropdownItem>
     </React.Fragment>
   );

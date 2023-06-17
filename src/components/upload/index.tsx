@@ -25,7 +25,9 @@ const Upload = () => {
           className={`${styles['btn-upload']} ${utilStyles['my-auto']}`}
           onClick={handleModalToggle}
         >
-          <FontAwesomeIcon icon={faCloudUploadAlt} /> بارگذاری
+          <i className={'rad-filemanager-icon rad-filemanager_like_1 ' + utilStyles['ps-1']}/>
+          {/* <FontAwesomeIcon icon={faCloudUploadAlt} /> */}
+         <span> بارگذاری</span>
         </Button>
       </CheckPermissions>
       {modal && (

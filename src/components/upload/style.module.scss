@@ -4,6 +4,7 @@ $color-gray: #b5b5b5;
 .btn-upload {
   background-color: $color-orange !important;
   color: #fff;
+  border: none;
   &:focus {
     background-color: $color-orange !important;
     color: #fff;
@@ -62,6 +63,11 @@ $color-gray: #b5b5b5;
     border: 2px dashed $color-gray;
     border-radius: 8px;
     text-align: center;
+    color: #737373;
+    i{
+      font-size: 90px !important;
+    }
+
   }
 }
 
@@ -70,4 +76,7 @@ div[role='dialog'] {
   justify-content: end;
   max-width: none;
   margin-left: 20px;
+}
+.iconUpload{
+
 }

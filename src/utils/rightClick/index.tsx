@@ -10,6 +10,7 @@ import Modal from './Modal';
 import { Context } from '../../store/index';
 import { useCopy, useCut } from '../../config/hooks';
 import CheckPermissions from '../../components/CheckPermissions';
+import { getBs } from '../../utils/index';
 
 interface RightClickProps {
   query: string;
@@ -119,28 +120,30 @@ const App: React.FunctionComponent<RightClickProps> = ({ query }) => {
             style={{ top: position.y, left: position.x }}
             className={styles['context-menu']}
           >
-            <Nav vertical>
+            <Nav className={styles['']} cssModule={getBs()} vertical>
               <CheckPermissions permissions={['folder_create']}>
-                <NavItem>
-                  <FontAwesomeIcon
+                <NavItem cssModule={getBs()}>
+                  <i className='rad-filemanager-icon rad-filemanager_close' />
+                  {/* <FontAwesomeIcon
                     icon={faFolder}
                     className={styles['context-menu__icon']}
-                  />
+                  /> */}
                   <span
                     className={styles['context-menu__text']}
                     onClick={() => clickHandler(OperationTypes.NewFolder)}
                   >
-                    پوشه جدید
+                    ایجاد پوشه جدید
                   </span>
                 </NavItem>
               </CheckPermissions>
               {itemHash ? (
                 <CheckPermissions permissions={['copy', 'cut']}>
-                  <NavItem onClick={() => clickHandler(OperationTypes.Paste)}>
-                    <FontAwesomeIcon
+                  <NavItem cssModule={getBs()} onClick={() => clickHandler(OperationTypes.Paste)}>
+                    <i className='rad-filemanager-icon rad-filemanager_flash' />
+                    {/* <FontAwesomeIcon
                       icon={faFolder}
                       className={styles['context-menu__icon']}
-                    />
+                    /> */}
                     <span className={styles['context-menu__text']}>
                       جایگذاری
                     </span>

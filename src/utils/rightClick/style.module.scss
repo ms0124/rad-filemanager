@@ -4,18 +4,21 @@
   z-index: 10;
   box-shadow: 0px 0px 11px 4px #0000001A;
   border-radius: 4px;
-  width: 260px;
+  width: 200px;
   background-color: #fff;
   color: #737373;
   &__icon{
     margin-left: 16px;
   }
   &__text{
-
+    padding-right: 15px;
   }
-  .nav{
+  ul{
     padding: 16px 12px 16px 12px;
-    .nav-item{
+    align-items: start;
+    li{
+      display: flex;
+      align-items: center;
       text-align: right;
       cursor: pointer;
     }
