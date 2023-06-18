@@ -11,6 +11,7 @@ import { Context } from '../../store/index';
 import { useCopy, useCut } from '../../config/hooks';
 import CheckPermissions from '../../components/CheckPermissions';
 import { getBs } from '../../utils/index';
+import { IconFolderPlus, IconPaste } from '../icons';
 
 interface RightClickProps {
   query: string;
@@ -123,7 +124,7 @@ const App: React.FunctionComponent<RightClickProps> = ({ query }) => {
             <Nav className={styles['']} cssModule={getBs()} vertical>
               <CheckPermissions permissions={['folder_create']}>
                 <NavItem cssModule={getBs()}>
-                  <i className='rad-filemanager-icon rad-filemanager_close' />
+                  <IconFolderPlus />
                   {/* <FontAwesomeIcon
                     icon={faFolder}
                     className={styles['context-menu__icon']}
@@ -139,7 +140,7 @@ const App: React.FunctionComponent<RightClickProps> = ({ query }) => {
               {itemHash ? (
                 <CheckPermissions permissions={['copy', 'cut']}>
                   <NavItem cssModule={getBs()} onClick={() => clickHandler(OperationTypes.Paste)}>
-                    <i className='rad-filemanager-icon rad-filemanager_flash' />
+                    <IconPaste />
                     {/* <FontAwesomeIcon
                       icon={faFolder}
                       className={styles['context-menu__icon']}

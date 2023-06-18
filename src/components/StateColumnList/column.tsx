@@ -30,7 +30,7 @@ const Column: React.FunctionComponent<IProps> = ({
 }) => {
   const { setSearchText, onSelect, currentTab } = useContext(Context);
   const slectedRef = useRef<(HTMLDivElement | null)[]>([]);
-
+  
   return (
     <React.Fragment>
       <RightClick query='#rightclick' />
@@ -79,7 +79,7 @@ const Column: React.FunctionComponent<IProps> = ({
               >
                 <div className={classnames(styles['col__img-wrapper'])}>
                   <div className={styles['col__menu-wrapper']}>
-                    <MenuTools item={item} tabType={tabType} />
+                    <MenuTools item={item} tabType={currentTab} />
                   </div>
                   <div className={styles['col__icon-access-wrapper']}>
                     {item.isPublic ? (

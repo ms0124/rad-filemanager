@@ -1,5 +1,4 @@
 import 'react-toastify/dist/ReactToastify.css';
-import "./sass/assets/fonts/icons/css/styles.css"
 
 import ReactDOM from 'react-dom';
 import React, { useState } from 'react';

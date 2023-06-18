@@ -9,7 +9,7 @@ import { OperationTypes } from '../../config/types';
 import { getBs } from '../../utils/index';
 interface IProps {
   fontAwesomeIcon?: FontAwesomeIconTypes.IconDefinition;
-  icon?: string;
+  icon?: React.ReactElement;
   title: string;
   enTitle?: string;
   clickHandler?: () => void;
@@ -37,7 +37,7 @@ const MenuItem: React.FunctionComponent<IProps> = ({
         {fontAwesomeIcon ? (
           <FontAwesomeIcon icon={fontAwesomeIcon} className={utilStyles['ms-1']} />
         ) : (
-          <i className={`rad-filemanager-icon ${icon}`} />
+            icon 
         )}
         <span>{title}</span>
         {enTitle ? (

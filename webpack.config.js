@@ -70,13 +70,13 @@ module.exports = (env, argv) => {
             }
           ]
         },
-        // {
-        //   test: /(bootstrap\.min\.css$)/,
-        //   use: ['url-loader']
-        // },
+        {
+          test: /(bootstrap\.min\.css$)/,
+          use: ['url-loader']
+        },
         // { test: /\.([cm]?ts|tsx)$/, loader: 'ts-loader' },
         {
-          test: /(\.module.scss$)|(\.module.css$)|(bootstrap.min.scss$)|(bootstrap.min.css$)/,
+          test: /(\.module.scss$)|(\.module.css$)|(bootstrap\.min.\scss$)|(bootstrap\.min\.css$)/,
           use: [
             {
               loader: 'style-loader'

@@ -30,6 +30,8 @@ import { useArchiveDelete, useArchiveRestor } from '../../config/hooks';
 import { objectToQueryString } from '../../utils/index';
 import CheckPermissions from '../../components/CheckPermissions';
 import { getBs } from '../../utils/index';
+import { IconCopy,IconMove, IconEdit, IconTrash, IconDownload, IconCircleInfo }  from '../../utils/icons';
+
 
 interface IProps {
   item: { name: string; hash: string; extension: string };
@@ -150,7 +152,7 @@ const MenuTools: React.FunctionComponent<IProps> = ({
               <MenuItem
                 clickHandler={() => clickHandler(OperationTypes.Download)}
                 title='دانلود فایل'
-                icon={'rad-filemanager_arrow-up'}
+                icon={<IconDownload />}
                 type={OperationTypes.Download}
               />
             )}
@@ -160,33 +162,33 @@ const MenuTools: React.FunctionComponent<IProps> = ({
             <MenuItem
               clickHandler={() => clickHandler(OperationTypes.Rename)}
               title='تغییر نام'
-              icon={'rad-filemanager_call-answer'}
+              icon={<IconEdit/>}
               enTitle='rename'
             />
           </CheckPermissions>
           <CheckPermissions permissions={['copy']}>
-            <MenuItem
+             <MenuItem
               clickHandler={() => clickHandler(OperationTypes.Copy)}
               title='کپی'
-              icon={'rad-filemanager_arrow-right'}
+              icon={<IconCopy/>}
               enTitle='copy'
-            />
+            /> 
           </CheckPermissions>
           <CheckPermissions permissions={['cut']}>
-            <MenuItem
+             <MenuItem
               clickHandler={() => clickHandler(OperationTypes.Cut)}
               title='جابه‌جایی'
-              icon={'rad-filemanager_dislike'}
+              icon={<IconMove />}
               enTitle='move'
-            />
+            /> 
           </CheckPermissions>
           <CheckPermissions permissions={['delete']}>
-            <MenuItem
+             <MenuItem
               clickHandler={() => clickHandler(OperationTypes.Remove)}
               title='حذف'
-              icon={'rad-filemanager_left-quotes-sign'}
+              icon={<IconTrash />}
               enTitle='delete'
-            />
+            /> 
           </CheckPermissions>
           {/* <DropdownItem divider />
           <MenuItem
@@ -194,31 +196,32 @@ const MenuTools: React.FunctionComponent<IProps> = ({
             icon={faShareAlt}
             enTitle='share'
           /> */}
+          
           {tabType == TabTypes.ArchiveList ? (
             <React.Fragment>
               <CheckPermissions
                 permissions={[
-                  'drives_archive_delete',
-                  'drives_archive_restore'
+                  'archive_delete',
+                  'archive_restore'
                 ]}
               >
                 <DropdownItem cssModule={getBs()} divider />
-                <CheckPermissions permissions={['drives_archive_delete']}>
+                <CheckPermissions permissions={['archive_delete']}>
                   <MenuItem
                     clickHandler={() =>
                       clickHandler(OperationTypes.RemoveArchive)
                     }
                     title='حذف دائمی'
-                    fontAwesomeIcon={faTrashAlt}
+                    icon={<IconTrash/>}
                   />
                 </CheckPermissions>
-                <CheckPermissions permissions={['drives_archive_restore']}>
+                <CheckPermissions permissions={['archive_restore']}>
                   <MenuItem
                     clickHandler={() =>
                       clickHandler(OperationTypes.RestoreArchive)
                     }
                     title='بازیابی'
-                    fontAwesomeIcon={faTrashAlt}
+                    icon={<IconCircleInfo/>}
                   />
                 </CheckPermissions>
               </CheckPermissions>

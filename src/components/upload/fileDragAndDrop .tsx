@@ -27,6 +27,7 @@ import {
   useGetFolderContentChildren
 } from '../../config/hooks';
 import { getBs } from '../../utils/index';
+import { IconUpload } from '../../utils/icons';
 
 interface Props {
   modal: boolean;
@@ -215,11 +216,8 @@ const FilesDragAndDrop: FunctionComponent<Props> = ({ modal, toggleModal }) => {
               multiple
               style={{ display: 'none', width: '100%', height: '100%' }}
               onChange={handleOnChangesInputFiles}
-            />
-            <i
-              style={{ fontSize: '90px' }}
-              className={'rad-filemanager-icon rad-filemanager_like_1'}
-            />
+              />
+              <IconUpload colorGray size={"100px"}/>
             <h5>فایل مورد نظر را در اینجا رها کنید.</h5>
           </ModalBody>
         </div>

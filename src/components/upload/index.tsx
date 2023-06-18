@@ -9,6 +9,7 @@ import { faCloudUploadAlt } from '@fortawesome/free-solid-svg-icons';
 import FileDragAndDrop from './fileDragAndDrop ';
 import CheckPermissions from '../../components/CheckPermissions/index';
 import { getBs } from '../../utils/index';
+import { IconUpload } from "../../utils/icons"
 
 const Upload = () => {
   const [modal, setModal] = useState(false);
@@ -25,7 +26,7 @@ const Upload = () => {
           className={`${styles['btn-upload']} ${utilStyles['my-auto']}`}
           onClick={handleModalToggle}
         >
-          <i className={'rad-filemanager-icon rad-filemanager_like_1 ' + utilStyles['ps-1']}/>
+          <IconUpload  />
           {/* <FontAwesomeIcon icon={faCloudUploadAlt} /> */}
          <span> بارگذاری</span>
         </Button>
