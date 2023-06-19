@@ -35,13 +35,20 @@ const MenuItem: React.FunctionComponent<IProps> = ({
         className={`${styles['dropdown-menu-wrapper__item']}`}
       >
         {fontAwesomeIcon ? (
-          <FontAwesomeIcon icon={fontAwesomeIcon} className={utilStyles['ms-1']} />
+          <FontAwesomeIcon
+            icon={fontAwesomeIcon}
+            className={utilStyles['ms-1']}
+          />
         ) : (
-            icon 
+          icon
         )}
         <span>{title}</span>
         {enTitle ? (
-          <span className={`${utilStyles['me-auto']} ${styles['dropdown-menu-wrapper__item--en']}`}>{enTitle}</span>
+          <span
+            className={`${utilStyles['me-auto']} ${styles['dropdown-menu-wrapper__item--en']}`}
+          >
+            {enTitle}
+          </span>
         ) : (
           ''
         )}

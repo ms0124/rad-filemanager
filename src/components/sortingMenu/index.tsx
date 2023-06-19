@@ -122,7 +122,7 @@ const SortingMenu: FunctionComponent = () => {
   return (
     <div className={classNames(styles['sorting-menu'])}>
       <Nav cssModule={getBs()} style={{ alignItems: 'center' }}>
-        <NavItem cssModule={getBs()}>
+        {/* <NavItem cssModule={getBs()}>
           <FontAwesomeIcon icon={faSort} />
           <span
             className={classNames(
@@ -163,7 +163,7 @@ const SortingMenu: FunctionComponent = () => {
             styles['divider-vertical'],
             styles['sorting-menu__divider']
           )}
-        />
+        /> */}
         <NavItem
           cssModule={getBs()}
           className={classNames(

@@ -13,9 +13,10 @@ import { faGlobe, faKey } from '@fortawesome/free-solid-svg-icons';
 import MenuTools from '../../utils/MenuTools/';
 import { formatBytes } from '../../utils/index';
 import { RightClick } from '../../utils';
-import { TabTypes } from '../../config/types';
+import { TabTypes, FolderTypes } from '../../config/types';
 import { Context } from '../../store/index';
 import { getBs } from '../../utils/index';
+import DefaultThumnail from './defaultThumbnail/index';
 // import Empty from './empty';
 interface IProps {
   pages: any;
@@ -30,7 +31,7 @@ const Column: React.FunctionComponent<IProps> = ({
 }) => {
   const { setSearchText, onSelect, currentTab } = useContext(Context);
   const slectedRef = useRef<(HTMLDivElement | null)[]>([]);
-  
+
   return (
     <React.Fragment>
       <RightClick query='#rightclick' />
@@ -47,7 +48,7 @@ const Column: React.FunctionComponent<IProps> = ({
                 ref={(ref) => (slectedRef.current[index] = ref)}
                 onClick={(e) => {
                   if (!onSelect) return; /// if onSelect undefined this function will dont work
-                  if (!item.extension && !item.isPublic) return; // for folder dont select
+                  if (!item?.extension && !item?.isPublic) return; // for folder dont select
                   e.stopPropagation();
 
                   if (
@@ -72,17 +73,17 @@ const Column: React.FunctionComponent<IProps> = ({
                   }
                   if (currentTab == TabTypes.ArchiveList) return;
 
-                  item.extension ? null : setHash(item.hash);
+                  item?.extension ? null : setHash(item?.hash);
                 }}
                 className={styles['col']}
-                style={item.extension ? {} : { cursor: 'pointer' }}
+                style={item?.extension ? {} : { cursor: 'pointer' }}
               >
                 <div className={classnames(styles['col__img-wrapper'])}>
                   <div className={styles['col__menu-wrapper']}>
-                    <MenuTools item={item} tabType={currentTab} />
+                    {item ? <MenuTools item={item} tabType={currentTab} /> : ''}
                   </div>
                   <div className={styles['col__icon-access-wrapper']}>
-                    {item.isPublic ? (
+                    {item?.isPublic ? (
                       <FontAwesomeIcon
                         className={styles['col__icon-access']}
                         icon={faGlobe}
@@ -94,13 +95,15 @@ const Column: React.FunctionComponent<IProps> = ({
                       />
                     )}
                   </div>
-                  {item.extension ? (
-                    item.thumbnail &&
-                    item.thumbnail.startsWith('THUMBNAIL_EXIST') ? (
+                  {item?.type != FolderTypes.folder ? (
+                    item?.thumbnail &&
+                    item?.thumbnail.startsWith('THUMBNAIL_EXIST') ? (
                       <img
                         className={styles['col__img']}
-                        src={`https://sandbox.podspace.ir:8443/api/files/${item.hash}/thumbnail`}
+                        src={`https://sandbox.podspace.ir:8443/api/files/${item?.hash}/thumbnail`}
                       />
+                    ) : item ? (
+                      <DefaultThumnail item={item} />
                     ) : (
                       ''
                     )
@@ -112,10 +115,10 @@ const Column: React.FunctionComponent<IProps> = ({
                 </div>
                 <h4 className={styles['col__title']}>{item?.name}</h4>
                 <div className={styles['col__volume']}>
-                  {formatBytes(item.size)}
+                  {formatBytes(item?.size)}
                 </div>
                 <div className={styles['col__date']}>
-                  {moment(item.created).format('jYYYY/jMM/jDD HH:mm:ss')}
+                  {moment(item?.created).format('jYYYY/jMM/jDD HH:mm:ss')}
                 </div>
               </div>
             </Col>

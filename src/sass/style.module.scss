@@ -5,6 +5,10 @@
   width: 100%;
   font-family: IRANSans;
   color: $color-gray;
+  .nav .nav-item .input-group input#search-input{
+    border: none !important;
+    outline: none !important;
+  }
   .dirLtr {
     direction: ltr;
   }
@@ -23,6 +27,9 @@
 /***************************/
 /******** utils ************/
 /***************************/
+.round-8{
+  border-radius: 8px !important;
+}
 .d-flex {
   display: flex !important;
 }

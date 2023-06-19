@@ -61,9 +61,7 @@ const Tab: FunctionComponent<Props> = () => {
         tabs
         className={`${styles['fix-top']} ${styles['nav-wrapper']}`}
         cssModule={getBs()}
-      >
-        {console.log({sss:styles['nav-wrapper__item']})}
-        
+      > 
         <NavItem
           cssModule={getBs()}
           className={`${styles['nav-wrapper__tab-item']} ${styles['nav-wrapper__item']}`}
@@ -124,8 +122,9 @@ const Tab: FunctionComponent<Props> = () => {
       <SortingMenu />
       <TabContent
         activeTab={activeTab}
-        style={{ marginTop: 0, overflow: 'scroll' }}
+        style={{ marginTop: 0, overflow: 'scroll' , border:"none"}}
         cssModule={getBs()}
+        
       >
         <TabPane
           tabId={TabTypes.FileList}

@@ -33,7 +33,8 @@ const Search: FunctionComponent<Props> = () => {
         <Input
           cssModule={getBs()}
           value={searchText}
-          className={`${styles['search-wrapper__input']}`}
+          id='search-input'
+          className={`${styles['search-wrapper__input']} `}
           placeholder='جستجو'
           onChange={(event) => {
             const { value } = event.target;

@@ -5,12 +5,14 @@
     color: #737373 !important;
     display: flex;
     align-items: center;
+    border-bottom: none !important;
     span {
       padding-right: 12px;
     }
   }
   &__item--en{
     color: #b5b5b5 !important;
+    float: left;
   }
 }
 .col {

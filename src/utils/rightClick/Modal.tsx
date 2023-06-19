@@ -1,5 +1,5 @@
-import styles from "./style.module.scss";
-import utilStyles from "../../sass/style.module.scss";
+import styles from './style.module.scss';
+import utilStyles from '../../sass/style.module.scss';
 
 import React, { useState, useRef, useContext } from 'react';
 import {
@@ -111,18 +111,16 @@ const Index: React.FC<IProps> = ({
           <Button
             cssModule={getBs()}
             onClick={toggle}
-            className={`${utilStyles['ms-3']}`}
+            className={`${utilStyles['ms-3']} ${utilStyles['round-8']} ${styles['btn-danger']}`}
             color='danger'
             outline
           >
             {btnNoText}
           </Button>
-          <Button cssModule={getBs()} onClick={execute} color='primary'>
+          <Button cssModule={getBs()} onClick={execute} color='primary' className={`${utilStyles['round-8']} ${styles['btn-primary']}`} >
             {btnOkText}{' '}
-            {deleteFileAndFolder.isLoading ||
-            renameFileAndFolder.isLoading ||
-            renameFileAndFolder.isLoading ? (
-              <Spinner cssModule={getBs()} />
+            {deleteFileAndFolder.isLoading || renameFileAndFolder.isLoading ? (
+              <Spinner cssModule={getBs()} size={'sm'} />
             ) : (
               ''
             )}

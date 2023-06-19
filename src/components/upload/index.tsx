@@ -26,7 +26,7 @@ const Upload = () => {
           className={`${styles['btn-upload']} ${utilStyles['my-auto']}`}
           onClick={handleModalToggle}
         >
-          <IconUpload  />
+          <IconUpload size='18px' />
           {/* <FontAwesomeIcon icon={faCloudUploadAlt} /> */}
          <span> بارگذاری</span>
         </Button>

@@ -26,3 +26,31 @@ export enum TabTypes {
   ArchiveList = 2,
   SearchList = 3
 }
+
+export enum FolderTypes {
+  folder = 'application/vnd.podspace.folder'
+}
+export enum ImageTypes {
+  png = 'png',
+  jpeg = 'jpeg',
+  jpg = 'jpg',
+  webp = 'webp',
+  svg = 'svg'
+}
+export enum VideoTypes {
+  mpg = 'mpg',
+  mp4 = 'mp4',
+  ogg = 'ogg'
+}
+export enum AudioTypes {
+  mp3 = 'mp3',
+  wma = 'wma'
+}
+export enum DocumentTypes {
+  doc = 'doc',
+  docx = 'docx',
+  pdf = 'pdf',
+  xls = 'xls',
+  xlsx = 'xlsx',
+  txt = 'txt'
+}

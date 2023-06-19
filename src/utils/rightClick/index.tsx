@@ -123,7 +123,7 @@ const App: React.FunctionComponent<RightClickProps> = ({ query }) => {
           >
             <Nav className={styles['']} cssModule={getBs()} vertical>
               <CheckPermissions permissions={['folder_create']}>
-                <NavItem cssModule={getBs()}>
+                <NavItem cssModule={getBs()} className={styles['context-menu__item']}>
                   <IconFolderPlus />
                   {/* <FontAwesomeIcon
                     icon={faFolder}
@@ -139,7 +139,7 @@ const App: React.FunctionComponent<RightClickProps> = ({ query }) => {
               </CheckPermissions>
               {itemHash ? (
                 <CheckPermissions permissions={['copy', 'cut']}>
-                  <NavItem cssModule={getBs()} onClick={() => clickHandler(OperationTypes.Paste)}>
+                  <NavItem cssModule={getBs()} onClick={() => clickHandler(OperationTypes.Paste)} className={styles['context-menu__item']}>
                     <IconPaste />
                     {/* <FontAwesomeIcon
                       icon={faFolder}

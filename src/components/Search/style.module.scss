@@ -7,17 +7,17 @@
   border-radius: 8px;
   
   &__icon {
-    background-color: white;
+    background-color: white !important;
     // border-left: 1px solid white;
     border-bottom-left-radius: 0;
     border-top-left-radius: 0;
     border-top-right-radius: 8px !important;
     border-bottom-right-radius: 8px !important;
-    border: none;
-    color: #e1e1e1;
+    border: none !important;
+    color: #e1e1e1 !important;
   }
   &__input {
-    border: none;
+    border: none !important;
     border-bottom-right-radius: 0;
     border-top-right-radius: 0;
     border-bottom-left-radius: 8px !important;
@@ -27,9 +27,8 @@
       color: #e1e1e1 !important;
     }
     &:focus{
-      border: none;
+      border: none !important;
+      outline: none !important;
     }
-
-
   }
 }

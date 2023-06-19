@@ -3,11 +3,18 @@ $color-gray: #b5b5b5;
 
 .btn-upload {
   background-color: $color-orange !important;
-  color: #fff;
+  color: #fff !important;
   border: none;
+  border-radius: 4px !important;
+  &:hover{
+    color: #fff !important;
+  }
   &:focus {
     background-color: $color-orange !important;
     color: #fff;
+  }
+  span{
+    margin-right: 6px;
   }
 }
 
