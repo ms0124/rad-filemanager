@@ -8,6 +8,8 @@ import paste from '../assets/svg/paste.svg';
 import trash from '../assets/svg/trash.svg';
 import download from '../assets/svg/download.svg';
 import circleInfo from '../assets/svg/circle_info.svg';
+import times from '../assets/svg/times.svg';
+import tick from '../assets/svg/tick.svg';
 
 const IconBuilder = ({ src, style = {} }) => {
   return <img src={src} style={style} />;
@@ -55,5 +57,13 @@ export const IconDownload = () => {
 };
 
 export const IconCircleInfo = () => {
-  return <IconBuilder src={circleInfo} />
-}
+  return <IconBuilder src={circleInfo} />;
+};
+
+export const IconTimes = ({style={} }) => {
+  return <IconBuilder src={times} style={style} />;
+};
+
+export const IconTick = ({style = {}}) => {
+  return <IconBuilder src={tick} style={style} />;
+};

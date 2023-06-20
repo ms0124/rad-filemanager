@@ -59,7 +59,7 @@ export const renameFileAndFolder = async ({ headers, hash, newName }) => {
 export const upload = async (
   params,
   image = false,
-  onUploadProgress,
+  configs,
   headers
 ) => {
   return await instance.post(
@@ -70,7 +70,8 @@ export const upload = async (
         'Content-Type': 'multipart/form-data',
         ...headers
       },
-      onUploadProgress
+      onUploadProgress: configs.onUploadProgress,
+      signal: configs.signal
     }
   );
 };

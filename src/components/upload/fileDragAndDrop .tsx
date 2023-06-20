@@ -27,7 +27,7 @@ import {
   useGetFolderContentChildren
 } from '../../config/hooks';
 import { getBs } from '../../utils/index';
-import { IconUpload } from '../../utils/icons';
+import { IconTick, IconTimes, IconUpload } from '../../utils/icons';
 
 interface Props {
   modal: boolean;
@@ -49,6 +49,7 @@ const FilesDragAndDrop: FunctionComponent<Props> = ({ modal, toggleModal }) => {
   const [progress, setProgress] = useState<{}>({});
   const progressRef = useRef({});
   const inputRef = useRef<HTMLInputElement | null>(null);
+  const controllerRef: any = useRef([]);
 
   useEffect(() => {
     if (!element) return;
@@ -73,8 +74,17 @@ const FilesDragAndDrop: FunctionComponent<Props> = ({ modal, toggleModal }) => {
     formData.append('file', file);
     formData.append('folderHash', currentHash);
     formData.append('isPublic', 'true');
-
-    upload(formData, false, (e) => onUploadProgress(e, file), headers)
+    const controller = new AbortController();
+    controllerRef.current.push(controller);
+    upload(
+      formData,
+      false,
+      {
+        onUploadProgress: (e) => onUploadProgress(e, file),
+        signal: controller.signal
+      },
+      headers
+    )
       .then((res) => {
         // if progress is 100 percent or more progress is complete.
         const progressComplete = Object.values(progressRef.current).every(
@@ -174,23 +184,37 @@ const FilesDragAndDrop: FunctionComponent<Props> = ({ modal, toggleModal }) => {
           </ModalHeader>
           <ModalBody cssModule={getBs()}>
             {fileList &&
-              Object.values(fileList).map((item) => {
+              Object.values(fileList).map((item, index) => {
                 return (
                   <div
                     className={`${utilStyles['d-flex']} ${utilStyles['justify-content-between']}`}
                   >
                     <span>{item.name}</span>
-                    <div style={{ width: 25, height: 25 }}>
-                      <CircularProgressbar
-                        value={progress[item.name]}
-                        styles={buildStyles({
-                          textSize: '30px',
-                          pathColor: '#000000',
-                          textColor: '#000000'
-                        })}
-                        text={`${progress[item.name]} %`}
-                      />
-                    </div>
+                    {progress[item.name] >= 100 ? (
+                      <IconTick style={{ width: '24px' }} />
+                    ) : (
+                      <div className={styles['upload-toast__icon-wrapper']}>
+                        <div style={{ width: 25, height: 25 }}>
+                          <CircularProgressbar
+                            value={progress[item.name]}
+                            styles={buildStyles({
+                              textSize: '30px',
+                              pathColor: '#000000',
+                              textColor: '#000000'
+                            })}
+                            text={`${progress[item.name]} %`}
+                          />
+                        </div>
+                        <span
+                          role='button'
+                          onClick={() => {
+                            controllerRef.current[index].abort();
+                          }}
+                        >
+                          <IconTimes style={{ width: '24px' }} />
+                        </span>
+                      </div>
+                    )}
                   </div>
                 );
               })}
@@ -216,8 +240,8 @@ const FilesDragAndDrop: FunctionComponent<Props> = ({ modal, toggleModal }) => {
               multiple
               style={{ display: 'none', width: '100%', height: '100%' }}
               onChange={handleOnChangesInputFiles}
-              />
-              <IconUpload colorGray size={"100px"}/>
+            />
+            <IconUpload colorGray size={'100px'} />
             <h5>فایل مورد نظر را در اینجا رها کنید.</h5>
           </ModalBody>
         </div>
