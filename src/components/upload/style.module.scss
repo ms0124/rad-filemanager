@@ -19,10 +19,10 @@ $color-gray: #b5b5b5;
 }
 
 .upload-toast {
-  width: 400px;
-  position: fixed;
-  bottom: 25px;
-  left: 25px;
+  width: 400px !important;
+  position: fixed !important;
+  bottom: 25px !important;
+  left: 25px !important;
   &__header{
     background-color: #6184ff;
     h5{
