@@ -113,8 +113,8 @@ const MenuTools: React.FunctionComponent<IProps> = ({
           toggle={toggleModal}
           type={OperationTypes.Rename}
           btnNoText='انصراف'
-          btnOkText='تغیر نام'
-          title={'آیا از تغیر نام مورد انتخاب شده اطمینان دارید؟'}
+          btnOkText='تغییر نام'
+          title={'آیا از تغییر نام مورد انتخاب شده اطمینان دارید؟'}
           item={item}
         />
       ) : (
