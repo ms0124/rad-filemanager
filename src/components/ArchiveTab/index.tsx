@@ -20,8 +20,9 @@ import Empety from '../StateColumnList/empty';
 interface IProps {}
 
 const ArchiveTab: FunctionComponent<IProps> = () => {
-  const { isList, setCurrentHash } = useContext(Context);
-  // const [listData, setListData] = useState<any>([]);
+  const { isList, setCurrentHash, currentTab, setBreadCrumb } =
+    useContext(Context);
+
   const { ref, inView } = useInView();
   let { data, isLoading, isFetching, fetchNextPage, hasNextPage } =
     useArchiveList(getHeader(false));
@@ -31,6 +32,14 @@ const ArchiveTab: FunctionComponent<IProps> = () => {
       fetchNextPage();
     }
   }, [inView, hasNextPage]);
+
+  useEffect(() => {
+    if (currentTab == TabTypes.ArchiveList) {
+      console.log("sssss");
+      
+      setBreadCrumb([{ name: 'آرشیو', hash: '', disabled: true }]);
+    }
+  }, [currentTab]);
 
   return (
     <React.Fragment>

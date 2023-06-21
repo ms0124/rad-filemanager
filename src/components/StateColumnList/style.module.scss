@@ -1,7 +1,7 @@
 .state-column-list {
   display: flex;
   align-items: center;
-  margin-left: auto;
+  margin-left: 25px;
   margin-right: auto;
   &:hover {
     cursor: pointer;
@@ -28,6 +28,9 @@
     right: 2px;
   }
   &__icon-access-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
     width: 25;
     height: 25;
     background-color: white;
@@ -68,6 +71,8 @@
     width: 100%;
     height: fit-content;
     user-select: none;
+    max-height: 100px;
+    object-fit: cover;
   }
   &__folder-img {
     user-select: none;

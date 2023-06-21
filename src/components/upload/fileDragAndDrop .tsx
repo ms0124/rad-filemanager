@@ -98,7 +98,7 @@ const FilesDragAndDrop: FunctionComponent<Props> = ({ modal, toggleModal }) => {
           // reset of my parameters
           setFileList([]);
           setProgress({});
-          toggleModal();
+          if (modal) toggleModal();
         }
       })
       .finally(() => {

@@ -35,7 +35,7 @@ const FileTab: FunctionComponent<IProps> = ({ setTotal }) => {
     );
 
   const { inView, ref } = useInView();
-  if (data?.pages[0]?.result?.breadcrumb && currentTab !== TabTypes.SearchList) {
+  if (data?.pages[0]?.result?.breadcrumb && currentTab === TabTypes.FileList) {
     setBreadCrumb(data?.pages[0]?.result?.breadcrumb);
   }
 

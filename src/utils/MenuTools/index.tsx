@@ -22,7 +22,7 @@ import FileSaver from 'file-saver';
 import { faPlayCircle, faTrashAlt } from '@fortawesome/free-regular-svg-icons';
 import MenuItem from './MenuItem';
 import Modal from '../rightClick/Modal';
-import { OperationTypes } from '../../config/types';
+import { FolderTypes, OperationTypes } from '../../config/types';
 import { Context } from '../../store/index';
 import { download } from '../../config/api';
 import { TabTypes } from '../../config/types';
@@ -30,11 +30,17 @@ import { useArchiveDelete, useArchiveRestor } from '../../config/hooks';
 import { objectToQueryString } from '../../utils/index';
 import CheckPermissions from '../../components/CheckPermissions';
 import { getBs } from '../../utils/index';
-import { IconCopy,IconMove, IconEdit, IconTrash, IconDownload, IconCircleInfo }  from '../../utils/icons';
-
+import {
+  IconCopy,
+  IconMove,
+  IconEdit,
+  IconTrash,
+  IconDownload,
+  IconCircleInfo
+} from '../../utils/icons';
 
 interface IProps {
-  item: { name: string; hash: string; extension: string };
+  item: { name: string; hash: string; extension: string; type: string };
   tabType: number;
 }
 
@@ -143,12 +149,10 @@ const MenuTools: React.FunctionComponent<IProps> = ({
           cssModule={getBs()}
           {...props}
           end
-          className={styles['dropdown-menu-wrapper'] }
+          className={styles['dropdown-menu-wrapper']}
         >
-          {/* <MenuItem title={'پخش ویدئو'} icon={faPlayCircle} />
-          <MenuItem title='اطلاعات فایل' icon={faCircleInfo} /> */}
           <CheckPermissions permissions={['download']}>
-            {item?.extension && (
+            {item?.type === FolderTypes.folder || (
               <MenuItem
                 clickHandler={() => clickHandler(OperationTypes.Download)}
                 title='دانلود فایل'
@@ -157,62 +161,56 @@ const MenuTools: React.FunctionComponent<IProps> = ({
               />
             )}
           </CheckPermissions>
-          {item.extension && <DropdownItem cssModule={getBs()} divider />}
-          <CheckPermissions permissions={['rename']}>
-            <MenuItem
-              clickHandler={() => clickHandler(OperationTypes.Rename)}
-              title='تغییر نام'
-              icon={<IconEdit/>}
-              enTitle='rename'
-            />
-          </CheckPermissions>
-          <CheckPermissions permissions={['copy']}>
-             <MenuItem
-              clickHandler={() => clickHandler(OperationTypes.Copy)}
-              title='کپی'
-              icon={<IconCopy/>}
-              enTitle='copy'
-            /> 
-          </CheckPermissions>
-          <CheckPermissions permissions={['cut']}>
-             <MenuItem
-              clickHandler={() => clickHandler(OperationTypes.Cut)}
-              title='جابه‌جایی'
-              icon={<IconMove />}
-              enTitle='move'
-            /> 
-          </CheckPermissions>
-          <CheckPermissions permissions={['delete']}>
-             <MenuItem
-              clickHandler={() => clickHandler(OperationTypes.Remove)}
-              title='حذف'
-              icon={<IconTrash />}
-              enTitle='delete'
-            /> 
-          </CheckPermissions>
-          {/* <DropdownItem divider />
-          <MenuItem
-            title='اشتراک گذازی یک فایل'
-            icon={faShareAlt}
-            enTitle='share'
-          /> */}
-          
-          {tabType == TabTypes.ArchiveList ? (
+          {item?.type === FolderTypes.folder || (
+            <DropdownItem cssModule={getBs()} divider />
+          )}
+          {tabType != TabTypes.ArchiveList ? (
+            <React.Fragment>
+              <CheckPermissions permissions={['rename']}>
+                <MenuItem
+                  clickHandler={() => clickHandler(OperationTypes.Rename)}
+                  title='تغییر نام'
+                  icon={<IconEdit />}
+                  enTitle='rename'
+                />
+              </CheckPermissions>
+              <CheckPermissions permissions={['copy']}>
+                <MenuItem
+                  clickHandler={() => clickHandler(OperationTypes.Copy)}
+                  title='کپی'
+                  icon={<IconCopy />}
+                  enTitle='copy'
+                />
+              </CheckPermissions>
+              <CheckPermissions permissions={['cut']}>
+                <MenuItem
+                  clickHandler={() => clickHandler(OperationTypes.Cut)}
+                  title='جابه‌جایی'
+                  icon={<IconMove />}
+                  enTitle='move'
+                />
+              </CheckPermissions>
+              <CheckPermissions permissions={['delete']}>
+                <MenuItem
+                  clickHandler={() => clickHandler(OperationTypes.Remove)}
+                  title='حذف'
+                  icon={<IconTrash />}
+                  enTitle='delete'
+                />
+              </CheckPermissions>
+            </React.Fragment>
+          ) : (
             <React.Fragment>
               <CheckPermissions
-                permissions={[
-                  'archive_delete',
-                  'archive_restore'
-                ]}
+                permissions={['archive_delete', 'archive_restore']}
               >
-                <DropdownItem cssModule={getBs()} divider />
                 <CheckPermissions permissions={['archive_delete']}>
                   <MenuItem
                     clickHandler={() =>
                       clickHandler(OperationTypes.RemoveArchive)
                     }
                     title='حذف دائمی'
-                    icon={<IconTrash/>}
+                    icon={<IconTrash />}
                   />
                 </CheckPermissions>
                 <CheckPermissions permissions={['archive_restore']}>
@@ -221,13 +219,11 @@ const MenuTools: React.FunctionComponent<IProps> = ({
                       clickHandler(OperationTypes.RestoreArchive)
                     }
                     title='بازیابی'
-                    icon={<IconCircleInfo/>}
+                    icon={<IconCircleInfo />}
                   />
                 </CheckPermissions>
               </CheckPermissions>
             </React.Fragment>
-          ) : (
-            ''
           )}
         </DropdownMenu>
       </Dropdown>

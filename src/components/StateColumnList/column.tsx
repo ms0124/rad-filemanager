@@ -11,7 +11,7 @@ import folder from './folder.png';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faGlobe, faKey } from '@fortawesome/free-solid-svg-icons';
 import MenuTools from '../../utils/MenuTools/';
-import { formatBytes } from '../../utils/index';
+import { formatBytes, brifStr } from '../../utils/index';
 import { RightClick } from '../../utils';
 import { TabTypes, FolderTypes } from '../../config/types';
 import { Context } from '../../store/index';
@@ -113,9 +113,9 @@ const Column: React.FunctionComponent<IProps> = ({
                     </div>
                   )}
                 </div>
-                <h4 className={styles['col__title']}>{item?.name}</h4>
+                <h4 className={styles['col__title']}>{brifStr(item?.name, 12)}</h4>
                 <div className={styles['col__volume']}>
-                  {formatBytes(item?.size)}
+                  {item?.type === FolderTypes.folder ? "":  formatBytes(item?.size)}
                 </div>
                 <div className={styles['col__date']}>
                   {moment(item?.created).format('jYYYY/jMM/jDD HH:mm:ss')}
