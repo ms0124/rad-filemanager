@@ -1,7 +1,7 @@
 import styles from './style.module.scss';
 import utilStyles from '../../sass/style.module.scss';
 
-import React, { useContext, useRef } from 'react';
+import React, { useContext, useRef, useState } from 'react';
 import { Row, Col } from 'reactstrap';
 import moment from 'moment-jalaali';
 import classnames from 'classnames';
@@ -31,7 +31,6 @@ const Column: React.FunctionComponent<IProps> = ({
 }) => {
   const { setSearchText, onSelect, currentTab } = useContext(Context);
   const slectedRef = useRef<(HTMLDivElement | null)[]>([]);
-
   return (
     <React.Fragment>
       <RightClick query='#rightclick' />
@@ -113,9 +112,13 @@ const Column: React.FunctionComponent<IProps> = ({
                     </div>
                   )}
                 </div>
-                <h4 className={styles['col__title']}>{brifStr(item?.name, 12)}</h4>
+                <h4 className={styles['col__title']}>
+                  {brifStr(item?.name, 12)}
+                </h4>
                 <div className={styles['col__volume']}>
-                  {item?.type === FolderTypes.folder ? "":  formatBytes(item?.size)}
+                  {item?.type === FolderTypes.folder
+                    ? ''
+                    : formatBytes(item?.size)}
                 </div>
                 <div className={styles['col__date']}>
                   {moment(item?.created).format('jYYYY/jMM/jDD HH:mm:ss')}

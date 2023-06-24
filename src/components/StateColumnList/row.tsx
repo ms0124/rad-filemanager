@@ -1,3 +1,4 @@
+import styles from './style.module.scss';
 import utilStyles from '../../sass/style.module.scss';
 
 import React, { FunctionComponent, useContext, useRef } from 'react';
@@ -20,7 +21,7 @@ const Row: FunctionComponent<IProps> = ({ pages = [], setHash }) => {
   const { setSearchText, onSelect } = useContext(Context);
   const slectedRef = useRef<(HTMLDivElement | null)[]>([]);
   return (
-    <Table cssModule={getBs()}>
+    <Table cssModule={getBs()} className={styles['table-wrapper']}>
       <thead>
         <tr>
           <th className={`${utilStyles['text-center']}`}>نام فایل</th>

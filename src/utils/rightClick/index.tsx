@@ -74,10 +74,13 @@ const App: React.FunctionComponent<RightClickProps> = ({ query }) => {
     elementHtml = document.querySelector(`${query}`);
 
     elementHtml?.addEventListener('contextmenu', showContextMenu);
-    elementHtml?.addEventListener('click', hideContextMenu);
+    document.body?.addEventListener('click', hideContextMenu);
+    document.body?.addEventListener('contextmenu', hideContextMenu);
+
     return () => {
       elementHtml?.addEventListener('contextmenu', showContextMenu);
-      elementHtml?.addEventListener('click', hideContextMenu);
+      document.body?.addEventListener('click', hideContextMenu);
+      document.body?.addEventListener('contextmenu', hideContextMenu);
     };
   }, []);
 
@@ -114,16 +117,17 @@ const App: React.FunctionComponent<RightClickProps> = ({ query }) => {
         ''
       )}
       {isShown && currentTab !== TabTypes.SearchList && (
-        <CheckPermissions
-          permissions={['folder_create', 'copy', 'cut']}
-        >
+        <CheckPermissions permissions={['folder_create', 'copy', 'cut']}>
           <div
             style={{ top: position.y, left: position.x }}
             className={styles['context-menu']}
           >
             <Nav className={styles['']} cssModule={getBs()} vertical>
               <CheckPermissions permissions={['folder_create']}>
-                <NavItem cssModule={getBs()} className={styles['context-menu__item']}>
+                <NavItem
+                  cssModule={getBs()}
+                  className={styles['context-menu__item']}
+                >
                   <IconFolderPlus />
                   {/* <FontAwesomeIcon
                     icon={faFolder}
@@ -139,7 +143,11 @@ const App: React.FunctionComponent<RightClickProps> = ({ query }) => {
               </CheckPermissions>
               {itemHash ? (
                 <CheckPermissions permissions={['copy', 'cut']}>
-                  <NavItem cssModule={getBs()} onClick={() => clickHandler(OperationTypes.Paste)} className={styles['context-menu__item']}>
+                  <NavItem
+                    cssModule={getBs()}
+                    onClick={() => clickHandler(OperationTypes.Paste)}
+                    className={styles['context-menu__item']}
+                  >
                     <IconPaste />
                     {/* <FontAwesomeIcon
                       icon={faFolder}
