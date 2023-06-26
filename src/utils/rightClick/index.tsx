@@ -44,6 +44,8 @@ const App: React.FunctionComponent<RightClickProps> = ({ query }) => {
   const showContextMenu = (event: any) => {
     // Disable the default context menu
     event.preventDefault();
+    // event.stopPropagation();
+    // event?.nativeEvent?.stopImmediatePropagation();
     const clientWidth: number = elementHtml?.clientWidth
       ? elementHtml?.clientWidth
       : 0;
@@ -71,16 +73,14 @@ const App: React.FunctionComponent<RightClickProps> = ({ query }) => {
   // }
 
   useEffect(() => {
-    elementHtml = document.querySelector(`${query}`);
+    // const elementHtml = document.querySelector(`${query}`);
 
-    elementHtml?.addEventListener('contextmenu', showContextMenu);
+    window?.addEventListener('contextmenu', showContextMenu);
     document.body?.addEventListener('click', hideContextMenu);
-    document.body?.addEventListener('contextmenu', hideContextMenu);
 
     return () => {
-      elementHtml?.addEventListener('contextmenu', showContextMenu);
-      document.body?.addEventListener('click', hideContextMenu);
-      document.body?.addEventListener('contextmenu', hideContextMenu);
+      window?.addEventListener('contextmenu', showContextMenu);
+      document.body?.removeEventListener('click', hideContextMenu);
     };
   }, []);
 
@@ -128,7 +128,9 @@ const App: React.FunctionComponent<RightClickProps> = ({ query }) => {
                   cssModule={getBs()}
                   className={styles['context-menu__item']}
                 >
+                  <span  className={styles['context-menu__icon']}>
                   <IconFolderPlus />
+                  </span>
                   {/* <FontAwesomeIcon
                     icon={faFolder}
                     className={styles['context-menu__icon']}

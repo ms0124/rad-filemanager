@@ -1,6 +1,6 @@
 import styles from './style.module.scss';
 
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, forwardRef } from 'react';
 import {
   Dropdown,
   DropdownMenu,
@@ -42,26 +42,30 @@ import {
 interface IProps {
   item: { name: string; hash: string; extension: string; type: string };
   tabType: number;
+  ref :any
 }
 
-const MenuTools: React.FunctionComponent<IProps> = ({
+const MenuTools: React.FunctionComponent<IProps> = forwardRef(({
   item,
   tabType,
   ...props
-}) => {
+}, ref) => {
   const {
     itemHash,
     setItemHash,
     setOperationType: setActionType,
     currentHash
   } = useContext(Context);
-
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [isOpenModal, setIsOpenModal] = useState<boolean>(false);
   const [operationType, setOperationType] = useState<number | null>();
-
+  
   const toggleModal: () => void = () => setIsOpenModal(!isOpenModal);
-  const toggle: () => void = () => setIsOpen(!isOpen);
+  const toggle: () => void = () => {
+    setIsOpen(!isOpen);
+  }
+  const isOpenState = () => isOpen
+  React.useImperativeHandle(ref, () => ({ toggle, isOpenState }));
 
   const archiveDelete = useArchiveDelete(currentHash);
   const archiveRestor = useArchiveRestor(currentHash);
@@ -229,6 +233,6 @@ const MenuTools: React.FunctionComponent<IProps> = ({
       </Dropdown>
     </React.Fragment>
   );
-};
+});
 
 export default MenuTools;

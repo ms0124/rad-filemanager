@@ -17,7 +17,6 @@ const index = () => {
     setCurrentTab,
     setSearchText
   } = useContext(Context);
-  console.log({ breadCrumb });
 
   return (
     <div className={styles['bread-crumb']}>
@@ -30,7 +29,6 @@ const index = () => {
             if (TabTypes.SearchList) setSearchText('');
 
             if (currentTab !== TabTypes.FileList) {
-              console.log({ currentTab });
               setCurrentTab(TabTypes.FileList);
             }
 

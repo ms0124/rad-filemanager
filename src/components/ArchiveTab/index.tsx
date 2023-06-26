@@ -35,8 +35,6 @@ const ArchiveTab: FunctionComponent<IProps> = () => {
 
   useEffect(() => {
     if (currentTab == TabTypes.ArchiveList) {
-      console.log("sssss");
-      
       setBreadCrumb([{ name: 'آرشیو', hash: '', disabled: true }]);
     }
   }, [currentTab]);

@@ -31,6 +31,7 @@ const Column: React.FunctionComponent<IProps> = ({
 }) => {
   const { setSearchText, onSelect, currentTab } = useContext(Context);
   const slectedRef = useRef<(HTMLDivElement | null)[]>([]);
+  const contextMenuRef: any = useRef<[]>([]);
   return (
     <React.Fragment>
       <RightClick query='#rightclick' />
@@ -44,6 +45,16 @@ const Column: React.FunctionComponent<IProps> = ({
           return _data.map((item, index) => (
             <Col cssModule={getBs()} xs={3} md={3} lg={3} key={index}>
               <div
+                onContextMenu={(event: any) => {
+                  event.preventDefault();
+                  event.stopPropagation();
+                  contextMenuRef.current.map(
+                    (item, i) => {
+                      item.isOpenState() && contextMenuRef.current[i]?.toggle()
+                    }
+                  );
+                  contextMenuRef.current[index]?.toggle();
+                }}
                 ref={(ref) => (slectedRef.current[index] = ref)}
                 onClick={(e) => {
                   if (!onSelect) return; /// if onSelect undefined this function will dont work
@@ -79,7 +90,15 @@ const Column: React.FunctionComponent<IProps> = ({
               >
                 <div className={classnames(styles['col__img-wrapper'])}>
                   <div className={styles['col__menu-wrapper']}>
-                    {item ? <MenuTools item={item} tabType={currentTab} /> : ''}
+                    {item ? (
+                      <MenuTools
+                        item={item}
+                        tabType={currentTab}
+                        ref={(ref) => (contextMenuRef.current[index] = ref)}
+                      />
+                    ) : (
+                      ''
+                    )}
                   </div>
                   <div className={styles['col__icon-access-wrapper']}>
                     {item?.isPublic ? (

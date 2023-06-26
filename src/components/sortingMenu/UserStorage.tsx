@@ -33,10 +33,10 @@ const UserStorage: React.FunctionComponent = () => {
         >
           <span>فضای پرشده</span>
           <div>
-            <span>{storageUsage ? storageUsage[0] : ''}{" "}</span>
+            <span style={{paddingRight:"2px"}}>{storageUsage ? storageUsage[0] : ''}</span>
             <span>{storageUsage ? storageUsage[1] : ''}</span>
             <span> از </span>
-            <span>{storageLimit ? storageLimit[0] : ''}{" "}</span>
+            <span style={{paddingRight:"2px"}}>{storageLimit ? storageLimit[0] : ''}</span>
             <span>{storageLimit ? storageLimit[1] : ''}</span>
           </div>
         </div>
