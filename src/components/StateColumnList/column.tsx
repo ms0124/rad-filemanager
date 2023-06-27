@@ -1,12 +1,11 @@
 import styles from './style.module.scss';
 import utilStyles from '../../sass/style.module.scss';
 
-import React, { useContext, useRef, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import { Row, Col } from 'reactstrap';
 import moment from 'moment-jalaali';
 import classnames from 'classnames';
 
-import n from './n.png';
 import folder from './folder.png';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faGlobe, faKey } from '@fortawesome/free-solid-svg-icons';
@@ -32,6 +31,7 @@ const Column: React.FunctionComponent<IProps> = ({
   const { setSearchText, onSelect, currentTab } = useContext(Context);
   const slectedRef = useRef<(HTMLDivElement | null)[]>([]);
   const contextMenuRef: any = useRef<[]>([]);
+
   return (
     <React.Fragment>
       <RightClick query='#rightclick' />
@@ -40,7 +40,7 @@ const Column: React.FunctionComponent<IProps> = ({
         cssModule={getBs()}
         className={`${utilStyles['m-4']}`}
       >
-        {pages.map((page) => {
+        {pages.map((page, pageIndex) => {
           const _data = page?.result?.list ? page?.result?.list : page?.result;
           return _data.map((item, index) => (
             <Col cssModule={getBs()} xs={3} md={3} lg={3} key={index}>
@@ -48,12 +48,18 @@ const Column: React.FunctionComponent<IProps> = ({
                 onContextMenu={(event: any) => {
                   event.preventDefault();
                   event.stopPropagation();
-                  contextMenuRef.current.map(
-                    (item, i) => {
-                      item.isOpenState() && contextMenuRef.current[i]?.toggle()
+
+                  contextMenuRef.current.map((x, i) => {
+                    if (x.isOpenState()) {
+                      x.toggle();
                     }
-                  );
-                  contextMenuRef.current[index]?.toggle();
+                  });
+
+                  if (item.hash) {
+                    contextMenuRef.current
+                      .find((i) => i.getHash() === item.hash)
+                      ?.toggle();
+                  }
                 }}
                 ref={(ref) => (slectedRef.current[index] = ref)}
                 onClick={(e) => {
@@ -94,7 +100,17 @@ const Column: React.FunctionComponent<IProps> = ({
                       <MenuTools
                         item={item}
                         tabType={currentTab}
-                        ref={(ref) => (contextMenuRef.current[index] = ref)}
+                        ref={(ref) => {
+                          // return (contextMenuRef.current[index] = ref)
+                          if (
+                            item?.hash &&
+                            !contextMenuRef.current.find(
+                              (i) => i.getHash() == item.hash
+                            )
+                          ) {
+                            return contextMenuRef.current.push(ref);
+                          }
+                        }}
                       />
                     ) : (
                       ''

@@ -61,8 +61,8 @@
     color: #b5b5b5;
     // color: red;
     user-select: auto;
-    &.fas.fa-caret-up::before{
-      content: "" !important;
+    &.fas.fa-caret-up::before {
+      content: '' !important;
     }
   }
   &__img {
@@ -102,6 +102,23 @@
 ********* row styles****
 ***************************/
 
-.table-wrapper{
+.table-wrapper {
   color: #737373;
+  td {
+    vertical-align: baseline;
+  }
+  .vertical-align-top {
+    vertical-align: top !important;
+  }
+  .thumnail-wrraper {
+    &__folder {
+      width: 40px;
+    }
+    display: flex;
+    justify-content: center;
+    img {
+      width: 60px;
+      padding: 10px;
+    }
+  }
 }

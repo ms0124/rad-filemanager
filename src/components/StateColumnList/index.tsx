@@ -15,15 +15,18 @@ const StateColumnList = () => {
   return (
     <span className={styles['state-column-list']}>
       <span>شیوه نمایش</span>
+
       <FontAwesomeIcon
         icon={faColumns}
         size='2x'
+        style={{ color: !isList ? 'gray' : '#FF9B3F' }}
         className={styles['state-column-list__column']}
         onClick={() => handleClick(true)}
       />
       <FontAwesomeIcon
         icon={faListAlt}
         size='2x'
+        style={{ color: isList ? 'gray' : '#FF9B3F' }}
         className={styles['state-column-list__list']}
         onClick={() => handleClick(false)}
       />

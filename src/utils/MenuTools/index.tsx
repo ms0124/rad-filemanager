@@ -1,6 +1,6 @@
 import styles from './style.module.scss';
 
-import React, { useState, useContext, forwardRef } from 'react';
+import React, { useState, useContext, forwardRef, useRef } from 'react';
 import {
   Dropdown,
   DropdownMenu,
@@ -42,197 +42,200 @@ import {
 interface IProps {
   item: { name: string; hash: string; extension: string; type: string };
   tabType: number;
-  ref :any
+  ref: any;
 }
 
-const MenuTools: React.FunctionComponent<IProps> = forwardRef(({
-  item,
-  tabType,
-  ...props
-}, ref) => {
-  const {
-    itemHash,
-    setItemHash,
-    setOperationType: setActionType,
-    currentHash
-  } = useContext(Context);
-  const [isOpen, setIsOpen] = useState<boolean>(false);
-  const [isOpenModal, setIsOpenModal] = useState<boolean>(false);
-  const [operationType, setOperationType] = useState<number | null>();
-  
-  const toggleModal: () => void = () => setIsOpenModal(!isOpenModal);
-  const toggle: () => void = () => {
-    setIsOpen(!isOpen);
-  }
-  const isOpenState = () => isOpen
-  React.useImperativeHandle(ref, () => ({ toggle, isOpenState }));
+const MenuTools: React.FunctionComponent<IProps> = forwardRef(
+  ({ item, tabType, ...props }, ref) => {
+    const {
+      itemHash,
+      setItemHash,
+      setOperationType: setActionType,
+      currentHash
+    } = useContext(Context);
+    const [isOpen, setIsOpen] = useState<boolean>(false);
+    const currentIsOpenRef = useRef(false);
+    const [isOpenModal, setIsOpenModal] = useState<boolean>(false);
+    const [operationType, setOperationType] = useState<number | null>();
 
-  const archiveDelete = useArchiveDelete(currentHash);
-  const archiveRestor = useArchiveRestor(currentHash);
-  const clickHandler = (type) => {
-    switch (type) {
-      case OperationTypes.Remove:
-        toggleModal();
-        setOperationType(OperationTypes.Remove);
-        break;
-      case OperationTypes.Rename:
-        toggleModal();
-        setOperationType(OperationTypes.Rename);
-        break;
-      case OperationTypes.Copy:
-        setItemHash(item?.hash);
-        setActionType(OperationTypes.Copy);
-        break;
-      case OperationTypes.Cut:
-        setItemHash(item?.hash);
-        setActionType(OperationTypes.Cut);
-        break;
-      case OperationTypes.Download:
-        const extension = item.extension.toLowerCase();
-        download(item?.hash).then((blob) => {
-          FileSaver.saveAs(blob, `${item?.hash}.${extension}`);
-        });
-        break;
-      case OperationTypes.RemoveArchive:
-        archiveDelete.mutateAsync(objectToQueryString(item.hash));
-        break;
-      case OperationTypes.RestoreArchive:
-        archiveRestor.mutateAsync(item.hash);
-        break;
-    }
-  };
+    const toggleModal: () => void = () => setIsOpenModal(!isOpenModal);
+    const toggle: () => void = () => {
+      setIsOpen(prev => {
+        currentIsOpenRef.current = !prev;
+       return !prev
+      });
+    };
+    const isOpenState = () => currentIsOpenRef.current
+    const getHash = () => item.hash
+    React.useImperativeHandle(ref, () => ({ toggle, isOpenState ,getHash}));
 
-  return (
-    <React.Fragment>
-      {isOpenModal && operationType === OperationTypes.Remove ? (
-        <Modal
-          isOpen={isOpenModal}
-          toggle={toggleModal}
-          type={OperationTypes.Remove}
-          btnNoText='حذف نشود'
-          btnOkText='بله حذف شود'
-          title={'آیا از حذف مورد انتخاب شده اطمینان دارید؟'}
-          item={item}
-        />
-      ) : (
-        ''
-      )}
-      {isOpenModal && operationType === OperationTypes.Rename ? (
-        <Modal
-          isOpen={isOpenModal}
-          toggle={toggleModal}
-          type={OperationTypes.Rename}
-          btnNoText='انصراف'
-          btnOkText='تغییر نام'
-          title={'آیا از تغییر نام مورد انتخاب شده اطمینان دارید؟'}
-          item={item}
-        />
-      ) : (
-        ''
-      )}
-      <Dropdown
-        cssModule={getBs()}
-        isOpen={isOpen}
-        toggle={toggle}
-        direction={'down'}
-      >
-        <DropdownToggle
-          cssModule={getBs()}
-          tag='div'
-          className={styles['col__icon-3'] + ' col__icon-3'}
-        >
-          <FontAwesomeIcon
-            onClick={toggle}
-            data-toggle='dropdown'
-            aria-haspopup='true'
-            aria-expanded={'false'}
-            icon={faEllipsisH}
+    const archiveDelete = useArchiveDelete(currentHash);
+    const archiveRestor = useArchiveRestor(currentHash);
+    const clickHandler = (type) => {
+      switch (type) {
+        case OperationTypes.Remove:
+          toggleModal();
+          setOperationType(OperationTypes.Remove);
+          break;
+        case OperationTypes.Rename:
+          toggleModal();
+          setOperationType(OperationTypes.Rename);
+          break;
+        case OperationTypes.Copy:
+          setItemHash(item?.hash);
+          setActionType(OperationTypes.Copy);
+          break;
+        case OperationTypes.Cut:
+          setItemHash(item?.hash);
+          setActionType(OperationTypes.Cut);
+          break;
+        case OperationTypes.Download:
+          const extension = item.extension.toLowerCase();
+          download(item?.hash).then((blob) => {
+            FileSaver.saveAs(blob, `${item?.hash}.${extension}`);
+          });
+          break;
+        case OperationTypes.RemoveArchive:
+          archiveDelete.mutateAsync(objectToQueryString(item.hash));
+          break;
+        case OperationTypes.RestoreArchive:
+          archiveRestor.mutateAsync(item.hash);
+          break;
+      }
+    };
+
+    return (
+      <React.Fragment>
+        {isOpenModal && operationType === OperationTypes.Remove ? (
+          <Modal
+            isOpen={isOpenModal}
+            toggle={toggleModal}
+            type={OperationTypes.Remove}
+            btnNoText='حذف نشود'
+            btnOkText='بله حذف شود'
+            title={'آیا از حذف مورد انتخاب شده اطمینان دارید؟'}
+            item={item}
           />
-        </DropdownToggle>
-        <DropdownMenu
+        ) : (
+          ''
+        )}
+        {isOpenModal && operationType === OperationTypes.Rename ? (
+          <Modal
+            isOpen={isOpenModal}
+            toggle={toggleModal}
+            type={OperationTypes.Rename}
+            btnNoText='انصراف'
+            btnOkText='تغییر نام'
+            title={'آیا از تغییر نام مورد انتخاب شده اطمینان دارید؟'}
+            item={item}
+          />
+        ) : (
+          ''
+        )}
+        <Dropdown
           cssModule={getBs()}
-          {...props}
-          end
-          className={styles['dropdown-menu-wrapper']}
+          isOpen={isOpen}
+          toggle={toggle}
+          direction={'down'}
         >
-          <CheckPermissions permissions={['download']}>
+          <DropdownToggle
+            cssModule={getBs()}
+            tag='div'
+            className={styles['col__icon-3'] + ' col__icon-3'}
+          >
+            <FontAwesomeIcon
+              onClick={toggle}
+              data-toggle='dropdown'
+              aria-haspopup='true'
+              aria-expanded={'false'}
+              icon={faEllipsisH}
+            />
+          </DropdownToggle>
+          <DropdownMenu
+            start
+            cssModule={getBs()}
+            {...props}
+            className={styles['dropdown-menu-wrapper']}
+          >
+            <CheckPermissions permissions={['download']}>
+              {item?.type === FolderTypes.folder || (
+                <MenuItem
+                  clickHandler={() => clickHandler(OperationTypes.Download)}
+                  title='دانلود فایل'
+                  icon={<IconDownload />}
+                  type={OperationTypes.Download}
+                />
+              )}
+            </CheckPermissions>
             {item?.type === FolderTypes.folder || (
-              <MenuItem
-                clickHandler={() => clickHandler(OperationTypes.Download)}
-                title='دانلود فایل'
-                icon={<IconDownload />}
-                type={OperationTypes.Download}
-              />
+              <DropdownItem cssModule={getBs()} divider />
             )}
-          </CheckPermissions>
-          {item?.type === FolderTypes.folder || (
-            <DropdownItem cssModule={getBs()} divider />
-          )}
-          {tabType != TabTypes.ArchiveList ? (
-            <React.Fragment>
-              <CheckPermissions permissions={['rename']}>
-                <MenuItem
-                  clickHandler={() => clickHandler(OperationTypes.Rename)}
-                  title='تغییر نام'
-                  icon={<IconEdit />}
-                  enTitle='rename'
-                />
-              </CheckPermissions>
-              <CheckPermissions permissions={['copy']}>
-                <MenuItem
-                  clickHandler={() => clickHandler(OperationTypes.Copy)}
-                  title='کپی'
-                  icon={<IconCopy />}
-                  enTitle='copy'
-                />
-              </CheckPermissions>
-              <CheckPermissions permissions={['cut']}>
-                <MenuItem
-                  clickHandler={() => clickHandler(OperationTypes.Cut)}
-                  title='جابه‌جایی'
-                  icon={<IconMove />}
-                  enTitle='move'
-                />
-              </CheckPermissions>
-              <CheckPermissions permissions={['delete']}>
-                <MenuItem
-                  clickHandler={() => clickHandler(OperationTypes.Remove)}
-                  title='حذف'
-                  icon={<IconTrash />}
-                  enTitle='delete'
-                />
-              </CheckPermissions>
-            </React.Fragment>
-          ) : (
-            <React.Fragment>
-              <CheckPermissions
-                permissions={['archive_delete', 'archive_restore']}
-              >
-                <CheckPermissions permissions={['archive_delete']}>
+            {tabType != TabTypes.ArchiveList ? (
+              <React.Fragment>
+                <CheckPermissions permissions={['rename']}>
                   <MenuItem
-                    clickHandler={() =>
-                      clickHandler(OperationTypes.RemoveArchive)
-                    }
-                    title='حذف دائمی'
+                    clickHandler={() => clickHandler(OperationTypes.Rename)}
+                    title='تغییر نام'
+                    icon={<IconEdit />}
+                    enTitle='rename'
+                  />
+                </CheckPermissions>
+                <CheckPermissions permissions={['copy']}>
+                  <MenuItem
+                    clickHandler={() => clickHandler(OperationTypes.Copy)}
+                    title='کپی'
+                    icon={<IconCopy />}
+                    enTitle='copy'
+                  />
+                </CheckPermissions>
+                <CheckPermissions permissions={['cut']}>
+                  <MenuItem
+                    clickHandler={() => clickHandler(OperationTypes.Cut)}
+                    title='جابه‌جایی'
+                    icon={<IconMove />}
+                    enTitle='move'
+                  />
+                </CheckPermissions>
+                <CheckPermissions permissions={['delete']}>
+                  <MenuItem
+                    clickHandler={() => clickHandler(OperationTypes.Remove)}
+                    title='حذف'
                     icon={<IconTrash />}
+                    enTitle='delete'
                   />
                 </CheckPermissions>
-                <CheckPermissions permissions={['archive_restore']}>
-                  <MenuItem
-                    clickHandler={() =>
-                      clickHandler(OperationTypes.RestoreArchive)
-                    }
-                    title='بازیابی'
-                    icon={<IconCircleInfo />}
-                  />
+              </React.Fragment>
+            ) : (
+              <React.Fragment>
+                <CheckPermissions
+                  permissions={['archive_delete', 'archive_restore']}
+                >
+                  <CheckPermissions permissions={['archive_delete']}>
+                    <MenuItem
+                      clickHandler={() =>
+                        clickHandler(OperationTypes.RemoveArchive)
+                      }
+                      title='حذف دائمی'
+                      icon={<IconTrash />}
+                    />
+                  </CheckPermissions>
+                  <CheckPermissions permissions={['archive_restore']}>
+                    <MenuItem
+                      clickHandler={() =>
+                        clickHandler(OperationTypes.RestoreArchive)
+                      }
+                      title='بازیابی'
+                      icon={<IconCircleInfo />}
+                    />
+                  </CheckPermissions>
                 </CheckPermissions>
-              </CheckPermissions>
-            </React.Fragment>
-          )}
-        </DropdownMenu>
-      </Dropdown>
-    </React.Fragment>
-  );
-});
+              </React.Fragment>
+            )}
+          </DropdownMenu>
+        </Dropdown>
+      </React.Fragment>
+    );
+  }
+);
 
 export default MenuTools;
