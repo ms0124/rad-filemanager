@@ -104,6 +104,9 @@
 
 .table-wrapper {
   color: #737373;
+  .dir-ltr{
+    direction: ltr !important;
+  }
   td {
     vertical-align: baseline;
   }

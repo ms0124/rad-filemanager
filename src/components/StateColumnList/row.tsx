@@ -109,15 +109,17 @@ const Row: FunctionComponent<IProps> = ({ pages = [], setHash }) => {
               >
                 {brifStr(item.name)}
               </td>
-              <td className={`${utilStyles['text-center']}`}>
+              <td className={`${styles['dir-ltr']} ${utilStyles['text-center']}`}>
                 {moment(item.created).format('jYYYY/jMM/jDD HH:mm:ss')}
               </td>
-              <td className={`dirLtr ${utilStyles['text-center']}`}>
+              <td className={`${styles['dir-ltr']} ${utilStyles['text-center']}`}>
                 {' '}
                 {moment(item.updated).format('jYYYY/jMM/jDD HH:mm:ss')}
               </td>
-              <td className={`dirLtr ${utilStyles['text-center']}`}>
-                {formatBytes(item.size)}
+              <td className={`${styles['dir-ltr']} ${utilStyles['text-center']}`}>
+              {item?.type === FolderTypes.folder
+                    ? ''
+                    : formatBytes(item?.size)}
               </td>
               <td className={`${utilStyles['text-center']}`} style={{color: '#6184ff'}}>
                 {item.isPublic ? (
