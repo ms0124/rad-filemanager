@@ -1,6 +1,6 @@
 import styles from './style.module.scss';
 
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext, forwardRef, useImperativeHandle } from 'react';
 import { Nav, NavItem } from 'reactstrap';
 import { faFolder } from '@fortawesome/free-regular-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -13,11 +13,13 @@ import CheckPermissions from '../../components/CheckPermissions';
 import { getBs } from '../../utils/index';
 import { IconFolderPlus, IconPaste } from '../icons';
 
-interface RightClickProps {
-  query: string;
+interface IProps {
+  query?: string;
+  close?: () => void;
+  ref?: any;
 }
 
-const App: React.FunctionComponent<RightClickProps> = ({ query }) => {
+const App: React.FunctionComponent<IProps> = forwardRef(({ query, close }, ref) => {
   const {
     setItemHash,
     itemHash,
@@ -59,19 +61,16 @@ const App: React.FunctionComponent<RightClickProps> = ({ query }) => {
     };
 
     setPosition(newPosition);
+    if(close) close();
     setIsShown(true);
   };
 
   const hideContextMenu = () => {
     setIsShown(false);
+    if(close) close();
   };
 
-  // const [selectedValue, setSelectedValue] = useState<String>()
-  // const doSomething = (selectedValue: String) => {
-  //   console.log({selectedValue});
-  //   // setSelectedValue(selectedValue)
-  // }
-
+  useImperativeHandle(ref, ()=>({hideContextMenu}))
   useEffect(() => {
     // const elementHtml = document.querySelector(`${query}`);
 
@@ -172,5 +171,5 @@ const App: React.FunctionComponent<RightClickProps> = ({ query }) => {
       )}
     </React.Fragment>
   );
-};
+});
 export default App;

@@ -31,10 +31,21 @@ const Column: React.FunctionComponent<IProps> = ({
   const { setSearchText, onSelect, currentTab } = useContext(Context);
   const slectedRef = useRef<(HTMLDivElement | null)[]>([]);
   const contextMenuRef: any = useRef<[]>([]);
-
+  const rightClickRef: any = useRef<any>(null);
+  const closeRightClick = () => {
+    contextMenuRef.current.map((x) => {
+      if (x.isOpenState()) {
+        x.toggle();
+      }
+    });
+  };
   return (
     <React.Fragment>
-      <RightClick query='#rightclick' />
+      <RightClick
+        ref={(ref) => (rightClickRef.current = ref)}
+        query='#rightclick'
+        close={closeRightClick}
+      />
       <Row
         id='rightclick'
         cssModule={getBs()}
@@ -48,7 +59,7 @@ const Column: React.FunctionComponent<IProps> = ({
                 onContextMenu={(event: any) => {
                   event.preventDefault();
                   event.stopPropagation();
-
+                  rightClickRef.current.hideContextMenu()
                   contextMenuRef.current.map((x, i) => {
                     if (x.isOpenState()) {
                       x.toggle();
@@ -101,7 +112,6 @@ const Column: React.FunctionComponent<IProps> = ({
                         item={item}
                         tabType={currentTab}
                         ref={(ref) => {
-                          // return (contextMenuRef.current[index] = ref)
                           if (
                             item?.hash &&
                             !contextMenuRef.current.find(
