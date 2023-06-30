@@ -155,7 +155,7 @@ const MenuTools: React.FunctionComponent<IProps> = forwardRef(
             start
             cssModule={getBs()}
             {...props}
-            className={styles['dropdown-menu-wrapper']}
+            className={`${styles['dropdown-menu-wrapper']}`}
           >
             <CheckPermissions permissions={['download']}>
               {item?.type === FolderTypes.folder || (
