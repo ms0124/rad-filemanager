@@ -138,10 +138,11 @@ export const archiveDelete = async ({ headers, ...params }): Promise<Data> => {
 /********* D O W N L O A D ***************/
 /************************************* */
 
-export const download = async (hash) => {
+export const download = async (hash, headers) => {
   return instance
     .get(`${namespace}/download/${hash}/`, {
-      responseType: 'blob'
+      responseType: 'blob',
+      headers
     })
     .then((response) => {
       const blob = response.data;

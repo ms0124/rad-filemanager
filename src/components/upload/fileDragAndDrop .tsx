@@ -8,7 +8,7 @@ import React, {
   useContext,
   useRef
 } from 'react';
-
+import { toast } from 'react-toastify';
 import { Modal, ModalBody, ModalHeader } from 'reactstrap';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -135,6 +135,19 @@ const FilesDragAndDrop: FunctionComponent<Props> = ({ modal, toggleModal }) => {
     e.preventDefault();
     e.stopPropagation();
     const { files } = e.dataTransfer;
+    // prevent to drop files and folder with size == 0
+    if (files && files.length > 0) {
+      let breakFunction = false;
+      for (let file of files) {
+        if (file?.size <= 0) {
+          breakFunction = true;
+        }
+      }
+      if (breakFunction) {
+        toast.error('شما نمی توانید پوشه یا فایل های با اندازه 0 آپلود کنید');
+        return;
+      }
+    }
 
     setHoverFile(false);
     if (files && files.length) {

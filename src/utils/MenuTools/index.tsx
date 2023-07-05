@@ -26,7 +26,7 @@ import { FolderTypes, OperationTypes } from '../../config/types';
 import { Context } from '../../store/index';
 import { download } from '../../config/api';
 import { TabTypes } from '../../config/types';
-import { useArchiveDelete, useArchiveRestor } from '../../config/hooks';
+import { useArchiveDelete, useArchiveRestor, getHeader } from '../../config/hooks';
 import { objectToQueryString } from '../../utils/index';
 import CheckPermissions from '../../components/CheckPermissions';
 import { getBs } from '../../utils/index';
@@ -57,7 +57,7 @@ const MenuTools: React.FunctionComponent<IProps> = forwardRef(
     const currentIsOpenRef = useRef(false);
     const [isOpenModal, setIsOpenModal] = useState<boolean>(false);
     const [operationType, setOperationType] = useState<number | null>();
-
+    const headers = getHeader(false);
     const toggleModal: () => void = () => setIsOpenModal(!isOpenModal);
     const toggle: () => void = () => {
       setIsOpen(prev => {
@@ -91,7 +91,7 @@ const MenuTools: React.FunctionComponent<IProps> = forwardRef(
           break;
         case OperationTypes.Download:
           const extension = item.extension.toLowerCase();
-          download(item?.hash).then((blob) => {
+          download(item?.hash, headers).then((blob) => {
             FileSaver.saveAs(blob, `${item?.hash}.${extension}`);
           });
           break;
