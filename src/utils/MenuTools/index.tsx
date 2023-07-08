@@ -1,6 +1,12 @@
 import styles from './style.module.scss';
 
-import React, { useState, useContext, forwardRef, useRef } from 'react';
+import React, {
+  useState,
+  useContext,
+  forwardRef,
+  useRef,
+  useEffect
+} from 'react';
 import {
   Dropdown,
   DropdownMenu,
@@ -26,7 +32,11 @@ import { FolderTypes, OperationTypes } from '../../config/types';
 import { Context } from '../../store/index';
 import { download } from '../../config/api';
 import { TabTypes } from '../../config/types';
-import { useArchiveDelete, useArchiveRestor, getHeader } from '../../config/hooks';
+import {
+  useArchiveDelete,
+  useArchiveRestor,
+  getHeader
+} from '../../config/hooks';
 import { objectToQueryString } from '../../utils/index';
 import CheckPermissions from '../../components/CheckPermissions';
 import { getBs } from '../../utils/index';
@@ -43,10 +53,11 @@ interface IProps {
   item: { name: string; hash: string; extension: string; type: string };
   tabType: number;
   ref: any;
+  isFirstCol?: boolean;
 }
 
 const MenuTools: React.FunctionComponent<IProps> = forwardRef(
-  ({ item, tabType, ...props }, ref) => {
+  ({ item, tabType, isFirstCol = false, ...props }, ref) => {
     const {
       itemHash,
       setItemHash,
@@ -55,19 +66,20 @@ const MenuTools: React.FunctionComponent<IProps> = forwardRef(
     } = useContext(Context);
     const [isOpen, setIsOpen] = useState<boolean>(false);
     const currentIsOpenRef = useRef(false);
+    const menuRef = useRef<HTMLDivElement>(null);
     const [isOpenModal, setIsOpenModal] = useState<boolean>(false);
     const [operationType, setOperationType] = useState<number | null>();
     const headers = getHeader(false);
     const toggleModal: () => void = () => setIsOpenModal(!isOpenModal);
     const toggle: () => void = () => {
-      setIsOpen(prev => {
+      setIsOpen((prev) => {
         currentIsOpenRef.current = !prev;
-       return !prev
+        return !prev;
       });
     };
-    const isOpenState = () => currentIsOpenRef.current
-    const getHash = () => item.hash
-    React.useImperativeHandle(ref, () => ({ toggle, isOpenState ,getHash}));
+    const isOpenState = () => currentIsOpenRef.current;
+    const getHash = () => item.hash;
+    React.useImperativeHandle(ref, () => ({ toggle, isOpenState, getHash }));
 
     const archiveDelete = useArchiveDelete(currentHash);
     const archiveRestor = useArchiveRestor(currentHash);
@@ -103,7 +115,17 @@ const MenuTools: React.FunctionComponent<IProps> = forwardRef(
           break;
       }
     };
-
+    useEffect(() => {
+      const element: any = menuRef.current?.nextSibling;
+      setTimeout(() => {
+        if (isFirstCol && isOpen && element) {
+          element.style.transform = element.style.transform?.replace(
+            /\(-.*?,/,
+            '( -15px,'
+          );
+        }
+      }, 50);
+    }, [isOpen]);
     return (
       <React.Fragment>
         {isOpenModal && operationType === OperationTypes.Remove ? (
@@ -140,8 +162,10 @@ const MenuTools: React.FunctionComponent<IProps> = forwardRef(
         >
           <DropdownToggle
             cssModule={getBs()}
-            tag='div'
+            tag='span'
+            caret={false}
             className={styles['col__icon-3'] + ' col__icon-3'}
+            innerRef={menuRef}
           >
             <FontAwesomeIcon
               onClick={toggle}

@@ -61,7 +61,7 @@ const App: React.FunctionComponent<IProps> = forwardRef(
       setIsShown(false);
       const newPosition = {
         x:
-          Math.abs(clientWidth - event.pageX) > 250
+          Math.abs(clientWidth - event.pageX) < 250
             ? event.pageX
             : event.pageX - 250,
         y: event.clientY

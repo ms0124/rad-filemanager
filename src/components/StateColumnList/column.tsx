@@ -53,124 +53,131 @@ const Column: React.FunctionComponent<IProps> = ({
       >
         {pages.map((page, pageIndex) => {
           const _data = page?.result?.list ? page?.result?.list : page?.result;
-          return _data.map((item, index) => (
-            <Col cssModule={getBs()} xs={3} md={3} lg={3} key={index}>
-              <div
-                onContextMenu={(event: any) => {
-                  event.preventDefault();
-                  event.stopPropagation();
-                  rightClickRef.current.hideContextMenu()
-                  contextMenuRef.current.map((x, i) => {
-                    if (x.isOpenState()) {
-                      x.toggle();
+          return _data.map((item, index) => {
+            return (
+              <Col cssModule={getBs()} xs={3} md={3} lg={3} key={index}>
+                <div
+                  onContextMenu={(event: any) => {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    rightClickRef.current.hideContextMenu();
+                    contextMenuRef.current.map((x, i) => {
+                      if (x.isOpenState()) {
+                        x.toggle();
+                      }
+                    });
+
+                    if (item.hash) {
+                      contextMenuRef.current
+                        .find((i) => i.getHash() === item.hash)
+                        ?.toggle();
                     }
-                  });
+                  }}
+                  ref={(ref) => (slectedRef.current[index] = ref)}
+                  onClick={(e) => {
+                    if (!onSelect) return; /// if onSelect undefined this function will dont work
+                    if (!item?.extension && !item?.isPublic) return; // for folder dont select
+                    e.stopPropagation();
 
-                  if (item.hash) {
-                    contextMenuRef.current
-                      .find((i) => i.getHash() === item.hash)
-                      ?.toggle();
-                  }
-                }}
-                ref={(ref) => (slectedRef.current[index] = ref)}
-                onClick={(e) => {
-                  if (!onSelect) return; /// if onSelect undefined this function will dont work
-                  if (!item?.extension && !item?.isPublic) return; // for folder dont select
-                  e.stopPropagation();
+                    if (
+                      slectedRef.current[index]?.style?.backgroundColor ===
+                      'cornflowerblue'
+                    ) {
+                      slectedRef.current[index]!.style!.backgroundColor =
+                        'rgb(250,250,250)';
+                    } else {
+                      slectedRef.current.map(
+                        (item) =>
+                          (item!.style!.backgroundColor = 'rgb(250,250,250)')
+                      );
+                      slectedRef.current[index]!.style!.backgroundColor =
+                        'cornflowerblue';
+                    }
+                    if (onSelect) onSelect(item);
+                  }}
+                  onDoubleClick={() => {
+                    if (TabTypes.SearchList) {
+                      setSearchText('');
+                    }
+                    if (currentTab == TabTypes.ArchiveList) return;
 
-                  if (
-                    slectedRef.current[index]?.style?.backgroundColor ===
-                    'cornflowerblue'
-                  ) {
-                    slectedRef.current[index]!.style!.backgroundColor =
-                      'rgb(250,250,250)';
-                  } else {
-                    slectedRef.current.map(
-                      (item) =>
-                        (item!.style!.backgroundColor = 'rgb(250,250,250)')
-                    );
-                    slectedRef.current[index]!.style!.backgroundColor =
-                      'cornflowerblue';
-                  }
-                  if (onSelect) onSelect(item);
-                }}
-                onDoubleClick={() => {
-                  if (TabTypes.SearchList) {
-                    setSearchText('');
-                  }
-                  if (currentTab == TabTypes.ArchiveList) return;
-
-                  item?.extension ? null : setHash(item?.hash);
-                }}
-                className={styles['col']}
-                style={item?.extension ? {} : { cursor: 'pointer' }}
-              >
-                <div className={classnames(styles['col__img-wrapper'])}>
-                  <div className={styles['col__menu-wrapper']}>
-                    {item ? (
-                      <MenuTools
-                        item={item}
-                        tabType={currentTab}
-                        ref={(ref) => {
-                          if (
-                            item?.hash &&
-                            !contextMenuRef.current.find(
-                              (i) => i.getHash() == item.hash
-                            )
-                          ) {
-                            return contextMenuRef.current.push(ref);
-                          }
-                        }}
-                      />
-                    ) : (
-                      ''
-                    )}
-                  </div>
-                  <div className={styles['col__icon-access-wrapper']}>
-                    {item?.isPublic ? (
-                      <FontAwesomeIcon
-                        className={styles['col__icon-access']}
-                        icon={faGlobe}
-                      />
-                    ) : (
-                      <FontAwesomeIcon
-                        className={styles['col__icon-access']}
-                        icon={faKey}
-                      />
-                    )}
-                  </div>
-                  {item?.type != FolderTypes.folder ? (
-                    item?.thumbnail &&
-                    item?.thumbnail.startsWith('THUMBNAIL_EXIST') ? (
-                      <img
-                        className={styles['col__img']}
-                        src={`https://sandbox.podspace.ir:8443/api/files/${item?.hash}/thumbnail`}
-                      />
-                    ) : item ? (
-                      <DefaultThumnail item={item} />
-                    ) : (
-                      ''
-                    )
-                  ) : (
-                    <div className={styles['col__folder-img-wrapper']}>
-                      <img className={styles['col__folder-img']} src={folder} />
+                    item?.extension ? null : setHash(item?.hash);
+                  }}
+                  className={styles['col']}
+                  style={item?.extension ? {} : { cursor: 'pointer' }}
+                >
+                  <div className={classnames(styles['col__img-wrapper'])}>
+                    <div className={styles['col__menu-wrapper']}>
+                      {item ? (
+                        <MenuTools
+                          isFirstCol={index % 4 === 0 ? true : false}
+                          item={item}
+                          tabType={currentTab}
+                          ref={(ref) => {
+                            if (
+                              item?.hash &&
+                              !contextMenuRef.current.find(
+                                (i) => i.getHash() == item.hash
+                              )
+                            ) {
+                              
+                              return contextMenuRef.current.push(ref);
+                            }
+                          }}
+                        />
+                      ) : (
+                        ''
+                      )}
                     </div>
-                  )}
+                    <div className={styles['col__icon-access-wrapper']}>
+                      {item?.isPublic ? (
+                        <FontAwesomeIcon
+                          className={styles['col__icon-access']}
+                          icon={faGlobe}
+                        />
+                      ) : (
+                        <FontAwesomeIcon
+                          className={styles['col__icon-access']}
+                          icon={faKey}
+                        />
+                      )}
+                    </div>
+                    {item?.type != FolderTypes.folder ? (
+                      item?.thumbnail &&
+                      item?.thumbnail.startsWith('THUMBNAIL_EXIST') ? (
+                        <img
+                          className={styles['col__img']}
+                          src={`https://sandbox.podspace.ir:8443/api/files/${item?.hash}/thumbnail`}
+                        />
+                      ) : item ? (
+                        <DefaultThumnail item={item} />
+                      ) : (
+                        ''
+                      )
+                    ) : (
+                      <div className={styles['col__folder-img-wrapper']}>
+                        <img
+                          className={styles['col__folder-img']}
+                          src={folder}
+                        />
+                      </div>
+                    )}
+                  </div>
+                  <h4 className={styles['col__title']}>
+                    {brifStr(item?.name, 12)}
+                  </h4>
+                  <div className={styles['col__volume']}>
+                    {item?.type === FolderTypes.folder
+                      ? ''
+                      : formatBytes(item?.size)}
+                  </div>
+                  <div className={styles['col__date']}>
+                    {moment(item?.created).format('jYYYY/jMM/jDD HH:mm:ss')}
+                  </div>
                 </div>
-                <h4 className={styles['col__title']}>
-                  {brifStr(item?.name, 12)}
-                </h4>
-                <div className={styles['col__volume']}>
-                  {item?.type === FolderTypes.folder
-                    ? ''
-                    : formatBytes(item?.size)}
-                </div>
-                <div className={styles['col__date']}>
-                  {moment(item?.created).format('jYYYY/jMM/jDD HH:mm:ss')}
-                </div>
-              </div>
-            </Col>
-          ));
+              </Col>
+            );
+          });
         })}
       </Row>
     </React.Fragment>

@@ -37,6 +37,7 @@ const Index = ({ item }) => {
     case VideoTypes.mpg:
     case VideoTypes.ogg:
       icon = faFileVideo;
+      break;
     case DocumentTypes.doc:
     case DocumentTypes.docx:
       icon = faFileWord;
