@@ -1,7 +1,7 @@
 import 'react-toastify/dist/ReactToastify.css';
 
 import ReactDOM from 'react-dom';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import './sass/style.module.scss';
 import App from './components/FileManager/index';
 import { Context, AppContextInterface } from './store/index';
@@ -35,6 +35,10 @@ const FileManagerReact = ({ ...props }: Props) => {
     clientId: props.clientId,
     accessToken: props.accessToken
   });
+
+  useEffect(() => {
+    setHeader({ clientId: props.clientId, accessToken: props.accessToken });
+  }, [props.accessToken]);
 
   const defaultValues: AppContextInterface = {
     isList,
@@ -84,6 +88,10 @@ function FileManager(props: any, elementId: any) {
   });
   const [onSelect, setOnSelect] = useState(() => props.onSelect);
 
+  useEffect(() => {
+    setHeader({ clientId: props.clientId, accessToken: props.accessToken });
+  }, [props.accessToken]);
+  
   const defaultValues: AppContextInterface = {
     isList,
     setIsList,

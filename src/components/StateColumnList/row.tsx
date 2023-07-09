@@ -40,16 +40,18 @@ const Row: FunctionComponent<IProps> = ({ pages = [], setHash }) => {
         {pages.map((page) => {
           const _data = page?.result?.list ? page?.result?.list : page?.result;
           return _data.map((item, index) => (
-            <tr onContextMenu={(event: any) => {
-              event.preventDefault();
-              event.stopPropagation();
-              contextMenuRef.current.map(
-                (item, i) => {
-                  item.isOpenState() && contextMenuRef.current[i]?.toggle()
-                }
-              );
-              contextMenuRef.current[index]?.toggle();
-            }} key={index} ref={(ref) => (slectedRef.current[index] = ref)} >
+            <tr
+              onContextMenu={(event: any) => {
+                event.preventDefault();
+                event.stopPropagation();
+                contextMenuRef.current.map((item, i) => {
+                  item.isOpenState() && contextMenuRef.current[i]?.toggle();
+                });
+                contextMenuRef.current[index]?.toggle();
+              }}
+              key={index}
+              ref={(ref) => (slectedRef.current[index] = ref)}
+            >
               <td className={styles['vertical-align-top']}>
                 <MenuTools
                   item={item}
@@ -107,21 +109,34 @@ const Row: FunctionComponent<IProps> = ({ pages = [], setHash }) => {
                   item.extension ? null : setHash(item.hash);
                 }}
               >
-                {brifStr(item.name)}
+                <span style={{ direction: 'ltr', unicodeBidi: 'isolate' }}>
+                  {`${brifStr(item.name)}${
+                    item?.extension ? '.' + item.extension.toLowerCase() : ''
+                  }`}
+                </span>
               </td>
-              <td className={`${styles['dir-ltr']} ${utilStyles['text-center']}`}>
+              <td
+                className={`${styles['dir-ltr']} ${utilStyles['text-center']}`}
+              >
                 {moment(item.created).format('jYYYY/jMM/jDD HH:mm:ss')}
               </td>
-              <td className={`${styles['dir-ltr']} ${utilStyles['text-center']}`}>
+              <td
+                className={`${styles['dir-ltr']} ${utilStyles['text-center']}`}
+              >
                 {' '}
                 {moment(item.updated).format('jYYYY/jMM/jDD HH:mm:ss')}
               </td>
-              <td className={`${styles['dir-ltr']} ${utilStyles['text-center']}`}>
-              {item?.type === FolderTypes.folder
-                    ? ''
-                    : formatBytes(item?.size)}
+              <td
+                className={`${styles['dir-ltr']} ${utilStyles['text-center']}`}
+              >
+                {item?.type === FolderTypes.folder
+                  ? ''
+                  : formatBytes(item?.size)}
               </td>
-              <td className={`${utilStyles['text-center']}`} style={{color: '#6184ff'}}>
+              <td
+                className={`${utilStyles['text-center']}`}
+                style={{ color: '#6184ff' }}
+              >
                 {item.isPublic ? (
                   <FontAwesomeIcon icon={faGlobe} />
                 ) : (

@@ -120,7 +120,6 @@ const Column: React.FunctionComponent<IProps> = ({
                                 (i) => i.getHash() == item.hash
                               )
                             ) {
-                              
                               return contextMenuRef.current.push(ref);
                             }
                           }}
@@ -165,6 +164,7 @@ const Column: React.FunctionComponent<IProps> = ({
                   </div>
                   <h4 className={styles['col__title']}>
                     {brifStr(item?.name, 12)}
+                    {item?.extension ? `.${item.extension.toLowerCase()}` : ""}
                   </h4>
                   <div className={styles['col__volume']}>
                     {item?.type === FolderTypes.folder

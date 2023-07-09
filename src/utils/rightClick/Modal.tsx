@@ -7,6 +7,8 @@ import {
   ModalBody,
   ModalHeader,
   Input,
+  InputGroup,
+  InputGroupText,
   Button,
   Spinner
 } from 'reactstrap';
@@ -27,7 +29,7 @@ interface IProps {
   placeholder?: string;
   btnOkText: string;
   btnNoText: string;
-  item?: { name: string; hash: string };
+  item?: { name: string; hash: string; extension: string };
 }
 
 const Index: React.FC<IProps> = ({
@@ -50,6 +52,8 @@ const Index: React.FC<IProps> = ({
 
   const execute = () => {
     let name: string = inputRef.current?.value ? inputRef.current?.value : '';
+    const extension: string = item?.extension ? `.${item.extension}` : '';
+
     if (type === OperationTypes.Remove) name = ''; // inputRef.current?.value;
     switch (type) {
       case OperationTypes.NewFolder:
@@ -66,7 +70,7 @@ const Index: React.FC<IProps> = ({
         break;
       case OperationTypes.Rename:
         renameFileAndFolder
-          .mutateAsync({ hash: item?.hash, newName: name })
+          .mutateAsync({ hash: item?.hash, newName: `${name}${extension}` })
           .finally(() => {
             if (isOpen) setTimeout(() => toggle(), 1500);
           });
@@ -86,6 +90,23 @@ const Index: React.FC<IProps> = ({
       <ModalBody cssModule={getBs()}>
         {type === OperationTypes.Remove ? (
           ''
+        ) : type === OperationTypes.Rename ? (
+          <div className={styles['input-wrapper']}>
+            {item?.extension ? (
+              <span className={styles['input-wrapper__icon']}>
+                {`.${item.extension.toLocaleLowerCase()}`}
+              </span>
+            ) : (
+              ''
+            )}
+            <input
+              ref={inputRef}
+              placeholder={placeholder}
+              defaultValue={item?.name}
+              onDoubleClick={(e) => e.stopPropagation()}
+              className={styles['input-wrapper__input']}
+            />
+          </div>
         ) : (
           <Input
             innerRef={inputRef}
@@ -117,7 +138,12 @@ const Index: React.FC<IProps> = ({
           >
             {btnNoText}
           </Button>
-          <Button cssModule={getBs()} onClick={execute} color='primary' className={`${utilStyles['round-8']} ${styles['btn-primary']}`} >
+          <Button
+            cssModule={getBs()}
+            onClick={execute}
+            color='primary'
+            className={`${utilStyles['round-8']} ${styles['btn-primary']}`}
+          >
             {btnOkText}{' '}
             {deleteFileAndFolder.isLoading || renameFileAndFolder.isLoading ? (
               <Spinner cssModule={getBs()} size={'sm'} />

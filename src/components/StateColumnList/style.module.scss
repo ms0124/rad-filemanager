@@ -86,6 +86,8 @@
     padding-top: 10px;
     text-align: center;
     word-break: break-word;
+    direction: ltr;
+    unicode-bidi: isolate;
   }
   &__volume {
     font-size: small;
