@@ -91,7 +91,7 @@ const Index: React.FC<IProps> = ({
         {type === OperationTypes.Remove ? (
           ''
         ) : type === OperationTypes.Rename ? (
-          <div className={styles['input-wrapper']}>
+          <div className={styles['input-wrapper']} style={{paddingRight:item?.extension ? 0: '8px'}}>
             {item?.extension ? (
               <span className={styles['input-wrapper__icon']}>
                 {`.${item.extension.toLocaleLowerCase()}`}
