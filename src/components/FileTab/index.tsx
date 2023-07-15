@@ -27,7 +27,7 @@ const FileTab: FunctionComponent<IProps> = ({ setTotal }) => {
   const { isList, setBreadCrumb, currentHash, setCurrentHash, currentTab } =
     useContext(Context);
 
-  let { data, isLoading,isFetching,  fetchNextPage, hasNextPage } =
+  let { data, isLoading, isFetching, fetchNextPage, hasNextPage } =
     useGetFolderContentChildren(
       currentHash,
       objectToQueryString({ size: PAGE_SIZE, offset: 0 }),
@@ -44,7 +44,7 @@ const FileTab: FunctionComponent<IProps> = ({ setTotal }) => {
       fetchNextPage();
     }
   }, [inView, hasNextPage, currentHash]);
-  
+
   return (
     <React.Fragment>
       {data?.pages[0]?.result && data?.pages[0]?.result?.list?.length > 0 ? (
@@ -64,7 +64,9 @@ const FileTab: FunctionComponent<IProps> = ({ setTotal }) => {
               tabType={TabTypes.FileList}
             />
           )}
-          <div className={utilStyles['mb-4']} ref={ref}>{isFetching ? <Loading /> : '.'}</div>
+          <div className={utilStyles['mb-4']} ref={ref}>
+            {isFetching ? <Loading /> : '.'}
+          </div>
         </React.Fragment>
       ) : isLoading ? (
         <Loading wholePage />

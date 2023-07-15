@@ -12,6 +12,7 @@ import { Context } from '../../store/index';
 import MenuTools from '../../utils/MenuTools/';
 import DefaultThumnail from '../StateColumnList/defaultThumbnail/';
 import { TabTypes, FolderTypes } from '../../config/types';
+import { PAGE_SIZE } from '../../config/config';
 import folder from './folder.png';
 interface IProps {
   pages: any;
@@ -37,7 +38,7 @@ const Row: FunctionComponent<IProps> = ({ pages = [], setHash }) => {
         </tr>
       </thead>
       <tbody>
-        {pages.map((page) => {
+        {pages.map((page, pageIndex) => {
           const _data = page?.result?.list ? page?.result?.list : page?.result;
           return _data.map((item, index) => (
             <tr
@@ -45,9 +46,18 @@ const Row: FunctionComponent<IProps> = ({ pages = [], setHash }) => {
                 event.preventDefault();
                 event.stopPropagation();
                 contextMenuRef.current.map((item, i) => {
-                  item.isOpenState() && contextMenuRef.current[i]?.toggle();
+                  item?.isOpenState() && item?.toggle();
                 });
-                contextMenuRef.current[index]?.toggle();
+                const currentIndex =
+                  pageIndex === 0 ? index : (index + PAGE_SIZE) * pageIndex;
+                if (item.hash) {
+                  contextMenuRef.current[currentIndex].toggle();
+                  // contextMenuRef.current
+                  //   .find((i, index) => {
+                  //     return i && i?.getHash() === item.hash;
+                  //   })
+                  //   ?.toggle();
+                }
               }}
               key={index}
               ref={(ref) => (slectedRef.current[index] = ref)}
@@ -56,7 +66,17 @@ const Row: FunctionComponent<IProps> = ({ pages = [], setHash }) => {
                 <MenuTools
                   item={item}
                   tabType={currentTab}
-                  ref={(ref) => (contextMenuRef.current[index] = ref)}
+                  // ref={(ref) => (contextMenuRef.current[index] = ref)}
+                  ref={(ref) => {
+                    if (
+                      item?.hash &&
+                      !contextMenuRef.current.find(
+                        (i) => i && i?.getHash() == item.hash
+                      )
+                    ) {
+                      return contextMenuRef.current.push(ref);
+                    }
+                  }}
                 />
               </td>
               <td className={styles['thumnail-wrraper']}>
@@ -84,7 +104,7 @@ const Row: FunctionComponent<IProps> = ({ pages = [], setHash }) => {
                 className={`${utilStyles['text-end']}`}
                 scope='row'
                 onClick={() => {
-                  if (!item.extension && !item.isPublic) return;
+                  if (!item?.extension && !item?.isPublic) return;
                   if (
                     slectedRef.current[index]?.style.backgroundColor ===
                     'cornflowerblue'
@@ -106,11 +126,11 @@ const Row: FunctionComponent<IProps> = ({ pages = [], setHash }) => {
                   if (TabTypes.SearchList) {
                     setSearchText('');
                   }
-                  item.extension ? null : setHash(item.hash);
+                  item?.extension ? null : setHash(item?.hash);
                 }}
               >
                 <span style={{ direction: 'ltr', unicodeBidi: 'isolate' }}>
-                  {`${brifStr(item.name)}${
+                  {`${brifStr(item?.name)}${
                     item?.extension ? '.' + item.extension.toLowerCase() : ''
                   }`}
                 </span>
@@ -118,13 +138,13 @@ const Row: FunctionComponent<IProps> = ({ pages = [], setHash }) => {
               <td
                 className={`${styles['dir-ltr']} ${utilStyles['text-center']}`}
               >
-                {moment(item.created).format('jYYYY/jMM/jDD HH:mm:ss')}
+                {moment(item?.created).format('jYYYY/jMM/jDD HH:mm:ss')}
               </td>
               <td
                 className={`${styles['dir-ltr']} ${utilStyles['text-center']}`}
               >
                 {' '}
-                {moment(item.updated).format('jYYYY/jMM/jDD HH:mm:ss')}
+                {moment(item?.updated).format('jYYYY/jMM/jDD HH:mm:ss')}
               </td>
               <td
                 className={`${styles['dir-ltr']} ${utilStyles['text-center']}`}
@@ -137,7 +157,7 @@ const Row: FunctionComponent<IProps> = ({ pages = [], setHash }) => {
                 className={`${utilStyles['text-center']}`}
                 style={{ color: '#6184ff' }}
               >
-                {item.isPublic ? (
+                {item?.isPublic ? (
                   <FontAwesomeIcon icon={faGlobe} />
                 ) : (
                   <FontAwesomeIcon icon={faKey} />

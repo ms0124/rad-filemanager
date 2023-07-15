@@ -70,5 +70,22 @@ const formatBytes = (bytes: number, decimals: number = 2): string => {
 const objectToQueryString = (obj: any): string => {
   return '?' + new URLSearchParams(obj).toString();
 };
+type a = string | number | boolean;
 
-export { RightClick, formatBytes, brifStr, objectToQueryString };
+const serializeUrl = (urlParameters) => {
+  const output = Object.entries(urlParameters).map(
+    ([key, value]: [string, string | string[]], index) => {
+      if (Array.isArray(value)) {
+        let arrToUrl = index === 0 ? '?' : '';
+        value.forEach((item, i) => {
+          arrToUrl += `${key}[]=${encodeURIComponent(item)}`;
+          if (value.length > i + 1) arrToUrl += '&';
+        });
+        return arrToUrl;
+      }
+      return `${index === 0 ? '?' : ''}${key}=${encodeURIComponent(value)}`;
+    }
+  );
+  return output.join('&');
+};
+export { RightClick, formatBytes, brifStr, objectToQueryString, serializeUrl };

@@ -79,13 +79,17 @@ const App: React.FunctionComponent<IProps> = forwardRef(
 
     useImperativeHandle(ref, () => ({ hideContextMenu }));
     useEffect(() => {
-      // const elementHtml = document.querySelector(`${query}`);
+      const elementHtml = document.querySelector(`${query}`);
 
-      window?.addEventListener('contextmenu', showContextMenu);
+      elementHtml?.addEventListener('contextmenu', showContextMenu, {
+        capture: true
+      });
       document.body?.addEventListener('click', hideContextMenu);
 
       return () => {
-        window?.removeEventListener('contextmenu', showContextMenu);
+        elementHtml?.removeEventListener('contextmenu', showContextMenu, {
+          capture: true
+        });
         document.body?.removeEventListener('click', hideContextMenu);
       };
     }, []);
@@ -133,6 +137,7 @@ const App: React.FunctionComponent<IProps> = forwardRef(
                   <NavItem
                     cssModule={getBs()}
                     className={styles['context-menu__item']}
+                    onClick={() => clickHandler(OperationTypes.NewFolder)}
                   >
                     <span className={styles['context-menu__icon']}>
                       <IconFolderPlus />
@@ -143,7 +148,6 @@ const App: React.FunctionComponent<IProps> = forwardRef(
                   /> */}
                     <span
                       className={styles['context-menu__text']}
-                      onClick={() => clickHandler(OperationTypes.NewFolder)}
                     >
                       ایجاد پوشه جدید
                     </span>
@@ -159,10 +163,6 @@ const App: React.FunctionComponent<IProps> = forwardRef(
                       <span className={styles['context-menu__icon']}>
                         <IconPaste />
                       </span>
-                      {/* <FontAwesomeIcon
-                      icon={faFolder}
-                      className={styles['context-menu__icon']}
-                    /> */}
                       <span className={styles['context-menu__text']}>
                         جایگذاری
                       </span>

@@ -2,6 +2,7 @@ import styles from './style.module.scss';
 import utilStyles from '../../sass/style.module.scss';
 
 import React, { useContext, useEffect, useRef, useState } from 'react';
+import { findDOMNode } from 'react-dom';
 import { Row, Col } from 'reactstrap';
 import moment from 'moment-jalaali';
 import classnames from 'classnames';
@@ -16,6 +17,7 @@ import { TabTypes, FolderTypes } from '../../config/types';
 import { Context } from '../../store/index';
 import { getBs } from '../../utils/index';
 import DefaultThumnail from './defaultThumbnail/index';
+import { PAGE_SIZE } from '../../config/config';
 // import Empty from './empty';
 interface IProps {
   pages: any;
@@ -26,19 +28,21 @@ interface IProps {
 const Column: React.FunctionComponent<IProps> = ({
   pages = [],
   setHash,
-  tabType
+  tabType,
 }) => {
-  const { setSearchText, onSelect, currentTab } = useContext(Context);
+  const { setSearchText, onSelect, currentTab, breadCrumb } =
+    useContext(Context);
   const slectedRef = useRef<(HTMLDivElement | null)[]>([]);
   const contextMenuRef: any = useRef<[]>([]);
   const rightClickRef: any = useRef<any>(null);
   const closeRightClick = () => {
     contextMenuRef.current.map((x) => {
-      if (x.isOpenState()) {
-        x.toggle();
+      if (x?.isOpenState()) {
+        x?.toggle();
       }
     });
   };
+
   return (
     <React.Fragment>
       <RightClick
@@ -61,16 +65,20 @@ const Column: React.FunctionComponent<IProps> = ({
                     event.preventDefault();
                     event.stopPropagation();
                     rightClickRef.current.hideContextMenu();
-                    contextMenuRef.current.map((x, i) => {
+                    contextMenuRef.current?.map((x, i) => {
                       if (x.isOpenState()) {
                         x.toggle();
                       }
                     });
-
+                    const currentIndex =
+                      pageIndex === 0 ? index : (index + PAGE_SIZE) * pageIndex;
                     if (item.hash) {
-                      contextMenuRef.current
-                        .find((i) => i.getHash() === item.hash)
-                        ?.toggle();
+                      contextMenuRef.current[currentIndex].toggle();
+                      // contextMenuRef.current
+                      //   .find((i, index) => {
+                      //     return i && i?.getHash() === item.hash;
+                      //   })
+                      //   ?.toggle();
                     }
                   }}
                   ref={(ref) => (slectedRef.current[index] = ref)}
@@ -117,7 +125,7 @@ const Column: React.FunctionComponent<IProps> = ({
                             if (
                               item?.hash &&
                               !contextMenuRef.current.find(
-                                (i) => i.getHash() == item.hash
+                                (i) => i && i?.getHash() == item.hash
                               )
                             ) {
                               return contextMenuRef.current.push(ref);
@@ -164,7 +172,7 @@ const Column: React.FunctionComponent<IProps> = ({
                   </div>
                   <h4 className={styles['col__title']}>
                     {brifStr(item?.name, 12)}
-                    {item?.extension ? `.${item.extension.toLowerCase()}` : ""}
+                    {item?.extension ? `.${item.extension.toLowerCase()}` : ''}
                   </h4>
                   <div className={styles['col__volume']}>
                     {item?.type === FolderTypes.folder

@@ -118,7 +118,7 @@ export const archiveRestore = async ({ headers, ...params }): Promise<Data> => {
   return httpRequest(
     `${namespace}/archive/restore/${params.variables}`,
     {
-      headers
+      headers,
     },
     'POST'
   );
@@ -130,7 +130,7 @@ export const archiveDelete = async ({ headers, ...params }): Promise<Data> => {
     {
       headers
     },
-    'POST'
+    'DELETE'
   );
 };
 

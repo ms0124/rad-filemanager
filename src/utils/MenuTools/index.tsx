@@ -37,7 +37,7 @@ import {
   useArchiveRestor,
   getHeader
 } from '../../config/hooks';
-import { objectToQueryString } from '../../utils/index';
+import { objectToQueryString, serializeUrl } from '../../utils/index';
 import CheckPermissions from '../../components/CheckPermissions';
 import { getBs } from '../../utils/index';
 import {
@@ -79,11 +79,16 @@ const MenuTools: React.FunctionComponent<IProps> = forwardRef(
     };
     const isOpenState = () => currentIsOpenRef.current;
     const getHash = () => item.hash;
-    React.useImperativeHandle(ref, () => ({ toggle, isOpenState, getHash }));
+    const getName = () => item.name;
+
+    React.useImperativeHandle(ref, () => ({ toggle, isOpenState, getHash, getName }));
 
     const archiveDelete = useArchiveDelete(currentHash);
     const archiveRestor = useArchiveRestor(currentHash);
     const clickHandler = (type) => {
+      const hashes: any = [];
+      hashes.push(item?.hash);
+
       switch (type) {
         case OperationTypes.Remove:
           toggleModal();
@@ -108,10 +113,10 @@ const MenuTools: React.FunctionComponent<IProps> = forwardRef(
           });
           break;
         case OperationTypes.RemoveArchive:
-          archiveDelete.mutateAsync(objectToQueryString(item.hash));
+          archiveDelete.mutateAsync(serializeUrl({ hashes }));
           break;
         case OperationTypes.RestoreArchive:
-          archiveRestor.mutateAsync(item.hash);
+          archiveRestor.mutateAsync(serializeUrl({ hashes }));
           break;
       }
     };

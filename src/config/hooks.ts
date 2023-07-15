@@ -65,7 +65,8 @@ export const useGetFolderContentChildren = (
           size: PAGE_SIZE,
           offset: offset
         };
-      }
+      },
+      cacheTime: 0
     }
   );
 };
@@ -144,30 +145,30 @@ export const useCut = (folderHash) => {
 };
 
 export const useArchiveList = (headers: any) => {
-  return useInfiniteQuery(['archiveList'],
-  ({ pageParam = { size: PAGE_SIZE, offset: 0 } }) => {
-    return api.getArchiveList({
-      headers,
-      query: objectToQueryString(pageParam)
-    });
-  },
-  {
-    getNextPageParam: (lastPage, allPages) => {
-      const total = lastPage?.count ? lastPage?.count : 0;
-      let page = allPages.length === 0 ? 1 : allPages.length;
-      const offset = PAGE_SIZE * page;
-      if (offset >= total) {
-        return undefined;
+  return useInfiniteQuery(
+    ['archiveList'],
+    ({ pageParam = { size: PAGE_SIZE, offset: 0 } }) => {
+      return api.getArchiveList({
+        headers,
+        query: objectToQueryString(pageParam)
+      });
+    },
+    {
+      getNextPageParam: (lastPage, allPages) => {
+        const total = lastPage?.count ? lastPage?.count : 0;
+        let page = allPages.length === 0 ? 1 : allPages.length;
+        const offset = PAGE_SIZE * page;
+        if (offset >= total) {
+          return undefined;
+        }
+        return {
+          size: PAGE_SIZE,
+          offset: offset
+        };
       }
-      return {
-        size: PAGE_SIZE,
-        offset: offset
-      };
     }
-  }
   );
 };
-
 
 export const useArchiveDelete = (folderHash) => {
   const headers = getHeader(false);
@@ -175,8 +176,10 @@ export const useArchiveDelete = (folderHash) => {
     mutationFn: (variables: string) =>
       api.archiveDelete({ headers, variables }),
     onSuccess: (_, variables) => {
+      console.log('useArchiveDelete');
+
       queryClient.refetchQueries({
-        queryKey: ['folderContentChildren', { hash: folderHash, headers }]
+        queryKey: ['archiveList']
       });
     }
   });
@@ -188,7 +191,7 @@ export const useArchiveRestor = (folderHash) => {
       api.archiveRestore({ headers, variables }),
     onSuccess: (_, variables) => {
       queryClient.refetchQueries({
-        queryKey: ['folderContentChildren', { hash: folderHash, headers }]
+        queryKey: ['archiveList']
       });
     }
   });
