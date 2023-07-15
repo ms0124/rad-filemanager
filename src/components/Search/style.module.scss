@@ -5,6 +5,11 @@
   margin-left: auto;
   border: 1px solid #e1e1e1;
   border-radius: 8px;
+  transform: translateY(-2px);
+  &:focus-within{
+    outline: 0;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.377);
+  }
   input#search-input{
     border: none !important;
     outline: none !important;
@@ -27,6 +32,7 @@
     border-top-left-radius: 8px !important;
     box-shadow: none !important;
     width: 270px !important;
+    height: 39px;
     &::placeholder{
       color: #e1e1e1 !important;
     }

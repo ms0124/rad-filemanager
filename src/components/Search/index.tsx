@@ -30,8 +30,8 @@ const Search: FunctionComponent<Props> = () => {
           <FontAwesomeIcon icon={faSearch} />
         </InputGroupText>
 
-        <Input
-          cssModule={getBs()}
+        <input
+          // cssModule={getBs()}
           value={searchText}
           id='search-input'
           className={`${styles['search-wrapper__input']} `}
