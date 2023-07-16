@@ -48,8 +48,7 @@ const Row: FunctionComponent<IProps> = ({ pages = [], setHash }) => {
                 contextMenuRef.current.map((item, i) => {
                   item?.isOpenState() && item?.toggle();
                 });
-                const currentIndex =
-                  pageIndex === 0 ? index : (index + PAGE_SIZE) * pageIndex;
+                const currentIndex = pageIndex * PAGE_SIZE + index;
                 if (item.hash) {
                   contextMenuRef.current[currentIndex].toggle();
                   // contextMenuRef.current
@@ -68,14 +67,15 @@ const Row: FunctionComponent<IProps> = ({ pages = [], setHash }) => {
                   tabType={currentTab}
                   // ref={(ref) => (contextMenuRef.current[index] = ref)}
                   ref={(ref) => {
-                    if (
-                      item?.hash &&
-                      !contextMenuRef.current.find(
-                        (i) => i && i?.getHash() == item.hash
-                      )
-                    ) {
-                      return contextMenuRef.current.push(ref);
-                    }
+                    const currentIndex = pageIndex * PAGE_SIZE + index;
+                    // if (
+                    // item?.hash
+                    // &&   !contextMenuRef.current.find(
+                    //     (i) => i && i?.getHash() == item.hash
+                    // )
+                    // ) {
+                    return (contextMenuRef.current[currentIndex] = ref);
+                    // }
                   }}
                 />
               </td>

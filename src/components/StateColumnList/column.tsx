@@ -28,7 +28,7 @@ interface IProps {
 const Column: React.FunctionComponent<IProps> = ({
   pages = [],
   setHash,
-  tabType,
+  tabType
 }) => {
   const { setSearchText, onSelect, currentTab, breadCrumb } =
     useContext(Context);
@@ -66,12 +66,11 @@ const Column: React.FunctionComponent<IProps> = ({
                     event.stopPropagation();
                     rightClickRef.current.hideContextMenu();
                     contextMenuRef.current?.map((x, i) => {
-                      if (x.isOpenState()) {
-                        x.toggle();
+                      if (x?.isOpenState()) {
+                        x?.toggle();
                       }
                     });
-                    const currentIndex =
-                      pageIndex === 0 ? index : (index + PAGE_SIZE) * pageIndex;
+                    const currentIndex = pageIndex * PAGE_SIZE + index;
                     if (item.hash) {
                       contextMenuRef.current[currentIndex].toggle();
                       // contextMenuRef.current
@@ -122,14 +121,15 @@ const Column: React.FunctionComponent<IProps> = ({
                           item={item}
                           tabType={currentTab}
                           ref={(ref) => {
-                            if (
-                              item?.hash &&
-                              !contextMenuRef.current.find(
-                                (i) => i && i?.getHash() == item.hash
-                              )
-                            ) {
-                              return contextMenuRef.current.push(ref);
-                            }
+                            const currentIndex = pageIndex * PAGE_SIZE + index;
+                            // if (
+                            //   item?.hash &&
+                            //   !contextMenuRef.current.find(
+                            //     (i) => i && i?.getHash() == item.hash
+                            //   )
+                            // ) {
+                            return (contextMenuRef.current[currentIndex] = ref);
+                            // }
                           }}
                         />
                       ) : (
