@@ -31,7 +31,7 @@ import { IconTick, IconTimes, IconUpload } from '../../utils/icons';
 
 interface Props {
   modal: boolean;
-  toggleModal: () => void;
+  toggleModal: (boolean) => void;
 }
 
 interface fileListInterface {
@@ -98,7 +98,7 @@ const FilesDragAndDrop: FunctionComponent<Props> = ({ modal, toggleModal }) => {
           // reset of my parameters
           setFileList([]);
           setProgress({});
-          if (modal) toggleModal();
+          if (modal) toggleModal(false);
         }
       })
       .finally(() => {
@@ -174,7 +174,7 @@ const FilesDragAndDrop: FunctionComponent<Props> = ({ modal, toggleModal }) => {
     <Modal
       cssModule={getBs()}
       isOpen={modal}
-      toggle={toggleModal}
+      toggle={()=> toggleModal(false)}
       contentClassName={isUpload ? styles['upload-toast'] : ''}
       className={styles['modal-container']}
       // size='lg'
@@ -191,7 +191,7 @@ const FilesDragAndDrop: FunctionComponent<Props> = ({ modal, toggleModal }) => {
             <span>بارگذاری</span>
             <FontAwesomeIcon
               icon={faTimes}
-              onClick={toggleModal}
+              onClick={()=> toggleModal(false)}
               className={styles['icon-times']}
             />
           </ModalHeader>

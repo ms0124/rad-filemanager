@@ -14,8 +14,8 @@ import { IconUpload } from "../../utils/icons"
 const Upload = () => {
   const [modal, setModal] = useState(false);
 
-  const handleModalToggle = () => {
-    setModal((prev) => !prev);
+  const handleModalToggle = (isOpen) => {
+    setModal(isOpen);
   };
 
   return (
@@ -24,7 +24,7 @@ const Upload = () => {
         <Button
           cssModule={getBs()}
           className={`${styles['btn-upload']} ${utilStyles['my-auto']}`}
-          onClick={handleModalToggle}
+          onClick={(event)=> handleModalToggle(true)}
         >
           <IconUpload size='18px' />
           {/* <FontAwesomeIcon icon={faCloudUploadAlt} /> */}
