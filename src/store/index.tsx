@@ -27,7 +27,9 @@ export interface AppContextInterface {
   header: { clientId: string; accessToken: string };
 
   config?: { width: number; height: number } | null;
-  onSelect?: (data: any)=> void
+  onSelect?: (data: any) => void;
+
+  isSandbox: boolean;
 }
 
 export const Context = createContext<AppContextInterface>(

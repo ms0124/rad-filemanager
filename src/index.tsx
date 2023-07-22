@@ -8,7 +8,7 @@ import { Context, AppContextInterface } from './store/index';
 import { QueryClientProvider } from 'react-query';
 import { queryClient } from './config/config';
 import { ToastContainer } from 'react-toastify';
-
+import WithAxios from './utils/WithAxios';
 interface Props {
   clientId: string;
   accessToken: string;
@@ -17,6 +17,7 @@ interface Props {
   };
   permissions: string[];
   onSelect?: any;
+  isSandbox: boolean;
 }
 
 const FileManagerReact = ({ ...props }: Props) => {
@@ -29,7 +30,7 @@ const FileManagerReact = ({ ...props }: Props) => {
   const [searchText, setSearchText] = useState<string>('');
   const [permissions, setPermissions] = useState<string[]>(props.permissions);
   const [onSelect, setOnSelect] = useState(() => props.onSelect);
-
+  const [isSandbox, setIsSandbox] = useState<boolean>(props?.isSandbox);
   const [config, setConfig] = useState<any>(props.config);
   const [header, setHeader] = useState<any>({
     clientId: props.clientId,
@@ -59,13 +60,16 @@ const FileManagerReact = ({ ...props }: Props) => {
     permissions,
     config,
     header,
-    onSelect
+    onSelect,
+    isSandbox
   };
   return (
     <Context.Provider value={defaultValues}>
       <QueryClientProvider client={queryClient}>
         <ToastContainer position='bottom-left' rtl />
-        <App />
+        <WithAxios>
+          <App />
+        </WithAxios>
       </QueryClientProvider>
     </Context.Provider>
   );
@@ -87,11 +91,12 @@ function FileManager(props: any, elementId: any) {
     accessToken: props.accessToken
   });
   const [onSelect, setOnSelect] = useState(() => props.onSelect);
+  const [isSandbox, setIsSandbox] = useState<boolean>(props?.isSandbox);
 
   useEffect(() => {
     setHeader({ clientId: props.clientId, accessToken: props.accessToken });
   }, [props.accessToken]);
-  
+
   const defaultValues: AppContextInterface = {
     isList,
     setIsList,
@@ -111,12 +116,15 @@ function FileManager(props: any, elementId: any) {
     permissions,
     config,
     header,
-    onSelect
+    onSelect,
+    isSandbox
   };
   ReactDOM.render(
     <Context.Provider value={defaultValues}>
       <QueryClientProvider client={queryClient}>
-        <App {...props} />
+        <WithAxios>
+          <App {...props} />
+        </WithAxios>
       </QueryClientProvider>
     </Context.Provider>,
     document.getElementById(elementId)

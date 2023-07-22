@@ -15,8 +15,9 @@ const App: FunctionComponent = () => {
       <Row cssModule={getBs()}>
         <FileManagerReact
           clientId='17959574q2f0347718971594ccd86f3f4'
-          accessToken='70551d5efbd640c4917d8a77cb039020.XzIwMjM2'
+          accessToken='b4c20bba660a4df4ad44ce4b03f39f32.XzIwMjM3'
           // permissions={['full']}
+          isSandbox={false}
           permissions={[
             'upload',
             'upload_image',
@@ -34,7 +35,7 @@ const App: FunctionComponent = () => {
             'archive_restore'
           ]}
           config={{ height: '400px' }}
-          onSelect={(a) => console.log(a)}
+
         />
       </Row>
     </>
