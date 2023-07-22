@@ -176,8 +176,6 @@ export const useArchiveDelete = (folderHash) => {
     mutationFn: (variables: string) =>
       api.archiveDelete({ headers, variables }),
     onSuccess: (_, variables) => {
-      console.log('useArchiveDelete');
-
       queryClient.refetchQueries({
         queryKey: ['archiveList']
       });
