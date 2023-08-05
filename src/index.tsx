@@ -41,6 +41,22 @@ const FileManagerReact = ({ ...props }: Props) => {
     setHeader({ clientId: props.clientId, accessToken: props.accessToken });
   }, [props.accessToken]);
 
+  useEffect(() => {
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) {
+        // tab is changed
+      } else {
+        // tab is active
+        if (header?.accessToken !== props.accessToken) {
+          setHeader({
+            clientId: props.clientId,
+            accessToken: props.accessToken
+          });
+        }
+      }
+    });
+  }, []);
+
   const defaultValues: AppContextInterface = {
     isList,
     setIsList,

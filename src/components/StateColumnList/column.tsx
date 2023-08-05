@@ -54,6 +54,7 @@ const Column: React.FunctionComponent<IProps> = ({
         id='rightclick'
         cssModule={getBs()}
         className={`${utilStyles['m-4']}`}
+        style={{ height: '100%' }}
       >
         {pages.map((page, pageIndex) => {
           const _data = page?.result?.list ? page?.result?.list : page?.result;
