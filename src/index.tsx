@@ -37,24 +37,29 @@ const FileManagerReact = ({ ...props }: Props) => {
     accessToken: props.accessToken
   });
 
+  const handleVisibilitychange = () => {
+    if (document.hidden) {
+      // tab is changed
+    } else {
+      // tab is active
+      if (header?.accessToken !== props?.accessToken) {
+        setHeader({
+          clientId: props.clientId,
+          accessToken: props.accessToken
+        });
+      }
+    }
+  };
+
   useEffect(() => {
     setHeader({ clientId: props.clientId, accessToken: props.accessToken });
   }, [props.accessToken]);
 
   useEffect(() => {
-    document.addEventListener('visibilitychange', () => {
-      if (document.hidden) {
-        // tab is changed
-      } else {
-        // tab is active
-        if (header?.accessToken !== props.accessToken) {
-          setHeader({
-            clientId: props.clientId,
-            accessToken: props.accessToken
-          });
-        }
-      }
-    });
+    document.addEventListener('visibilitychange', handleVisibilitychange);
+    return () => {
+      document.removeEventListener('visibilitychange', handleVisibilitychange);
+    };
   }, []);
 
   const defaultValues: AppContextInterface = {

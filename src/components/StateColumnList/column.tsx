@@ -50,12 +50,7 @@ const Column: React.FunctionComponent<IProps> = ({
         query='#rightclick'
         close={closeRightClick}
       />
-      <Row
-        id='rightclick'
-        cssModule={getBs()}
-        className={`${utilStyles['m-4']}`}
-        style={{ height: '100%' }}
-      >
+      <Row cssModule={getBs()} className={`${utilStyles['m-4']}`}>
         {pages.map((page, pageIndex) => {
           const _data = page?.result?.list ? page?.result?.list : page?.result;
           return _data.map((item, index) => {

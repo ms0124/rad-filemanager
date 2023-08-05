@@ -129,6 +129,7 @@ const Tab: FunctionComponent<Props> = () => {
           tabId={TabTypes.FileList}
           style={{ height: config?.height }}
           cssModule={getBs()}
+          id='rightclick'
         >
           <CheckPermissions permissions={['folder_children']} showMessage>
             <FileTab setTotal={setTotal} />
