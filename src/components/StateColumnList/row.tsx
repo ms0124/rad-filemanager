@@ -7,7 +7,12 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faKey, faGlobe } from '@fortawesome/free-solid-svg-icons';
 import moment from 'moment-jalaali';
 
-import { formatBytes, brifStr, getBs } from '../../utils/index';
+import {
+  formatBytes,
+  brifStr,
+  getBs,
+  getThumbnailUrl
+} from '../../utils/index';
 import { Context } from '../../store/index';
 import MenuTools from '../../utils/MenuTools/';
 import DefaultThumnail from '../StateColumnList/defaultThumbnail/';
@@ -21,7 +26,9 @@ interface IProps {
 }
 
 const Row: FunctionComponent<IProps> = ({ pages = [], setHash }) => {
-  const { setSearchText, onSelect, currentTab } = useContext(Context);
+  const { setSearchText, onSelect, currentTab, isSandbox } =
+    useContext(Context);
+
   const slectedRef = useRef<(HTMLDivElement | null)[]>([]);
   const contextMenuRef: any = useRef<[]>([]);
   return (
@@ -83,9 +90,7 @@ const Row: FunctionComponent<IProps> = ({ pages = [], setHash }) => {
                 {item?.type != FolderTypes.folder ? (
                   item?.thumbnail &&
                   item?.thumbnail.startsWith('THUMBNAIL_EXIST') ? (
-                    <img
-                      src={`https://sandbox.podspace.ir:8443/api/files/${item?.hash}/thumbnail`}
-                    />
+                    <img src={getThumbnailUrl(item?.hash, isSandbox)} />
                   ) : item ? (
                     <DefaultThumnail item={item} />
                   ) : (

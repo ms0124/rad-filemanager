@@ -2,7 +2,6 @@ import styles from './style.module.scss';
 import utilStyles from '../../sass/style.module.scss';
 
 import React, { useContext, useEffect, useRef, useState } from 'react';
-import { findDOMNode } from 'react-dom';
 import { Row, Col } from 'reactstrap';
 import moment from 'moment-jalaali';
 import classnames from 'classnames';
@@ -11,7 +10,7 @@ import folder from './folder.png';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faGlobe, faKey } from '@fortawesome/free-solid-svg-icons';
 import MenuTools from '../../utils/MenuTools/';
-import { formatBytes, brifStr } from '../../utils/index';
+import { formatBytes, brifStr, getThumbnailUrl } from '../../utils/index';
 import { RightClick } from '../../utils';
 import { TabTypes, FolderTypes } from '../../config/types';
 import { Context } from '../../store/index';
@@ -30,7 +29,7 @@ const Column: React.FunctionComponent<IProps> = ({
   setHash,
   tabType
 }) => {
-  const { setSearchText, onSelect, currentTab, breadCrumb } =
+  const { setSearchText, onSelect, currentTab, breadCrumb, isSandbox } =
     useContext(Context);
   const slectedRef = useRef<(HTMLDivElement | null)[]>([]);
   const contextMenuRef: any = useRef<[]>([]);
@@ -150,7 +149,7 @@ const Column: React.FunctionComponent<IProps> = ({
                       item?.thumbnail.startsWith('THUMBNAIL_EXIST') ? (
                         <img
                           className={styles['col__img']}
-                          src={`https://sandbox.podspace.ir:8443/api/files/${item?.hash}/thumbnail`}
+                          src={getThumbnailUrl(item?.hash, isSandbox)}
                         />
                       ) : item ? (
                         <DefaultThumnail item={item} />

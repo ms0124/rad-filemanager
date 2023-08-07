@@ -88,4 +88,17 @@ const serializeUrl = (urlParameters) => {
   );
   return output.join('&');
 };
-export { RightClick, formatBytes, brifStr, objectToQueryString, serializeUrl };
+
+const getThumbnailUrl = (hash, isSandbox) =>
+  isSandbox
+    ? `https://sandbox.podspace.ir:8443/api/files/${hash}/thumbnail`
+    : `https://podspace.pod.ir/api/files/${hash}/thumbnail`;
+
+export {
+  RightClick,
+  formatBytes,
+  brifStr,
+  objectToQueryString,
+  serializeUrl,
+  getThumbnailUrl
+};
