@@ -108,6 +108,7 @@ const Column: React.FunctionComponent<IProps> = ({
                   className={styles['col']}
                   style={item?.extension ? {} : { cursor: 'pointer' }}
                 >
+                  <input type="checkbox" className={classnames(styles['col__checkbox'])} />
                   <div className={classnames(styles['col__img-wrapper'])}>
                     <div className={styles['col__menu-wrapper']}>
                       {item ? (

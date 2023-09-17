@@ -1,7 +1,7 @@
 import styles from './style.module.scss';
-import utilStyles from "../../sass/style.module.scss";
+import utilStyles from '../../sass/style.module.scss';
 
-import utilsStyles from "../../sass/style.module.scss";
+import utilsStyles from '../../sass/style.module.scss';
 import React, { FunctionComponent, useState } from 'react';
 import {
   Nav,
@@ -21,7 +21,7 @@ import {
 import classNames from 'classnames';
 import { getBs } from '../../utils/index';
 import UserStorage from './UserStorage';
-
+import { IconMultiSelect } from '../../utils/icons';
 interface SortingMenuItemProps {
   name: string;
   isUp: boolean;
@@ -118,11 +118,11 @@ const SortingMenu: FunctionComponent = () => {
   const handleToggle = () => {
     setDropDowmIsOpen((isOpen) => !isOpen);
   };
-  
+
   return (
     <div className={classNames(styles['sorting-menu'])}>
       <Nav cssModule={getBs()} style={{ alignItems: 'center' }}>
-        {/* <NavItem cssModule={getBs()}>
+        <NavItem cssModule={getBs()}>
           <FontAwesomeIcon icon={faSort} />
           <span
             className={classNames(
@@ -163,14 +163,23 @@ const SortingMenu: FunctionComponent = () => {
             styles['divider-vertical'],
             styles['sorting-menu__divider']
           )}
-        /> */}
+        />
+        <NavItem role='button' className={classNames(utilsStyles['me-auto'])}>
+          <div
+            style={{
+              border: '1px solid #c5c5c5',
+              marginLeft: '15px',
+              borderRadius: '4px',
+              padding: '2px 5px 1px 5px'
+            }}
+          >
+            <IconMultiSelect />
+            <span>چند انتخابی</span>
+          </div>
+        </NavItem>
         <NavItem
           cssModule={getBs()}
-          className={classNames(
-            utilsStyles['pt-0'],
-            utilsStyles['me-auto'],
-            utilsStyles['ps-4']
-          )}
+          className={classNames(utilsStyles['pt-0'], utilsStyles['ps-4'])}
         >
           <UserStorage />
         </NavItem>

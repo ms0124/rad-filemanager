@@ -10,6 +10,7 @@ import download from '../assets/svg/download.svg';
 import circleInfo from '../assets/svg/circle_info.svg';
 import times from '../assets/svg/times.svg';
 import tick from '../assets/svg/tick.svg';
+import multiSelect from '../assets/svg/multi_select.svg';
 
 const IconBuilder = ({ src, style = {} }) => {
   return <img src={src} style={style} />;
@@ -66,4 +67,8 @@ export const IconTimes = ({style={} }) => {
 
 export const IconTick = ({style = {}}) => {
   return <IconBuilder src={tick} style={style} />;
+};
+
+export const IconMultiSelect = ({style = {}}) => {
+  return <IconBuilder src={multiSelect} style={style} />;
 };

@@ -22,6 +22,11 @@
   background-color: #fafafa;
   padding-bottom: 10px;
   border-radius: 8px;
+  &__checkbox{
+    position: absolute;
+    right: 65px;
+    top: 18px;
+  }
   &__menu-wrapper {
     position: absolute;
     top: 0px;
