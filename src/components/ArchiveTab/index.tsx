@@ -12,7 +12,7 @@ import { Context } from '../../store/index';
 import Column from '../StateColumnList/column';
 import Empty from '../StateColumnList/empty';
 
-import { useArchiveList, getHeader } from '../../config/hooks';
+import { useArchiveList } from '../../config/hooks';
 import { Loading, objectToQueryString } from '../../utils/';
 import { TabTypes } from '../../config/types';
 import Empety from '../StateColumnList/empty';
@@ -25,7 +25,7 @@ const ArchiveTab: FunctionComponent<IProps> = () => {
 
   const { ref, inView } = useInView();
   let { data, isLoading, isFetching, fetchNextPage, hasNextPage } =
-    useArchiveList(getHeader(false));
+    useArchiveList();
 
   useEffect(() => {
     if (inView && hasNextPage) {

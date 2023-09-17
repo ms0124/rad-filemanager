@@ -10,27 +10,32 @@ export const getBs = () => {
   return bs || {};
 };
 
+interface IParams {
+  newName?: string;
+  headers?: null;
+  message?: string;
+}
 export const httpRequest = (
   url,
-  { message = '', headers, ...params },
+  { message = '', headers = null, ...params }: IParams = {},
   method = 'GET'
 ) => {
   let instancRequest: Promise<AxiosResponse<any, any>>;
   switch (method.toUpperCase()) {
     case 'DELETE':
-      instancRequest = instance.delete(url, { params, headers });
+      instancRequest = instance.delete(url, { params });
       break;
     case 'POST':
-      instancRequest = instance.post(url, params, { headers });
+      instancRequest = instance.post(url, params);
       break;
     case 'PUT':
-      instancRequest = instance.put(url, params, { headers });
+      instancRequest = instance.put(url, params);
       break;
     // case "PATCH":
     //   return instance.patch(url, data);
     //   break;
     default: // GET Request
-      instancRequest = instance.get<any>(url, { params, headers });
+      instancRequest = instance.get<any>(url, { params });
   }
   return instancRequest
     .then((res) => {

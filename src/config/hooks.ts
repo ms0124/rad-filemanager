@@ -41,14 +41,12 @@ export const useGetFolderContent = (hash: string) => {
 
 export const useGetFolderContentChildren = (
   hash: string,
-  query: string = '',
-  headers: any
+  query: string = ''
 ) => {
   return useInfiniteQuery(
     ['folderContentChildren', hash],
     ({ pageParam = { size: PAGE_SIZE, offset: 0 }, queryKey }) => {
       return api.getFolderContentChildren({
-        headers,
         hash: queryKey[1],
         query: objectToQueryString(pageParam)
       });
@@ -73,17 +71,16 @@ export const useGetFolderContentChildren = (
 
 export const useGetUserStorage = () => {
   return useQuery(
-    ['userStorage', getHeader()],
+    ['userStorage'],
     ({ queryKey }) => api.getUserStorage(queryKey[1]),
     { enabled: false } // disable this query from automatically running
   );
 };
 
 export const useCreateNewFolder = () => {
-  const headers = getHeader(false);
   return useMutation({
     mutationFn: (variables: { name: string; parentHash: string }) =>
-      api.createNewFolder({ headers, ...variables }),
+      api.createNewFolder({ ...variables }),
     onSuccess: (data, variables, context) => {
       const { parentHash } = variables;
       queryClient.refetchQueries({
@@ -94,10 +91,9 @@ export const useCreateNewFolder = () => {
 };
 
 export const useDeleteFileAndFolder = (folderHash) => {
-  const headers = getHeader(false);
   return useMutation({
     mutationFn: (variables: { hash: string | undefined }) =>
-      api.deleteFileAndFolder({ headers, ...variables }),
+      api.deleteFileAndFolder({ ...variables }),
     onSuccess: (_, variables) => {
       const { hash } = variables;
       queryClient.refetchQueries({
@@ -108,10 +104,9 @@ export const useDeleteFileAndFolder = (folderHash) => {
 };
 
 export const useRenameFileAndFolder = (folderHash) => {
-  const headers = getHeader(false);
   return useMutation({
     mutationFn: (variables: { hash: string | undefined; newName: string }) =>
-      api.renameFileAndFolder({ headers, ...variables }),
+      api.renameFileAndFolder({ ...variables }),
     onSuccess: (_, variables) => {
       queryClient.refetchQueries({
         queryKey: ['folderContentChildren', folderHash]
@@ -121,10 +116,9 @@ export const useRenameFileAndFolder = (folderHash) => {
 };
 
 export const useCopy = (folderHash) => {
-  const headers = getHeader(false);
   return useMutation({
     mutationFn: (variables: { hash: string; destFolderHash: string }) =>
-      api.copy({ headers, ...variables }),
+      api.copy({ ...variables }),
     onSuccess: (_, variables) => {
       queryClient.refetchQueries({
         queryKey: ['folderContentChildren', folderHash]
@@ -134,10 +128,9 @@ export const useCopy = (folderHash) => {
 };
 
 export const useCut = (folderHash) => {
-  const headers = getHeader(false);
   return useMutation({
     mutationFn: (variables: { hash: string; destFolderHash: string }) =>
-      api.cut({ headers, ...variables }),
+      api.cut({ ...variables }),
     onSuccess: (_, variables) => {
       queryClient.refetchQueries({
         queryKey: ['folderContentChildren', folderHash]
@@ -146,12 +139,11 @@ export const useCut = (folderHash) => {
   });
 };
 
-export const useArchiveList = (headers: any) => {
+export const useArchiveList = () => {
   return useInfiniteQuery(
     ['archiveList'],
     ({ pageParam = { size: PAGE_SIZE, offset: 0 } }) => {
       return api.getArchiveList({
-        headers,
         query: objectToQueryString(pageParam)
       });
     },
@@ -173,10 +165,9 @@ export const useArchiveList = (headers: any) => {
 };
 
 export const useArchiveDelete = (folderHash) => {
-  const headers = getHeader(false);
   return useMutation({
     mutationFn: (variables: string) =>
-      api.archiveDelete({ headers, variables }),
+      api.archiveDelete({ variables }),
     onSuccess: (_, variables) => {
       queryClient.refetchQueries({
         queryKey: ['archiveList']
@@ -185,10 +176,9 @@ export const useArchiveDelete = (folderHash) => {
   });
 };
 export const useArchiveRestor = (folderHash) => {
-  const headers = getHeader(false);
   return useMutation({
     mutationFn: (variables: string) =>
-      api.archiveRestore({ headers, variables }),
+      api.archiveRestore({ variables }),
     onSuccess: (_, variables) => {
       queryClient.refetchQueries({
         queryKey: ['archiveList']
@@ -199,7 +189,7 @@ export const useArchiveRestor = (folderHash) => {
 
 export const useSearchList = (query: string) => {
   return useQuery(
-    ['searchList', { headers: getHeader(false), query }],
+    ['searchList', { query }],
     ({ queryKey }) => api.search(queryKey[1])
   );
 };

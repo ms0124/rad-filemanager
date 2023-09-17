@@ -6,7 +6,7 @@ interface IProps {
 }
 
 const WithAxios: React.FC<IProps> = ({ children }) => {
-  const { isSandbox } = useContext(Context);
+  const { isSandbox, header } = useContext(Context);
 
   useLayoutEffect(() => {
     const requestInterceptor = instance.interceptors.request.use(function (
@@ -15,6 +15,10 @@ const WithAxios: React.FC<IProps> = ({ children }) => {
       config.baseURL = isSandbox
         ? 'https://rad-sandbox.pod.ir'
         : 'https://rad-services.pod.ir';
+
+      config.headers['Client-Id'] = `${header.clientId}`;
+      config.headers['Access-Token'] = `${header.accessToken}`;
+
       return config;
     });
     return () => instance.interceptors.request.eject(requestInterceptor);

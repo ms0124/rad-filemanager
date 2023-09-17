@@ -21,11 +21,7 @@ import { queryClient } from '../../config/config';
 
 import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
-import {
-  getHeader,
-  useGetFolderContent,
-  useGetFolderContentChildren
-} from '../../config/hooks';
+import { getHeader } from '../../config/hooks';
 import { getBs } from '../../utils/index';
 import { IconTick, IconTimes, IconUpload } from '../../utils/icons';
 
@@ -174,7 +170,7 @@ const FilesDragAndDrop: FunctionComponent<Props> = ({ modal, toggleModal }) => {
     <Modal
       cssModule={getBs()}
       isOpen={modal}
-      toggle={()=> toggleModal(false)}
+      toggle={() => toggleModal(false)}
       contentClassName={isUpload ? styles['upload-toast'] : ''}
       className={styles['modal-container']}
       // size='lg'
@@ -191,7 +187,7 @@ const FilesDragAndDrop: FunctionComponent<Props> = ({ modal, toggleModal }) => {
             <span>بارگذاری</span>
             <FontAwesomeIcon
               icon={faTimes}
-              onClick={()=> toggleModal(false)}
+              onClick={() => toggleModal(false)}
               className={styles['icon-times']}
             />
           </ModalHeader>

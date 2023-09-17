@@ -15,39 +15,36 @@ export const getFolderContent: (hash: string) => object = async (hash) => {
 };
 
 export const getFolderContentChildren = ({
-  headers,
   hash,
   query
 }: any): Promise<Data> => {
-  return httpRequest(`${namespace}/${hash}/children/${query}`, {
-    headers
-  });
+  return httpRequest(`${namespace}/${hash}/children/${query}`);
 };
 
-export const getUserStorage = ({ headers, ...params }: any): Promise<Data> => {
-  return httpRequest(`${namespace}/storage`, { headers });
+export const getUserStorage = ({ ...params }: any): Promise<Data> => {
+  return httpRequest(`${namespace}/storage`);
 };
 
-export const createNewFolder = ({ headers, ...params }: any): Promise<any> => {
+export const createNewFolder = ({ ...params }: any): Promise<any> => {
   return httpRequest(
     `${namespace}/folder`,
-    { headers, message: successMessage, ...params },
+    { message: successMessage, ...params },
     'POST'
   );
 };
 
-export const deleteFileAndFolder = async ({ hash, headers }): Promise<Data> => {
+export const deleteFileAndFolder = async ({ hash }): Promise<Data> => {
   return httpRequest(
     `${namespace}/${hash}`,
-    { headers, message: successMessage },
+    { message: successMessage },
     'DELETE'
   );
 };
 
-export const renameFileAndFolder = async ({ headers, hash, newName }) => {
+export const renameFileAndFolder = async ({ hash, newName }) => {
   return httpRequest(
     `${namespace}/${hash}/rename`,
-    { newName, headers, message: successMessage },
+    { newName, message: successMessage },
     'POST'
   );
 };
@@ -56,12 +53,7 @@ export const renameFileAndFolder = async ({ headers, hash, newName }) => {
 /********* U P L O A D *****************/
 /************************************* */
 
-export const upload = async (
-  params,
-  image = false,
-  configs,
-  headers
-) => {
+export const upload = async (params, image = false, configs, headers) => {
   return await instance.post(
     `${namespace}/upload${image ? '/image' : ''}`,
     params,
@@ -80,11 +72,10 @@ export const upload = async (
 /********* C O P Y  &  C U T ***********/
 /************************************* */
 
-export const copy = async ({ headers, hash, ...params }): Promise<Data> => {
+export const copy = async ({ hash, ...params }): Promise<Data> => {
   return httpRequest(
     `${namespace}/${hash}/copy`,
     {
-      headers,
       message: successMessage,
       ...params
     },
@@ -92,11 +83,10 @@ export const copy = async ({ headers, hash, ...params }): Promise<Data> => {
   );
 };
 
-export const cut = async ({ headers, hash, ...params }): Promise<Data> => {
+export const cut = async ({ hash, ...params }): Promise<Data> => {
   return httpRequest(
     `${namespace}/${hash}/cut`,
     {
-      headers,
       message: successMessage,
       ...params
     },
@@ -108,28 +98,22 @@ export const cut = async ({ headers, hash, ...params }): Promise<Data> => {
 /********* A R C H I V E ***************/
 /************************************* */
 
-export const getArchiveList = async ({ headers, query, ...params }: any) => {
-  return httpRequest(`${namespace}/archive/${query}`, {
-    headers
-  });
+export const getArchiveList = async ({ query, ...params }: any) => {
+  return httpRequest(`${namespace}/archive/${query}`);
 };
 
-export const archiveRestore = async ({ headers, ...params }): Promise<Data> => {
+export const archiveRestore = async ({ ...params }): Promise<Data> => {
   return httpRequest(
     `${namespace}/archive/restore/${params.variables}`,
-    {
-      headers,
-    },
+    {},
     'POST'
   );
 };
 
-export const archiveDelete = async ({ headers, ...params }): Promise<Data> => {
+export const archiveDelete = async ({ ...params }): Promise<Data> => {
   return httpRequest(
     `${namespace}/archive/delete/${params.variables}`,
-    {
-      headers
-    },
+    {},
     'DELETE'
   );
 };
@@ -158,8 +142,6 @@ export const downloadThumbnail = async (hash) => {
 /*********** S E A R C H ***************/
 /************************************* */
 
-export const search = async ({ headers, query }: any) => {
-  return await httpRequest(`${namespace}/search/${query}`, {
-    headers
-  });
+export const search = async ({ query }: any) => {
+  return await httpRequest(`${namespace}/search/${query}`);
 };
