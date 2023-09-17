@@ -94,7 +94,31 @@ const getThumbnailUrl = (hash, isSandbox) =>
     ? `https://sandbox.podspace.ir:8443/api/files/${hash}/thumbnail`
     : `https://podspace.pod.ir/api/files/${hash}/thumbnail`;
 
+const isPermitted = (userPermissions, permissions, operator = 'AND') => {
+  let isPermitted = false;
+
+  let permissionsLength = permissions.length;
+  if (userPermissions.length === 1 && userPermissions[0] === 'full') {
+    return true;
+  }
+  for (const permission of userPermissions) {
+    if (permissions.find((item) => item === permission)) {
+      if (operator === 'OR') {
+        return true;
+      }
+      permissionsLength--;
+    }
+    if (permissionsLength === 0) {
+      isPermitted = true;
+      break;
+    }
+  }
+
+  return isPermitted;
+};
+
 export {
+  isPermitted,
   RightClick,
   formatBytes,
   brifStr,

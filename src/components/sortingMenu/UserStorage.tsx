@@ -1,12 +1,16 @@
 import styles from './style.module.scss';
 import utilsStyles from '../../sass/style.module.scss';
-import React from 'react';
+
+import React, { useEffect, useContext } from 'react';
+
+import { Context } from '../../store/index';
 import { useGetUserStorage } from '../../config/hooks';
-import { formatBytes } from '../../utils/index';
+import { formatBytes, isPermitted } from '../../utils/index';
 import CheckPermissions from '../CheckPermissions';
 
 const UserStorage: React.FunctionComponent = () => {
-  const { data, isLoading } = useGetUserStorage();
+  const { permissions: globalPermissions } = useContext(Context);
+  const { data, isLoading, refetch } = useGetUserStorage();
   let storageLimit: any = '0';
   let storageUsage: any = '0';
   let percent: string = '0';
@@ -24,6 +28,12 @@ const UserStorage: React.FunctionComponent = () => {
     storageUsage = storageUsage ? storageUsage.split('  ') : '0';
   }
 
+  useEffect(() => {
+    if (isPermitted(globalPermissions, ['storage'])) {
+      refetch();
+    }
+  }, []);
+
   return (
     <React.Fragment>
       <CheckPermissions permissions={['storage']}>
@@ -33,10 +43,14 @@ const UserStorage: React.FunctionComponent = () => {
         >
           <span>فضای پرشده</span>
           <div>
-            <span style={{paddingRight:"2px"}}>{storageUsage ? storageUsage[0] : ''}</span>
+            <span style={{ paddingRight: '2px' }}>
+              {storageUsage ? storageUsage[0] : ''}
+            </span>
             <span>{storageUsage ? storageUsage[1] : ''}</span>
             <span> از </span>
-            <span style={{paddingRight:"2px"}}>{storageLimit ? storageLimit[0] : ''}</span>
+            <span style={{ paddingRight: '2px' }}>
+              {storageLimit ? storageLimit[0] : ''}
+            </span>
             <span>{storageLimit ? storageLimit[1] : ''}</span>
           </div>
         </div>
