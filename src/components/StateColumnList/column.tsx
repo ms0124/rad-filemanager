@@ -29,8 +29,15 @@ const Column: React.FunctionComponent<IProps> = ({
   setHash,
   tabType
 }) => {
-  const { setSearchText, onSelect, currentTab, breadCrumb, isSandbox } =
-    useContext(Context);
+  const {
+    setSearchText,
+    onSelect,
+    currentTab,
+    isShowCheckbox,
+    isSandbox,
+    selectedItems,
+    setSelectedItems
+  } = useContext(Context);
   const slectedRef = useRef<(HTMLDivElement | null)[]>([]);
   const contextMenuRef: any = useRef<[]>([]);
   const rightClickRef: any = useRef<any>(null);
@@ -42,6 +49,18 @@ const Column: React.FunctionComponent<IProps> = ({
     });
   };
 
+  const handleSelectItem = (item) => {
+    const itemFinded = selectedItems.find((x) => x?.hash === item.hash);
+    if (itemFinded) {
+      // item finded
+      const filterdItems = selectedItems.filter((x) => x.hash !== item.hash);
+      setSelectedItems(filterdItems);
+    } else {
+      // can't find item & add item
+      setSelectedItems([...selectedItems, item]);
+    }
+  };
+  
   return (
     <React.Fragment>
       <RightClick
@@ -108,7 +127,6 @@ const Column: React.FunctionComponent<IProps> = ({
                   className={styles['col']}
                   style={item?.extension ? {} : { cursor: 'pointer' }}
                 >
-                  <input type="checkbox" className={classnames(styles['col__checkbox'])} />
                   <div className={classnames(styles['col__img-wrapper'])}>
                     <div className={styles['col__menu-wrapper']}>
                       {item ? (
@@ -132,6 +150,15 @@ const Column: React.FunctionComponent<IProps> = ({
                         ''
                       )}
                     </div>
+                    {isShowCheckbox && (
+                      <input
+                        onClick={() => handleSelectItem(item)}
+                        type='checkbox'
+                        checked={!!selectedItems.find(x=>x.hash === item.hash)}
+                        // checked={false}
+                        className={classnames(styles['col__checkbox'])}
+                      />
+                    )}
                     <div className={styles['col__icon-access-wrapper']}>
                       {item?.isPublic ? (
                         <FontAwesomeIcon

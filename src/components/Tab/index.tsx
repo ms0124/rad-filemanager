@@ -24,6 +24,7 @@ import { Context } from '../../store/index';
 import { PAGE_SIZE } from '../../config/config';
 import SearchTab from '../SearchTab';
 import CheckPermissions from '../CheckPermissions';
+import Selected from '../../components/Selected/index';
 
 interface Props {}
 
@@ -157,6 +158,7 @@ const Tab: FunctionComponent<Props> = () => {
         </TabPane>
       </TabContent>
       <BreadCrumb />
+      <Selected />
     </div>
   );
 };

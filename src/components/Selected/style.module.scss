@@ -1,0 +1,23 @@
+.container {
+  margin-right: 15px;
+  .title {
+    padding-top: 15px;
+    text-align: right;
+    color: #252525;
+  }
+  background-color: #f2f2f2;
+  .selected-wrapper {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-content: start;
+    height: 160px;
+    overflow-y: scroll;
+    &__item {
+      padding: 10px;
+      margin: 10px;
+      background-color: #fff;
+      border-radius: 6px;
+    }
+  }
+}

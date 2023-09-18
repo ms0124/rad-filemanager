@@ -12,8 +12,8 @@ import times from '../assets/svg/times.svg';
 import tick from '../assets/svg/tick.svg';
 import multiSelect from '../assets/svg/multi_select.svg';
 
-const IconBuilder = ({ src, style = {} }) => {
-  return <img src={src} style={style} />;
+const IconBuilder = ({ src, style = {}, ...props }) => {
+  return <img src={src} style={style} {...props} />;
 };
 
 export const IconUpload = ({ colorGray = false, size = '' }) => {
@@ -61,14 +61,14 @@ export const IconCircleInfo = () => {
   return <IconBuilder src={circleInfo} />;
 };
 
-export const IconTimes = ({style={} }) => {
-  return <IconBuilder src={times} style={style} />;
+export const IconTimes = ({ style = {}, ...props }) => {
+  return <IconBuilder src={times} style={style} {...props} />;
 };
 
-export const IconTick = ({style = {}}) => {
+export const IconTick = ({ style = {} }) => {
   return <IconBuilder src={tick} style={style} />;
 };
 
-export const IconMultiSelect = ({style = {}}) => {
+export const IconMultiSelect = ({ style = {} }) => {
   return <IconBuilder src={multiSelect} style={style} />;
 };

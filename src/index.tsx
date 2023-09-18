@@ -30,7 +30,10 @@ const FileManagerReact = ({ ...props }: Props) => {
   const [searchText, setSearchText] = useState<string>('');
   const [permissions, setPermissions] = useState<string[]>(props.permissions);
   const [onSelect, setOnSelect] = useState(() => props.onSelect);
+  const [isShowCheckbox, setIsShowCheckbox] = useState<boolean>(false);
   const [isSandbox, setIsSandbox] = useState<boolean>(props?.isSandbox);
+  const [selectedItems, setSelectedItems] = useState<[]>([]);
+
   const [config, setConfig] = useState<any>(props.config);
   const [header, setHeader] = useState<any>({
     clientId: props.clientId,
@@ -77,12 +80,15 @@ const FileManagerReact = ({ ...props }: Props) => {
     setCurrentTab,
     searchText,
     setSearchText,
-
+    isShowCheckbox,
+    setIsShowCheckbox,
     permissions,
     config,
     header,
     onSelect,
-    isSandbox
+    isSandbox,
+    selectedItems,
+    setSelectedItems,
   };
   return (
     <Context.Provider value={defaultValues}>
@@ -105,6 +111,8 @@ function FileManager(props: any, elementId: any) {
   const [currentTab, setCurrentTab] = useState<number>(1);
   const [searchText, setSearchText] = useState<string>('');
   const [permissions, setPermissions] = useState<string[]>(props.permissions);
+  const [isShowCheckbox, setIsShowCheckbox] = useState<boolean>(false);
+  const [selectedItems, setSelectedItems] = useState<[]>([]);
 
   const [config, setConfig] = useState<any>(props.config);
   const [header, setHeader] = useState<any>({
@@ -133,12 +141,15 @@ function FileManager(props: any, elementId: any) {
     setCurrentTab,
     searchText,
     setSearchText,
-
+    isShowCheckbox,
+    setIsShowCheckbox,
     permissions,
     config,
     header,
     onSelect,
-    isSandbox
+    isSandbox,
+    selectedItems,
+    setSelectedItems
   };
   ReactDOM.render(
     <Context.Provider value={defaultValues}>

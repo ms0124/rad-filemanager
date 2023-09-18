@@ -30,6 +30,12 @@ export interface AppContextInterface {
   onSelect?: (data: any) => void;
 
   isSandbox: boolean;
+
+  isShowCheckbox: boolean;
+  setIsShowCheckbox: (isShowCheckbox: boolean) => void;
+
+  selectedItems: {hash:string, name:string}[];
+  setSelectedItems: (data:any) => void;
 }
 
 export const Context = createContext<AppContextInterface>(

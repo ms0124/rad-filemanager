@@ -2,7 +2,7 @@ import styles from './style.module.scss';
 import utilStyles from '../../sass/style.module.scss';
 
 import utilsStyles from '../../sass/style.module.scss';
-import React, { FunctionComponent, useState } from 'react';
+import React, { FunctionComponent, useContext, useState } from 'react';
 import {
   Nav,
   NavItem,
@@ -22,6 +22,7 @@ import classNames from 'classnames';
 import { getBs } from '../../utils/index';
 import UserStorage from './UserStorage';
 import { IconMultiSelect } from '../../utils/icons';
+import { Context } from '../../store/index';
 interface SortingMenuItemProps {
   name: string;
   isUp: boolean;
@@ -99,6 +100,8 @@ const DropDownElement: FunctionComponent<DropDownElementProps> = ({
 };
 
 const SortingMenu: FunctionComponent = () => {
+  const { isShowCheckbox, setIsShowCheckbox, setSelectedItems } =
+    useContext(Context);
   const [sort, setSort] = useState({
     byName: false,
     byDate: false,
@@ -117,6 +120,15 @@ const SortingMenu: FunctionComponent = () => {
 
   const handleToggle = () => {
     setDropDowmIsOpen((isOpen) => !isOpen);
+  };
+  const handleChangeShowCheckbox = () => {
+    if (isShowCheckbox) {
+      setIsShowCheckbox(false);
+      // unselect all selectedItems
+      setSelectedItems([]);
+    } else {
+      setIsShowCheckbox(true);
+    }
   };
 
   return (
@@ -167,14 +179,19 @@ const SortingMenu: FunctionComponent = () => {
         <NavItem role='button' className={classNames(utilsStyles['me-auto'])}>
           <div
             style={{
-              border: '1px solid #c5c5c5',
+              border: isShowCheckbox
+                ? '1px solid #ff9b3f'
+                : '1px solid #c5c5c5',
               marginLeft: '15px',
               borderRadius: '4px',
               padding: '2px 5px 1px 5px'
             }}
+            onClick={handleChangeShowCheckbox}
           >
             <IconMultiSelect />
-            <span>چند انتخابی</span>
+            <span style={{ color: isShowCheckbox ? '#ff9b3f' : '' }}>
+              چند انتخابی
+            </span>
           </div>
         </NavItem>
         <NavItem
