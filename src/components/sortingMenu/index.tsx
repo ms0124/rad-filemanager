@@ -23,103 +23,132 @@ import { getBs } from '../../utils/index';
 import UserStorage from './UserStorage';
 import { IconMultiSelect } from '../../utils/icons';
 import { Context } from '../../store/index';
+import { OrderByTypes } from '../../config/types';
 interface SortingMenuItemProps {
   name: string;
-  isUp: boolean;
-  handleSort: () => void;
+  order: string;
+  orderName: string;
+  desc: boolean;
+  handleOrderBy: (name: string, desc: boolean) => void;
 }
 
 const SortingMenuItem: FunctionComponent<SortingMenuItemProps> = ({
-  isUp,
   name,
-  handleSort
+  order,
+  orderName,
+  desc,
+  handleOrderBy
 }) => {
+  const [isFirstTime, setIsFirstTime] = useState<boolean>(false);
+
   return (
     <NavItem
       cssModule={getBs()}
       className={classNames(styles['sorting-menu__arrange'], {
-        [styles['sorting-menu__arrange--up']]: isUp
+        [styles['sorting-menu__arrange--up']]: order === orderName
       })}
-      onClick={handleSort}
+      onClick={() => {
+        if (!isFirstTime) setIsFirstTime(true);
+        handleOrderBy(orderName, isFirstTime ? true : !desc);
+      }}
     >
       <span>{name}</span>
-      {isUp ? (
-        <FontAwesomeIcon icon={faSortUp} className={utilStyles['me-2']} />
+
+      {order === orderName ? (
+        !desc ? (
+          <FontAwesomeIcon icon={faSortUp} className={utilStyles['me-2']} />
+        ) : (
+          <FontAwesomeIcon icon={faSortDown} className={utilStyles['me-2']} />
+        )
       ) : (
-        <FontAwesomeIcon icon={faSortDown} className={utilStyles['me-2']} />
+        ''
       )}
     </NavItem>
   );
 };
 
-interface DropDownElementProps {
-  isOpen: boolean;
-  toggle: () => void;
-}
+// interface DropDownElementProps {
+//   isOpen: boolean;
+//   toggle: () => void;
+// }
 
-const DropDownElement: FunctionComponent<DropDownElementProps> = ({
-  isOpen,
-  toggle
-}) => {
-  return (
-    <Dropdown
-      cssModule={getBs()}
-      isOpen={isOpen}
-      toggle={toggle}
-      className={styles['sort-dropdown']}
-    >
-      <DropdownToggle color='none' cssModule={getBs()}>
-        نام
-        <FontAwesomeIcon icon={faAngleDown} className={utilStyles['me-2']} />
-      </DropdownToggle>
-      <DropdownMenu end={true} container='body' cssModule={getBs()}>
-        <DropdownItem
-          cssModule={getBs()}
-          className={styles['sort-dropdown__item']}
-          onClick={() => toggle}
-        >
-          پوشه ها
-        </DropdownItem>
-        <DropdownItem
-          cssModule={getBs()}
-          className={styles['sort-dropdown__item']}
-          onClick={() => toggle}
-        >
-          فایل ها
-        </DropdownItem>
-        <DropdownItem
-          cssModule={getBs()}
-          className={styles['sort-dropdown__item']}
-          onClick={() => toggle}
-        >
-          عکس ها
-        </DropdownItem>
-      </DropdownMenu>
-    </Dropdown>
-  );
-};
+// const DropDownElement: FunctionComponent<DropDownElementProps> = ({
+//   isOpen,
+//   toggle
+// }) => {
+//   return (
+//     <Dropdown
+//       cssModule={getBs()}
+//       isOpen={isOpen}
+//       toggle={toggle}
+//       className={styles['sort-dropdown']}
+//     >
+//       <DropdownToggle color='none' cssModule={getBs()}>
+//         نام
+//         <FontAwesomeIcon icon={faAngleDown} className={utilStyles['me-2']} />
+//       </DropdownToggle>
+//       <DropdownMenu end={true} container='body' cssModule={getBs()}>
+//         <DropdownItem
+//           cssModule={getBs()}
+//           className={styles['sort-dropdown__item']}
+//           onClick={() => toggle}
+//         >
+//           پوشه ها
+//         </DropdownItem>
+//         <DropdownItem
+//           cssModule={getBs()}
+//           className={styles['sort-dropdown__item']}
+//           onClick={() => toggle}
+//         >
+//           فایل ها
+//         </DropdownItem>
+//         <DropdownItem
+//           cssModule={getBs()}
+//           className={styles['sort-dropdown__item']}
+//           onClick={() => toggle}
+//         >
+//           عکس ها
+//         </DropdownItem>
+//       </DropdownMenu>
+//     </Dropdown>
+//   );
+// };
 
 const SortingMenu: FunctionComponent = () => {
-  const { isShowCheckbox, setIsShowCheckbox, setSelectedItems } =
-    useContext(Context);
-  const [sort, setSort] = useState({
-    byName: false,
-    byDate: false,
-    bySize: false
-  });
-  const [dropDowmIsOpen, setDropDowmIsOpen] = useState(false);
+  const {
+    isShowCheckbox,
+    setIsShowCheckbox,
+    setSelectedItems,
+    orderBy,
+    setOrderBy,
+    desc,
+    setDesc
+  } = useContext(Context);
 
-  const handleSortByName = () =>
-    setSort((prev) => ({ ...prev, byName: !prev.byName }));
+  // const [sort, setSort] = useState({
+  //   byName: false,
+  //   byDate: false,
+  //   bySize: false
+  // });
+  // const [dropDowmIsOpen, setDropDowmIsOpen] = useState(false);
 
-  const handleSortByDate = () =>
-    setSort((prev) => ({ ...prev, byDate: !prev.byDate }));
+  // const handleSortByName = () =>
+  //   setSort((prev) => ({ ...prev, byName: !prev.byName }));
 
-  const handleSortBySize = () =>
-    setSort((prev) => ({ ...prev, bySize: !prev.bySize }));
+  // const handleSortByDate = () =>
+  //   setSort((prev) => ({ ...prev, byDate: !prev.byDate }));
 
-  const handleToggle = () => {
-    setDropDowmIsOpen((isOpen) => !isOpen);
+  // const handleSortBySize = () =>
+  //   setSort((prev) => ({ ...prev, bySize: !prev.bySize }));
+
+  // const handleToggle = () => {
+  //   setDropDowmIsOpen((isOpen) => !isOpen);
+  // };
+  const handleOrderBy = (name, isDesc) => {
+    console.log({ isDesc, desc });
+
+    setDesc(isDesc);
+    setOrderBy(name);
   };
   const handleChangeShowCheckbox = () => {
     if (isShowCheckbox) {
@@ -146,19 +175,25 @@ const SortingMenu: FunctionComponent = () => {
           </span>
         </NavItem>
         <SortingMenuItem
-          isUp={sort.byName}
+          desc={desc}
+          order={orderBy}
+          orderName={OrderByTypes.Name}
           name='نام'
-          handleSort={handleSortByName}
+          handleOrderBy={handleOrderBy}
         />
         <SortingMenuItem
-          isUp={sort.byDate}
+          desc={desc}
+          order={orderBy}
+          orderName={OrderByTypes.Updated}
           name='تاریخ'
-          handleSort={handleSortByDate}
+          handleOrderBy={handleOrderBy}
         />
         <SortingMenuItem
-          isUp={sort.bySize}
+          desc={desc}
+          order={orderBy}
+          orderName={OrderByTypes.Size}
           name='سایز'
-          handleSort={handleSortBySize}
+          handleOrderBy={handleOrderBy}
         />
         <NavItem
           cssModule={getBs()}
@@ -167,8 +202,9 @@ const SortingMenu: FunctionComponent = () => {
             styles['sorting-menu__divider']
           )}
         />
-        <NavItem cssModule={getBs()}>نوع فایل</NavItem>
-        <DropDownElement isOpen={dropDowmIsOpen} toggle={handleToggle} />
+
+        {/* <NavItem cssModule={getBs()}>نوع فایل</NavItem>
+        <DropDownElement isOpen={dropDowmIsOpen} toggle={handleToggle} /> */}
         <NavItem
           cssModule={getBs()}
           className={classNames(

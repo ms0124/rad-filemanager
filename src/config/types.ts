@@ -54,3 +54,11 @@ export enum DocumentTypes {
   xlsx = 'xlsx',
   txt = 'txt'
 }
+
+export enum OrderByTypes {
+  Updated = 'UPDATED',
+  Created = 'CREATED',
+  Name = 'NAME',
+  Size = 'SIZE',
+  Type = 'TYPE'
+}

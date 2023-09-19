@@ -9,6 +9,7 @@ import { QueryClientProvider } from 'react-query';
 import { queryClient } from './config/config';
 import { ToastContainer } from 'react-toastify';
 import WithAxios from './utils/WithAxios';
+import { OrderByTypes } from './config/types';
 interface Props {
   clientId: string;
   accessToken: string;
@@ -33,6 +34,8 @@ const FileManagerReact = ({ ...props }: Props) => {
   const [isShowCheckbox, setIsShowCheckbox] = useState<boolean>(false);
   const [isSandbox, setIsSandbox] = useState<boolean>(props?.isSandbox);
   const [selectedItems, setSelectedItems] = useState<[]>([]);
+  const [orderBy, setOrderBy] = useState<string>(OrderByTypes.Updated);
+  const [desc, setDesc] = useState<boolean>(true);
 
   const [config, setConfig] = useState<any>(props.config);
   const [header, setHeader] = useState<any>({
@@ -89,6 +92,10 @@ const FileManagerReact = ({ ...props }: Props) => {
     isSandbox,
     selectedItems,
     setSelectedItems,
+    orderBy,
+    setOrderBy,
+    desc,
+    setDesc
   };
   return (
     <Context.Provider value={defaultValues}>
@@ -113,6 +120,8 @@ function FileManager(props: any, elementId: any) {
   const [permissions, setPermissions] = useState<string[]>(props.permissions);
   const [isShowCheckbox, setIsShowCheckbox] = useState<boolean>(false);
   const [selectedItems, setSelectedItems] = useState<[]>([]);
+  const [orderBy, setOrderBy] = useState<string>(OrderByTypes.Updated);
+  const [desc, setDesc] = useState<boolean>(true);
 
   const [config, setConfig] = useState<any>(props.config);
   const [header, setHeader] = useState<any>({
@@ -149,7 +158,11 @@ function FileManager(props: any, elementId: any) {
     onSelect,
     isSandbox,
     selectedItems,
-    setSelectedItems
+    setSelectedItems,
+    orderBy,
+    setOrderBy,
+    desc,
+    setDesc
   };
   ReactDOM.render(
     <Context.Provider value={defaultValues}>

@@ -34,8 +34,14 @@ export interface AppContextInterface {
   isShowCheckbox: boolean;
   setIsShowCheckbox: (isShowCheckbox: boolean) => void;
 
-  selectedItems: {hash:string, name:string}[];
-  setSelectedItems: (data:any) => void;
+  selectedItems: { hash: string; name: string }[];
+  setSelectedItems: (data: any) => void;
+
+  orderBy: string;
+  setOrderBy: (name: string) => void;
+
+  desc: boolean;
+  setDesc: (isDesc:boolean) => void;
 }
 
 export const Context = createContext<AppContextInterface>(
