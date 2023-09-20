@@ -142,13 +142,7 @@ const App: React.FunctionComponent<IProps> = forwardRef(
                     <span className={styles['context-menu__icon']}>
                       <IconFolderPlus />
                     </span>
-                    {/* <FontAwesomeIcon
-                    icon={faFolder}
-                    className={styles['context-menu__icon']}
-                  /> */}
-                    <span
-                      className={styles['context-menu__text']}
-                    >
+                    <span className={styles['context-menu__text']}>
                       ایجاد پوشه جدید
                     </span>
                   </NavItem>
