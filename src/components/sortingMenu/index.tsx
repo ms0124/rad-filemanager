@@ -2,7 +2,12 @@ import styles from './style.module.scss';
 import utilStyles from '../../sass/style.module.scss';
 
 import utilsStyles from '../../sass/style.module.scss';
-import React, { FunctionComponent, useContext, useState } from 'react';
+import React, {
+  FunctionComponent,
+  useContext,
+  useEffect,
+  useState
+} from 'react';
 import {
   Nav,
   NavItem,
@@ -39,7 +44,7 @@ const SortingMenuItem: FunctionComponent<SortingMenuItemProps> = ({
   desc,
   handleOrderBy
 }) => {
-  const [isFirstTime, setIsFirstTime] = useState<boolean>(false);
+  const [isFirstTime, setIsFirstTime] = useState<number>(0);
 
   return (
     <NavItem
@@ -48,8 +53,8 @@ const SortingMenuItem: FunctionComponent<SortingMenuItemProps> = ({
         [styles['sorting-menu__arrange--up']]: order === orderName
       })}
       onClick={() => {
-        if (!isFirstTime) setIsFirstTime(true);
-        handleOrderBy(orderName, isFirstTime ? true : !desc);
+        handleOrderBy(orderName, isFirstTime === 0 ? true : desc);
+        if (isFirstTime === 0) setIsFirstTime((prev) => ++prev);
       }}
     >
       <span>{name}</span>
@@ -145,9 +150,7 @@ const SortingMenu: FunctionComponent = () => {
   //   setDropDowmIsOpen((isOpen) => !isOpen);
   // };
   const handleOrderBy = (name, isDesc) => {
-    console.log({ isDesc, desc });
-
-    setDesc(isDesc);
+    setDesc(!isDesc);
     setOrderBy(name);
   };
   const handleChangeShowCheckbox = () => {
@@ -193,6 +196,13 @@ const SortingMenu: FunctionComponent = () => {
           order={orderBy}
           orderName={OrderByTypes.Size}
           name='سایز'
+          handleOrderBy={handleOrderBy}
+        />
+        <SortingMenuItem
+          desc={desc}
+          order={orderBy}
+          orderName={OrderByTypes.Type}
+          name='نوع فایل'
           handleOrderBy={handleOrderBy}
         />
         <NavItem

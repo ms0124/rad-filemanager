@@ -45,7 +45,7 @@ export const useGetFolderContentChildren = (
 ) => {
   return useInfiniteQuery(
     ['folderContentChildren', hash],
-    ({ pageParam = { size: PAGE_SIZE, offset: 0 }, queryKey }) => {
+    ({ pageParam = query, queryKey }) => {
       return api.getFolderContentChildren({
         hash: queryKey[1],
         query: objectToQueryString(pageParam)
@@ -139,10 +139,10 @@ export const useCut = (folderHash) => {
   });
 };
 
-export const useArchiveList = () => {
+export const useArchiveList = (query: string = '') => {
   return useInfiniteQuery(
     ['archiveList'],
-    ({ pageParam = { size: PAGE_SIZE, offset: 0 } }) => {
+    ({ pageParam = query }) => {
       return api.getArchiveList({
         query: objectToQueryString(pageParam)
       });

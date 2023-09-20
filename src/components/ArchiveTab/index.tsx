@@ -16,16 +16,23 @@ import { useArchiveList } from '../../config/hooks';
 import { Loading, objectToQueryString } from '../../utils/';
 import { TabTypes } from '../../config/types';
 import Empety from '../StateColumnList/empty';
+import { PAGE_SIZE } from '../../config/config';
 
 interface IProps {}
 
 const ArchiveTab: FunctionComponent<IProps> = () => {
-  const { isList, setCurrentHash, currentTab, setBreadCrumb } =
+  const { isList, setCurrentHash, currentTab, setBreadCrumb, orderBy, desc } =
     useContext(Context);
 
   const { ref, inView } = useInView();
-  let { data, isLoading, isFetching, fetchNextPage, hasNextPage } =
-    useArchiveList();
+  let { data, isLoading, isFetching, fetchNextPage, hasNextPage, refetch } =
+    useArchiveList(
+      objectToQueryString({ size: PAGE_SIZE, offset: 0, order: orderBy, desc })
+    );
+
+  useEffect(() => {
+    if (currentTab == TabTypes.ArchiveList) refetch();
+  }, [orderBy, desc]);
 
   useEffect(() => {
     if (inView && hasNextPage) {

@@ -24,19 +24,30 @@ interface IProps {
 }
 
 const FileTab: FunctionComponent<IProps> = ({ setTotal }) => {
-  const { isList, setBreadCrumb, currentHash, setCurrentHash, currentTab } =
-    useContext(Context);
+  const {
+    isList,
+    setBreadCrumb,
+    currentHash,
+    setCurrentHash,
+    currentTab,
+    orderBy,
+    desc
+  } = useContext(Context);
 
-  let { data, isLoading, isFetching, fetchNextPage, hasNextPage } =
+  let { data, isLoading, isFetching, fetchNextPage, hasNextPage, refetch } =
     useGetFolderContentChildren(
       currentHash,
-      objectToQueryString({ size: PAGE_SIZE, offset: 0 })
+      objectToQueryString({ size: PAGE_SIZE, offset: 0, order: orderBy, desc })
     );
 
   const { inView, ref } = useInView();
   if (data?.pages[0]?.result?.breadcrumb && currentTab === TabTypes.FileList) {
     setBreadCrumb(data?.pages[0]?.result?.breadcrumb);
   }
+
+  useEffect(() => {
+    if (currentTab == TabTypes.FileList) refetch();
+  }, [orderBy, desc]);
 
   useEffect(() => {
     if (inView && hasNextPage) {
