@@ -62,7 +62,9 @@ const MenuTools: React.FunctionComponent<IProps> = forwardRef(
       itemHash,
       setItemHash,
       setOperationType: setActionType,
-      currentHash
+      currentHash,
+      selectedItems,
+      setSelectedItems
     } = useContext(Context);
     const [isOpen, setIsOpen] = useState<boolean>(false);
     const currentIsOpenRef = useRef(false);
@@ -81,7 +83,12 @@ const MenuTools: React.FunctionComponent<IProps> = forwardRef(
     const getHash = () => item.hash;
     const getName = () => item.name;
 
-    React.useImperativeHandle(ref, () => ({ toggle, isOpenState, getHash, getName }));
+    React.useImperativeHandle(ref, () => ({
+      toggle,
+      isOpenState,
+      getHash,
+      getName
+    }));
 
     const archiveDelete = useArchiveDelete(currentHash);
     const archiveRestor = useArchiveRestor(currentHash);
@@ -99,18 +106,44 @@ const MenuTools: React.FunctionComponent<IProps> = forwardRef(
           setOperationType(OperationTypes.Rename);
           break;
         case OperationTypes.Copy:
-          setItemHash(item?.hash);
+          if (Array.isArray(selectedItems) && selectedItems.length > 0) {
+            // some action in the futuer
+            // if multi item select
+          } else {
+            setItemHash(item?.hash);
+          }
           setActionType(OperationTypes.Copy);
           break;
         case OperationTypes.Cut:
-          setItemHash(item?.hash);
+          if (Array.isArray(selectedItems) && selectedItems.length > 0) {
+            // some action in the futuer
+            // if multi item select
+          } else {
+            setItemHash(item?.hash);
+          }
           setActionType(OperationTypes.Cut);
           break;
         case OperationTypes.Download:
-          const extension = item.extension.toLowerCase();
-          download(item?.hash, headers).then((blob) => {
-            FileSaver.saveAs(blob, `${item?.hash}.${extension}`);
-          });
+          if (Array.isArray(selectedItems) && selectedItems.length > 0) {
+            selectedItems.map((x) => {
+              if (x.type !== FolderTypes.folder)
+                download(x?.hash, headers).then((blob) => {
+                  FileSaver.saveAs(
+                    blob,
+                    `${x?.hash}.${x?.extension?.toLowerCase()}`
+                  );
+                });
+            });
+          } else if (
+            item &&
+            Array.isArray(selectedItems) &&
+            selectedItems.length === 0
+          ) {
+            const extension = item.extension.toLowerCase();
+            download(item?.hash, headers).then((blob) => {
+              FileSaver.saveAs(blob, `${item?.hash}.${extension}`);
+            });
+          }
           break;
         case OperationTypes.RemoveArchive:
           archiveDelete.mutateAsync(serializeUrl({ hashes }));

@@ -127,10 +127,34 @@ export const useCopy = (folderHash) => {
   });
 };
 
+export const useCopyMulti = (folderHash) => {
+  return useMutation({
+    mutationFn: (variables: { hashes: string[]; destFolderHash: string }) =>
+      api.copyMulti({ ...variables }),
+    onSuccess: (_, variables) => {
+      queryClient.refetchQueries({
+        queryKey: ['folderContentChildren', folderHash]
+      });
+    }
+  });
+};
+
 export const useCut = (folderHash) => {
   return useMutation({
     mutationFn: (variables: { hash: string; destFolderHash: string }) =>
       api.cut({ ...variables }),
+    onSuccess: (_, variables) => {
+      queryClient.refetchQueries({
+        queryKey: ['folderContentChildren', folderHash]
+      });
+    }
+  });
+};
+
+export const useCutMulti = (folderHash) => {
+  return useMutation({
+    mutationFn: (variables: { hashes: string[]; destFolderHash: string }) =>
+      api.cutMulti({ ...variables }),
     onSuccess: (_, variables) => {
       queryClient.refetchQueries({
         queryKey: ['folderContentChildren', folderHash]
@@ -166,8 +190,7 @@ export const useArchiveList = (query: string = '') => {
 
 export const useArchiveDelete = (folderHash) => {
   return useMutation({
-    mutationFn: (variables: string) =>
-      api.archiveDelete({ variables }),
+    mutationFn: (variables: string) => api.archiveDelete({ variables }),
     onSuccess: (_, variables) => {
       queryClient.refetchQueries({
         queryKey: ['archiveList']
@@ -177,8 +200,7 @@ export const useArchiveDelete = (folderHash) => {
 };
 export const useArchiveRestor = (folderHash) => {
   return useMutation({
-    mutationFn: (variables: string) =>
-      api.archiveRestore({ variables }),
+    mutationFn: (variables: string) => api.archiveRestore({ variables }),
     onSuccess: (_, variables) => {
       queryClient.refetchQueries({
         queryKey: ['archiveList']
@@ -188,9 +210,8 @@ export const useArchiveRestor = (folderHash) => {
 };
 
 export const useSearchList = (query: string) => {
-  return useQuery(
-    ['searchList', { query }],
-    ({ queryKey }) => api.search(queryKey[1])
+  return useQuery(['searchList', { query }], ({ queryKey }) =>
+    api.search(queryKey[1])
   );
 };
 

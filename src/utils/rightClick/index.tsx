@@ -14,7 +14,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { OperationTypes, TabTypes } from '../../config/types';
 import Modal from './Modal';
 import { Context } from '../../store/index';
-import { useCopy, useCut } from '../../config/hooks';
+import { useCopy, useCut, useCopyMulti, useCutMulti } from '../../config/hooks';
 import CheckPermissions from '../../components/CheckPermissions';
 import { getBs } from '../../utils/index';
 import { IconFolderPlus, IconPaste } from '../icons';
@@ -32,13 +32,17 @@ const App: React.FunctionComponent<IProps> = forwardRef(
       itemHash,
       operationType: actionType,
       currentHash,
-      currentTab
+      currentTab,
+      selectedItems,
+      setSelectedItems
     } = useContext(Context);
     const [isOpen, setIsopen] = useState<boolean>(false);
     const [operationType, setOperationType] = useState<number>();
 
     const copy = useCopy(currentHash);
     const cut = useCut(currentHash);
+    const copyMulti = useCopyMulti(currentHash);
+    const cutMulti = useCutMulti(currentHash);
 
     const toggle = (type?: number) => {
       setIsopen(!isOpen);
@@ -100,11 +104,25 @@ const App: React.FunctionComponent<IProps> = forwardRef(
           toggle(OperationTypes.NewFolder);
           break;
         case OperationTypes.Paste:
-          if (OperationTypes.Copy === actionType)
+          if (OperationTypes.Copy === actionType && selectedItems.length > 0)
+            // multi copy
+            copyMulti.mutateAsync({
+              hashes: selectedItems.map((x) => x.hash),
+              destFolderHash: currentHash
+            });
+          if (OperationTypes.Copy === actionType && selectedItems.length === 0)
+            // one item copy
             copy.mutateAsync({ hash: itemHash, destFolderHash: currentHash });
-
-          if (OperationTypes.Cut === actionType)
+          if (OperationTypes.Cut === actionType && selectedItems.length > 0)
+            // multi cut
+            cutMulti.mutateAsync({
+              hashes: selectedItems.map((x) => x.hash),
+              destFolderHash: currentHash
+            });
+          if (OperationTypes.Cut === actionType && selectedItems.length === 0)
+            // one item cut
             cut.mutateAsync({ hash: itemHash, destFolderHash: currentHash });
+
           setItemHash('');
           setIsShown(false);
           break;
@@ -147,7 +165,8 @@ const App: React.FunctionComponent<IProps> = forwardRef(
                     </span>
                   </NavItem>
                 </CheckPermissions>
-                {itemHash ? (
+                {itemHash ||
+                (Array.isArray(selectedItems) && selectedItems.length > 0) ? (
                   <CheckPermissions permissions={['copy', 'cut']}>
                     <NavItem
                       cssModule={getBs()}

@@ -93,6 +93,31 @@ export const cut = async ({ hash, ...params }): Promise<Data> => {
     'POST'
   );
 };
+/************************************************************/
+/********* C O P Y  &  C U T  ---->>>> multi items***********/
+/************************************************************/
+
+export const copyMulti = async ({ ...params }): Promise<Data> => {
+  return httpRequest(
+    `${namespace}/batch/copy`,
+    {
+      message: successMessage,
+      ...params
+    },
+    'POST'
+  );
+};
+
+export const cutMulti = async ({ ...params }): Promise<Data> => {
+  return httpRequest(
+    `${namespace}/batch/cut`,
+    {
+      message: successMessage,
+      ...params
+    },
+    'POST'
+  );
+};
 
 /************************************* */
 /********* A R C H I V E ***************/

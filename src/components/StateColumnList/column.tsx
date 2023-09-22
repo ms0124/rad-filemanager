@@ -152,6 +152,7 @@ const Column: React.FunctionComponent<IProps> = ({
                     </div>
                     {isShowCheckbox && (
                       <input
+                        role='button'
                         onClick={() => handleSelectItem(item)}
                         type='checkbox'
                         checked={!!selectedItems.find(x=>x.hash === item.hash)}
