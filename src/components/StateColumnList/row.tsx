@@ -26,11 +26,37 @@ interface IProps {
 }
 
 const Row: FunctionComponent<IProps> = ({ pages = [], setHash }) => {
-  const { setSearchText, onSelect, currentTab, isSandbox } =
-    useContext(Context);
+  const {
+    setSearchText,
+    onSelect,
+    currentTab,
+    isSandbox,
+    isShowCheckbox,
+    selectedItems,
+    setSelectedItems
+  } = useContext(Context);
 
   const slectedRef = useRef<(HTMLDivElement | null)[]>([]);
   const contextMenuRef: any = useRef<[]>([]);
+  const handleSelectItem = (event, item) => {
+    // event.stopPropagation();
+    const itemFinded = selectedItems.find((x) => x?.hash === item.hash);
+    if (itemFinded) {
+      // item finded
+      const filterdItems = selectedItems.filter((x) => x.hash !== item.hash);
+      setSelectedItems(filterdItems);
+    } else {
+      // can't find item & add item
+      setSelectedItems([...selectedItems, item]);
+    }
+    if (onSelect) {
+      const withOutFolders = selectedItems.filter((x) =>
+        x.type === FolderTypes.folder ? false : true
+      );
+      onSelect(withOutFolders);
+    }
+  };
+
   return (
     <Table cssModule={getBs()} className={styles['table-wrapper']}>
       <thead>
@@ -66,6 +92,13 @@ const Row: FunctionComponent<IProps> = ({ pages = [], setHash }) => {
                 }
               }}
               key={index}
+              style={{
+                backgroundColor: selectedItems.find(
+                  (x) => x.hash === item?.hash
+                )
+                  ? 'cornflowerblue'
+                  : ''
+              }}
               ref={(ref) => (slectedRef.current[index] = ref)}
             >
               <td className={styles['vertical-align-top']}>
@@ -85,6 +118,18 @@ const Row: FunctionComponent<IProps> = ({ pages = [], setHash }) => {
                     // }
                   }}
                 />
+              </td>
+              <td>
+                {isShowCheckbox && (
+                  <input
+                    role='button'
+                    onClick={(event) => handleSelectItem(event, item)}
+                    type='checkbox'
+                    checked={!!selectedItems.find((x) => x.hash === item.hash)}
+                    // checked={false}
+                    // className={classnames(styles['col__checkbox'])}
+                  />
+                )}
               </td>
               <td className={styles['thumnail-wrraper']}>
                 {item?.type != FolderTypes.folder ? (
@@ -108,8 +153,13 @@ const Row: FunctionComponent<IProps> = ({ pages = [], setHash }) => {
               <td
                 className={`${utilStyles['text-end']}`}
                 scope='row'
-                onClick={() => {
-                  if (!item?.extension && !item?.isPublic) return;
+                onClick={(e) => {
+                  if (!onSelect) return; /// if onSelect undefined this function will dont work
+                  if (item?.type === FolderTypes.folder) return; // for folder dont select
+                  if (!item?.isPublic) return; //don't select private items
+                  if (isShowCheckbox) return; // if multi select is enable ==> prevent one select work
+                  e.stopPropagation();
+
                   if (
                     slectedRef.current[index]?.style.backgroundColor ===
                     'cornflowerblue'
@@ -126,7 +176,7 @@ const Row: FunctionComponent<IProps> = ({ pages = [], setHash }) => {
                     if (onSelect) onSelect(item);
                   }
                 }}
-                style={{ cursor: 'pointer' }}
+                role='button'
                 onDoubleClick={() => {
                   if (TabTypes.SearchList) {
                     setSearchText('');

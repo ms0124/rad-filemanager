@@ -39,6 +39,7 @@ export interface AppContextInterface {
     name: string;
     extension?: string;
     type: string;
+    thumbnail?: string;
   }[];
   setSelectedItems: (data: any) => void;
 

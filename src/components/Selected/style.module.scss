@@ -14,10 +14,24 @@
     height: 160px;
     overflow-y: scroll;
     &__item {
+      display: flex;
+    justify-content: center;
+    align-items: center;
       padding: 10px;
       margin: 10px;
       background-color: #fff;
       border-radius: 6px;
+    }
+    &__name{
+      margin-right: 15px !important;
+    }
+    &__img{
+      height: 35px !important;
+    }
+    &__folder{
+      img{
+        height: 35px !important;
+      }
     }
   }
 }
