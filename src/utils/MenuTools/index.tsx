@@ -126,7 +126,7 @@ const MenuTools: React.FunctionComponent<IProps> = forwardRef(
         case OperationTypes.Download:
           if (Array.isArray(selectedItems) && selectedItems.length > 0) {
             selectedItems.map((x) => {
-              if (x.type !== FolderTypes.folder)
+              if (x?.type !== FolderTypes.folder)
                 download(x?.hash, headers).then((blob) => {
                   FileSaver.saveAs(
                     blob,
