@@ -14,16 +14,7 @@ import {
   DropdownToggle
 } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {
-  faEllipsisH,
-  faCircleInfo,
-  faDownload,
-  faLink,
-  faEdit,
-  faCopy,
-  faArrowsAlt,
-  faShareAlt
-} from '@fortawesome/free-solid-svg-icons';
+import { faEllipsisH } from '@fortawesome/free-solid-svg-icons';
 import FileSaver from 'file-saver';
 import { faPlayCircle, faTrashAlt } from '@fortawesome/free-regular-svg-icons';
 import MenuItem from './MenuItem';
@@ -62,6 +53,7 @@ const MenuTools: React.FunctionComponent<IProps> = forwardRef(
       itemHash,
       setItemHash,
       setOperationType: setActionType,
+      isShowCheckbox,
       currentHash,
       selectedItems,
       setSelectedItems
@@ -234,14 +226,16 @@ const MenuTools: React.FunctionComponent<IProps> = forwardRef(
             )}
             {tabType != TabTypes.ArchiveList ? (
               <React.Fragment>
-                <CheckPermissions permissions={['rename']}>
-                  <MenuItem
-                    clickHandler={() => clickHandler(OperationTypes.Rename)}
-                    title='تغییر نام'
-                    icon={<IconEdit />}
-                    enTitle='rename'
-                  />
-                </CheckPermissions>
+                {isShowCheckbox || (
+                  <CheckPermissions permissions={['rename']}>
+                    <MenuItem
+                      clickHandler={() => clickHandler(OperationTypes.Rename)}
+                      title='تغییر نام'
+                      icon={<IconEdit />}
+                      enTitle='rename'
+                    />
+                  </CheckPermissions>
+                )}
                 <CheckPermissions permissions={['copy']}>
                   <MenuItem
                     clickHandler={() => clickHandler(OperationTypes.Copy)}
@@ -258,14 +252,16 @@ const MenuTools: React.FunctionComponent<IProps> = forwardRef(
                     enTitle='move'
                   />
                 </CheckPermissions>
-                <CheckPermissions permissions={['delete']}>
-                  <MenuItem
-                    clickHandler={() => clickHandler(OperationTypes.Remove)}
-                    title='حذف'
-                    icon={<IconTrash />}
-                    enTitle='delete'
-                  />
-                </CheckPermissions>
+                {isShowCheckbox || (
+                  <CheckPermissions permissions={['delete']}>
+                    <MenuItem
+                      clickHandler={() => clickHandler(OperationTypes.Remove)}
+                      title='حذف'
+                      icon={<IconTrash />}
+                      enTitle='delete'
+                    />
+                  </CheckPermissions>
+                )}
               </React.Fragment>
             ) : (
               <React.Fragment>
