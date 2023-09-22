@@ -49,7 +49,8 @@ const Column: React.FunctionComponent<IProps> = ({
     });
   };
 
-  const handleSelectItem = (item) => {
+  const handleSelectItem = (event, item) => {
+    // event.stopPropagation();
     const itemFinded = selectedItems.find((x) => x?.hash === item.hash);
     if (itemFinded) {
       // item finded
@@ -59,8 +60,14 @@ const Column: React.FunctionComponent<IProps> = ({
       // can't find item & add item
       setSelectedItems([...selectedItems, item]);
     }
+    if (onSelect) {
+      const withOutFolders = selectedItems.filter((x) =>
+        x.type === FolderTypes.folder ? false : true
+      );
+      onSelect(withOutFolders);
+    }
   };
-  
+
   return (
     <React.Fragment>
       <RightClick
@@ -97,7 +104,9 @@ const Column: React.FunctionComponent<IProps> = ({
                   ref={(ref) => (slectedRef.current[index] = ref)}
                   onClick={(e) => {
                     if (!onSelect) return; /// if onSelect undefined this function will dont work
-                    if (!item?.extension && !item?.isPublic) return; // for folder dont select
+                    if (item?.type === FolderTypes.folder) return; // for folder dont select
+                    if (!item?.isPublic) return; //don't select private items
+                    if (isShowCheckbox) return; // if multi select is enable ==> prevent one select work
                     e.stopPropagation();
 
                     if (
@@ -114,7 +123,7 @@ const Column: React.FunctionComponent<IProps> = ({
                       slectedRef.current[index]!.style!.backgroundColor =
                         'cornflowerblue';
                     }
-                    if (onSelect) onSelect(item);
+                    if (onSelect) onSelect([item]);
                   }}
                   onDoubleClick={() => {
                     if (TabTypes.SearchList) {
@@ -125,7 +134,15 @@ const Column: React.FunctionComponent<IProps> = ({
                     item?.extension ? null : setHash(item?.hash);
                   }}
                   className={styles['col']}
-                  style={item?.extension ? {} : { cursor: 'pointer' }}
+                  role='butotn'
+                  style={{
+                    backgroundColor: selectedItems.find(
+                      (x) => x.hash === item.hash
+                    )
+                      ? 'cornflowerblue'
+                      : ''
+                  }}
+                  // style={item?.extension ? {} : { cursor: 'pointer' }}
                 >
                   <div className={classnames(styles['col__img-wrapper'])}>
                     <div className={styles['col__menu-wrapper']}>
@@ -153,9 +170,11 @@ const Column: React.FunctionComponent<IProps> = ({
                     {isShowCheckbox && (
                       <input
                         role='button'
-                        onClick={() => handleSelectItem(item)}
+                        onClick={(event) => handleSelectItem(event, item)}
                         type='checkbox'
-                        checked={!!selectedItems.find(x=>x.hash === item.hash)}
+                        checked={
+                          !!selectedItems.find((x) => x.hash === item.hash)
+                        }
                         // checked={false}
                         className={classnames(styles['col__checkbox'])}
                       />
