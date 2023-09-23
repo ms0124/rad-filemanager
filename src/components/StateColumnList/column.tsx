@@ -52,16 +52,18 @@ const Column: React.FunctionComponent<IProps> = ({
   const handleSelectItem = (event, item) => {
     // event.stopPropagation();
     const itemFinded = selectedItems.find((x) => x?.hash === item.hash);
+    let newSelectedArray: any = [];
     if (itemFinded) {
       // item finded
-      const filterdItems = selectedItems.filter((x) => x.hash !== item.hash);
-      setSelectedItems(filterdItems);
+      newSelectedArray = selectedItems.filter((x) => x.hash !== item.hash);
+      setSelectedItems(newSelectedArray);
     } else {
       // can't find item & add item
-      setSelectedItems([...selectedItems, item]);
+      newSelectedArray = [...selectedItems, item];
+      setSelectedItems(newSelectedArray);
     }
     if (onSelect) {
-      const withOutFolders = selectedItems.filter((x) =>
+      const withOutFolders = newSelectedArray.filter((x) =>
         x.type === FolderTypes.folder ? false : true
       );
       onSelect(withOutFolders);

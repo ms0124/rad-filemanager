@@ -1,5 +1,5 @@
 .container {
-  margin-right: 15px;
+  padding-right: 15px;
   .title {
     padding-top: 15px;
     text-align: right;
@@ -15,21 +15,21 @@
     overflow-y: scroll;
     &__item {
       display: flex;
-    justify-content: center;
-    align-items: center;
+      justify-content: center;
+      align-items: center;
       padding: 10px;
       margin: 10px;
       background-color: #fff;
       border-radius: 6px;
     }
-    &__name{
+    &__name {
       margin-right: 15px !important;
     }
-    &__img{
+    &__img {
       height: 35px !important;
     }
-    &__folder{
-      img{
+    &__folder {
+      img {
         height: 35px !important;
       }
     }
