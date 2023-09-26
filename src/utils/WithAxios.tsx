@@ -22,7 +22,7 @@ const WithAxios: React.FC<IProps> = ({ children }) => {
       return config;
     });
     return () => instance.interceptors.request.eject(requestInterceptor);
-  }, []);
+  }, [header?.accessToken]);
   return children;
 };
 
