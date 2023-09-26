@@ -106,19 +106,27 @@ const App: React.FunctionComponent<IProps> = forwardRef(
         case OperationTypes.Paste:
           if (OperationTypes.Copy === actionType && selectedItems.length > 0)
             // multi copy
-            copyMulti.mutateAsync({
-              hashes: selectedItems.map((x) => x.hash),
-              destFolderHash: currentHash
-            });
+            copyMulti
+              .mutateAsync({
+                hashes: selectedItems.map((x) => x.hash),
+                destFolderHash: currentHash
+              })
+              .finally(() => {
+                setSelectedItems([]);
+              });
           if (OperationTypes.Copy === actionType && selectedItems.length === 0)
             // one item copy
             copy.mutateAsync({ hash: itemHash, destFolderHash: currentHash });
           if (OperationTypes.Cut === actionType && selectedItems.length > 0)
             // multi cut
-            cutMulti.mutateAsync({
-              hashes: selectedItems.map((x) => x.hash),
-              destFolderHash: currentHash
-            });
+            cutMulti
+              .mutateAsync({
+                hashes: selectedItems.map((x) => x.hash),
+                destFolderHash: currentHash
+              })
+              .finally(() => {
+                setSelectedItems([]);
+              });
           if (OperationTypes.Cut === actionType && selectedItems.length === 0)
             // one item cut
             cut.mutateAsync({ hash: itemHash, destFolderHash: currentHash });

@@ -126,6 +126,7 @@ const MenuTools: React.FunctionComponent<IProps> = forwardRef(
                   );
                 });
             });
+            setSelectedItems([]);
           } else if (
             item &&
             Array.isArray(selectedItems) &&
