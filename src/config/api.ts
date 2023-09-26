@@ -21,7 +21,7 @@ export const getFolderContentChildren = ({
   return httpRequest(`${namespace}/${hash}/children/${query}`);
 };
 
-export const getUserStorage = ({ ...params }: any): Promise<Data> => {
+export const getUserStorage = (): Promise<Data> => {
   return httpRequest(`${namespace}/storage`);
 };
 

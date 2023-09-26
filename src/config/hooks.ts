@@ -72,7 +72,7 @@ export const useGetFolderContentChildren = (
 export const useGetUserStorage = () => {
   return useQuery(
     ['userStorage'],
-    ({ queryKey }) => api.getUserStorage(queryKey[1]),
+    () => api.getUserStorage(),
     { enabled: false } // disable this query from automatically running
   );
 };
