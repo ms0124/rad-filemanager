@@ -228,7 +228,7 @@ const SortingMenu: FunctionComponent = () => {
               border: isShowCheckbox
                 ? '1px solid #ff9b3f'
                 : '1px solid #c5c5c5',
-              marginLeft: '15px',
+              marginLeft: '10px',
               borderRadius: '4px',
               padding: '2px 5px 1px 5px'
             }}
