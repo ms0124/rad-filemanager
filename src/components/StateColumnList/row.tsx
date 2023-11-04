@@ -54,7 +54,10 @@ const Row: FunctionComponent<IProps> = ({ pages = [], setHash }) => {
       // can't find item & add item
       newSelectedArray = [...selectedItems, item];
       setSelectedItems(newSelectedArray);
+    } else if (!multiSelect && selectedItems.length==1) {
+      setSelectedItems([item]);
     }
+    
     if (onSelect) {
       const withOutFolders = newSelectedArray.filter((x) =>
         x.type === FolderTypes.folder ? false : true

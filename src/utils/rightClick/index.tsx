@@ -174,7 +174,7 @@ const App: React.FunctionComponent<IProps> = forwardRef(
                   </NavItem>
                 </CheckPermissions>
                 {itemHash ||
-                (Array.isArray(selectedItems) && selectedItems.length > 0) ? (
+                (Array.isArray(selectedItems) && selectedItems.length > 0) && actionType ? (
                   <CheckPermissions permissions={['copy', 'cut']}>
                     <NavItem
                       cssModule={getBs()}

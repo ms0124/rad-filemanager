@@ -50,7 +50,7 @@ const Column: React.FunctionComponent<IProps> = ({
     });
   };
 
-  const handleSelectItem = (item, multiSelect=true) => {
+  const handleSelectItem = (item, multiSelect = true) => {
     const isValid = validExtension.find(x => x === item?.extension)
     if (!isValid) return; 
     const itemFinded = selectedItems.find((x) => x?.hash === item.hash);
@@ -64,6 +64,8 @@ const Column: React.FunctionComponent<IProps> = ({
       // can't find item & add item
       newSelectedArray = [...selectedItems, item];
       setSelectedItems(newSelectedArray);
+    } else if (!multiSelect && selectedItems.length==1) {
+      setSelectedItems([item]);
     }
     if (onSelect) {
       const withOutFolders = newSelectedArray.filter((x) =>
