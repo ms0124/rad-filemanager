@@ -28,7 +28,7 @@ export interface AppContextInterface {
 
   config?: { width: number; height: number } | null;
   onSelect?: (data: any) => void;
-
+  validExtension: string[];
   isSandbox: boolean;
 
   isShowCheckbox: boolean;

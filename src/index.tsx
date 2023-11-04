@@ -19,6 +19,7 @@ interface Props {
   permissions: string[];
   onSelect?: any;
   isSandbox: boolean;
+  validExtension?: string[];
 }
 
 const FileManagerReact = ({ ...props }: Props) => {
@@ -36,7 +37,7 @@ const FileManagerReact = ({ ...props }: Props) => {
   const [selectedItems, setSelectedItems] = useState<[]>([]);
   const [orderBy, setOrderBy] = useState<string>(OrderByTypes.Updated);
   const [desc, setDesc] = useState<boolean>(true);
-
+  const [validExtension, setValidExtension] = useState<string[]>(props.validExtension? props.validExtension: []);
   const [config, setConfig] = useState<any>(props.config);
   const [header, setHeader] = useState<any>({
     clientId: props.clientId,
@@ -95,7 +96,8 @@ const FileManagerReact = ({ ...props }: Props) => {
     orderBy,
     setOrderBy,
     desc,
-    setDesc
+    setDesc,
+    validExtension
   };
   return (
     <Context.Provider value={defaultValues}>
@@ -122,6 +124,7 @@ function FileManager(props: any, elementId: any) {
   const [selectedItems, setSelectedItems] = useState<[]>([]);
   const [orderBy, setOrderBy] = useState<string>(OrderByTypes.Updated);
   const [desc, setDesc] = useState<boolean>(true);
+  const [validExtension, setValidExtension] = useState<string[]>(props.validExtension);
 
   const [config, setConfig] = useState<any>(props.config);
   const [header, setHeader] = useState<any>({
@@ -162,7 +165,8 @@ function FileManager(props: any, elementId: any) {
     orderBy,
     setOrderBy,
     desc,
-    setDesc
+    setDesc,
+    validExtension
   };
   ReactDOM.render(
     <Context.Provider value={defaultValues}>

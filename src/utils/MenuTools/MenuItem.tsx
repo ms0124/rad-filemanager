@@ -12,7 +12,7 @@ interface IProps {
   icon?: React.ReactElement;
   title: string;
   enTitle?: string;
-  clickHandler?: () => void;
+  clickHandler: () => void;
   type?: number;
 }
 
@@ -30,7 +30,10 @@ const MenuItem: React.FunctionComponent<IProps> = ({
         cssModule={getBs()}
         role='button'
         tag={type === OperationTypes.Download ? 'a' : undefined}
-        onClick={clickHandler}
+        onClick={(e) => {
+          e.stopPropagation();
+          clickHandler()
+        }}
         target='_blank'
         className={`${styles['dropdown-menu-wrapper__item']}`}
       >

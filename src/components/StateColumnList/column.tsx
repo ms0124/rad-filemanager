@@ -1,7 +1,7 @@
 import styles from './style.module.scss';
 import utilStyles from '../../sass/style.module.scss';
 
-import React, { useContext, useEffect, useRef, useState } from 'react';
+import React, { useContext, useRef } from 'react';
 import { Row, Col } from 'reactstrap';
 import moment from 'moment-jalaali';
 import classnames from 'classnames';
@@ -17,7 +17,7 @@ import { Context } from '../../store/index';
 import { getBs } from '../../utils/index';
 import DefaultThumnail from './defaultThumbnail/index';
 import { PAGE_SIZE } from '../../config/config';
-// import Empty from './empty';
+
 interface IProps {
   pages: any;
   setHash: React.Dispatch<React.SetStateAction<string>>;
@@ -36,7 +36,8 @@ const Column: React.FunctionComponent<IProps> = ({
     isShowCheckbox,
     isSandbox,
     selectedItems,
-    setSelectedItems
+    setSelectedItems,
+    validExtension
   } = useContext(Context);
   const slectedRef = useRef<(HTMLDivElement | null)[]>([]);
   const contextMenuRef: any = useRef<[]>([]);
@@ -49,15 +50,17 @@ const Column: React.FunctionComponent<IProps> = ({
     });
   };
 
-  const handleSelectItem = (event, item) => {
-    // event.stopPropagation();
+  const handleSelectItem = (item, multiSelect=true) => {
+    const isValid = validExtension.find(x => x === item?.extension)
+    if (!isValid) return; 
     const itemFinded = selectedItems.find((x) => x?.hash === item.hash);
     let newSelectedArray: any = [];
+    
     if (itemFinded) {
       // item finded
       newSelectedArray = selectedItems.filter((x) => x.hash !== item.hash);
       setSelectedItems(newSelectedArray);
-    } else {
+    } else if(multiSelect || ( selectedItems.length === 0 && !multiSelect)) {
       // can't find item & add item
       newSelectedArray = [...selectedItems, item];
       setSelectedItems(newSelectedArray);
@@ -69,7 +72,7 @@ const Column: React.FunctionComponent<IProps> = ({
       onSelect(withOutFolders);
     }
   };
-
+  
   return (
     <React.Fragment>
       <RightClick
@@ -96,36 +99,15 @@ const Column: React.FunctionComponent<IProps> = ({
                     const currentIndex = pageIndex * PAGE_SIZE + index;
                     if (item.hash) {
                       contextMenuRef.current[currentIndex].toggle();
-                      // contextMenuRef.current
-                      //   .find((i, index) => {
-                      //     return i && i?.getHash() === item.hash;
-                      //   })
-                      //   ?.toggle();
                     }
                   }}
                   ref={(ref) => (slectedRef.current[index] = ref)}
                   onClick={(e) => {
-                    if (!onSelect) return; /// if onSelect undefined this function will dont work
+                    e.stopPropagation();
                     if (item?.type === FolderTypes.folder) return; // for folder dont select
                     if (!item?.isPublic) return; //don't select private items
-                    if (isShowCheckbox) return; // if multi select is enable ==> prevent one select work
-                    e.stopPropagation();
-
-                    if (
-                      slectedRef.current[index]?.style?.backgroundColor ===
-                      'cornflowerblue'
-                    ) {
-                      slectedRef.current[index]!.style!.backgroundColor =
-                        'rgb(250,250,250)';
-                    } else {
-                      slectedRef.current.map(
-                        (item) =>
-                          (item!.style!.backgroundColor = 'rgb(250,250,250)')
-                      );
-                      slectedRef.current[index]!.style!.backgroundColor =
-                        'cornflowerblue';
-                    }
-                    if (onSelect) onSelect([item]);
+                    // if multi select is enable ==> prevent one select work
+                    handleSelectItem(item, isShowCheckbox)
                   }}
                   onDoubleClick={() => {
                     if (TabTypes.SearchList) {
@@ -142,9 +124,8 @@ const Column: React.FunctionComponent<IProps> = ({
                       (x) => x.hash === item.hash
                     )
                       ? 'cornflowerblue'
-                      : ''
+                      : '', cursor: item?.extension? "pointer": "auto"
                   }}
-                  // style={item?.extension ? {} : { cursor: 'pointer' }}
                 >
                   <div className={classnames(styles['col__img-wrapper'])}>
                     <div className={styles['col__menu-wrapper']}>
@@ -172,7 +153,7 @@ const Column: React.FunctionComponent<IProps> = ({
                     {isShowCheckbox && (
                       <input
                         role='button'
-                        onClick={(event) => handleSelectItem(event, item)}
+                        onClick={(event) => handleSelectItem(item)}
                         type='checkbox'
                         checked={
                           !!selectedItems.find((x) => x.hash === item.hash)

@@ -33,20 +33,24 @@ const Row: FunctionComponent<IProps> = ({ pages = [], setHash }) => {
     isSandbox,
     isShowCheckbox,
     selectedItems,
-    setSelectedItems
+    setSelectedItems,
+    validExtension
   } = useContext(Context);
 
   const slectedRef = useRef<(HTMLDivElement | null)[]>([]);
   const contextMenuRef: any = useRef<[]>([]);
-  const handleSelectItem = (event, item) => {
-    // event.stopPropagation();
+
+  const handleSelectItem = (item, multiSelect=true) => {
+    const isValid = validExtension.find(x => x === item?.extension)
+    if (!isValid) return; 
     const itemFinded = selectedItems.find((x) => x?.hash === item.hash);
     let newSelectedArray: any = [];
+    
     if (itemFinded) {
       // item finded
       newSelectedArray = selectedItems.filter((x) => x.hash !== item.hash);
       setSelectedItems(newSelectedArray);
-    } else {
+    } else if(multiSelect || ( selectedItems.length === 0 && !multiSelect)) {
       // can't find item & add item
       newSelectedArray = [...selectedItems, item];
       setSelectedItems(newSelectedArray);
@@ -63,6 +67,7 @@ const Row: FunctionComponent<IProps> = ({ pages = [], setHash }) => {
     <Table cssModule={getBs()} className={styles['table-wrapper']}>
       <thead>
         <tr>
+          <th></th>
           <th className={`${utilStyles['text-center']} `} colSpan={3}>
             نام فایل
           </th>
@@ -86,11 +91,6 @@ const Row: FunctionComponent<IProps> = ({ pages = [], setHash }) => {
                 const currentIndex = pageIndex * PAGE_SIZE + index;
                 if (item.hash) {
                   contextMenuRef.current[currentIndex].toggle();
-                  // contextMenuRef.current
-                  //   .find((i, index) => {
-                  //     return i && i?.getHash() === item.hash;
-                  //   })
-                  //   ?.toggle();
                 }
               }}
               key={index}
@@ -99,7 +99,7 @@ const Row: FunctionComponent<IProps> = ({ pages = [], setHash }) => {
                   (x) => x.hash === item?.hash
                 )
                   ? 'cornflowerblue'
-                  : ''
+                  : '',  cursor: item?.extension? "pointer": "auto"
               }}
               ref={(ref) => (slectedRef.current[index] = ref)}
             >
@@ -125,10 +125,9 @@ const Row: FunctionComponent<IProps> = ({ pages = [], setHash }) => {
                 {isShowCheckbox && (
                   <input
                     role='button'
-                    onClick={(event) => handleSelectItem(event, item)}
+                    onClick={(_) => handleSelectItem(item)}
                     type='checkbox'
                     checked={!!selectedItems.find((x) => x.hash === item.hash)}
-                    // checked={false}
                     // className={classnames(styles['col__checkbox'])}
                   />
                 )}
@@ -156,27 +155,11 @@ const Row: FunctionComponent<IProps> = ({ pages = [], setHash }) => {
                 className={`${utilStyles['text-end']}`}
                 scope='row'
                 onClick={(e) => {
-                  if (!onSelect) return; /// if onSelect undefined this function will dont work
+                  e.stopPropagation();
                   if (item?.type === FolderTypes.folder) return; // for folder dont select
                   if (!item?.isPublic) return; //don't select private items
-                  if (isShowCheckbox) return; // if multi select is enable ==> prevent one select work
-                  e.stopPropagation();
-
-                  if (
-                    slectedRef.current[index]?.style.backgroundColor ===
-                    'cornflowerblue'
-                  ) {
-                    slectedRef.current[index]!.style!.backgroundColor =
-                      'rgb(250,250,250)';
-                  } else {
-                    slectedRef.current.map(
-                      (item) =>
-                        (item!.style!.backgroundColor = 'rgb(250,250,250)')
-                    );
-                    slectedRef.current[index]!.style!.backgroundColor =
-                      'cornflowerblue';
-                    if (onSelect) onSelect(item);
-                  }
+                  // if multi select is enable ==> prevent one select work
+                  handleSelectItem(item, isShowCheckbox)
                 }}
                 role='button'
                 onDoubleClick={() => {
@@ -200,14 +183,13 @@ const Row: FunctionComponent<IProps> = ({ pages = [], setHash }) => {
               <td
                 className={`${styles['dir-ltr']} ${utilStyles['text-center']}`}
               >
-                {' '}
                 {moment(item?.updated).format('jYYYY/jMM/jDD HH:mm:ss')}
               </td>
               <td
                 className={`${styles['dir-ltr']} ${utilStyles['text-center']}`}
-              >
+              > 
                 {item?.type === FolderTypes.folder
-                  ? ''
+                  ? '-'
                   : formatBytes(item?.size)}
               </td>
               <td
