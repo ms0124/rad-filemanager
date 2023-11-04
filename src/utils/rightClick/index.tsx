@@ -89,17 +89,13 @@ const App: React.FunctionComponent<IProps> = forwardRef(
       elementHtml?.addEventListener('contextmenu', showContextMenu, {
         capture: true
       });
-      document?.body?.addEventListener('click', hideContextMenu, {
-        capture: true
-      });
+      document?.body?.addEventListener('click', hideContextMenu);
       
       return () => {
         elementHtml?.removeEventListener('contextmenu', showContextMenu, {
           capture: true
         });
-        document?.body?.removeEventListener('click', hideContextMenu, {
-          capture: true
-        });
+        document?.body?.removeEventListener('click', hideContextMenu);
       };
     }, []);
 
