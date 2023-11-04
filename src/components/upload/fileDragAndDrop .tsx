@@ -173,6 +173,7 @@ const FilesDragAndDrop: FunctionComponent<Props> = ({ modal, toggleModal }) => {
       toggle={() => toggleModal(false)}
       contentClassName={isUpload ? styles['upload-toast'] : ''}
       className={styles['modal-container']}
+      zIndex={99991}
       // size='lg'
       // centered={true}
     >

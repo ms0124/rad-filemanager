@@ -85,6 +85,7 @@ const Index: React.FC<IProps> = ({
       // centered={true}
       className={`${styles['modal-operation']}`}
       cssModule={getBs()}
+      zIndex={99991}
     >
       <ModalHeader cssModule={getBs()}>{title}</ModalHeader>
       <ModalBody cssModule={getBs()}>

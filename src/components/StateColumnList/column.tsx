@@ -105,7 +105,7 @@ const Column: React.FunctionComponent<IProps> = ({
                   }}
                   ref={(ref) => (slectedRef.current[index] = ref)}
                   onClick={(e) => {
-                    e.stopPropagation();
+                    // e.stopPropagation();
                     if (item?.type === FolderTypes.folder) return; // for folder dont select
                     if (!item?.isPublic) return; //don't select private items
                     // if multi select is enable ==> prevent one select work

@@ -84,17 +84,22 @@ const App: React.FunctionComponent<IProps> = forwardRef(
     useImperativeHandle(ref, () => ({ hideContextMenu }));
     useEffect(() => {
       const elementHtml = document.querySelector(`${query}`);
-
+      // const filemanagerContainer = document.querySelector('#filemanager-container')
+      
       elementHtml?.addEventListener('contextmenu', showContextMenu, {
         capture: true
       });
-      document.body?.addEventListener('click', hideContextMenu);
-
+      document?.body?.addEventListener('click', hideContextMenu, {
+        capture: true
+      });
+      
       return () => {
         elementHtml?.removeEventListener('contextmenu', showContextMenu, {
           capture: true
         });
-        document.body?.removeEventListener('click', hideContextMenu);
+        document?.body?.removeEventListener('click', hideContextMenu, {
+          capture: true
+        });
       };
     }, []);
 
@@ -174,7 +179,7 @@ const App: React.FunctionComponent<IProps> = forwardRef(
                   </NavItem>
                 </CheckPermissions>
                 {itemHash ||
-                (Array.isArray(selectedItems) && selectedItems.length > 0) && actionType ? (
+                (Array.isArray(selectedItems) && selectedItems.length > 0) ? (
                   <CheckPermissions permissions={['copy', 'cut']}>
                     <NavItem
                       cssModule={getBs()}
