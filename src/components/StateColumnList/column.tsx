@@ -51,7 +51,7 @@ const Column: React.FunctionComponent<IProps> = ({
   };
 
   const handleSelectItem = (item, multiSelect = true) => {
-    const isValid = validExtension.find(x => x === item?.extension)
+    const isValid = validExtension.find(x => x === item?.extension || (!item.extension && x === 'dir' && item.type === FolderTypes.folder))
     if (!isValid) return; 
     const itemFinded = selectedItems.find((x) => x?.hash === item.hash);
     let newSelectedArray: any = [];
@@ -106,7 +106,7 @@ const Column: React.FunctionComponent<IProps> = ({
                   ref={(ref) => (slectedRef.current[index] = ref)}
                   onClick={(e) => {
                     // e.stopPropagation();
-                    if (item?.type === FolderTypes.folder) return; // for folder dont select
+                    // if (item?.type === FolderTypes.folder) return; // for folder dont select
                     if (!item?.isPublic) return; //don't select private items
                     // if multi select is enable ==> prevent one select work
                     handleSelectItem(item, isShowCheckbox)

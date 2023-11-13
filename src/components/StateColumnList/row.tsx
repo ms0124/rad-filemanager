@@ -41,7 +41,7 @@ const Row: FunctionComponent<IProps> = ({ pages = [], setHash }) => {
   const contextMenuRef: any = useRef<[]>([]);
 
   const handleSelectItem = (item, multiSelect=true) => {
-    const isValid = validExtension.find(x => x === item?.extension)
+    const isValid = validExtension.find(x => x === item?.extension || (!item.extension && x === 'dir' && item.type === FolderTypes.folder))
     if (!isValid) return; 
     const itemFinded = selectedItems.find((x) => x?.hash === item.hash);
     let newSelectedArray: any = [];

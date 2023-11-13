@@ -6,7 +6,7 @@ import './sass/style.module.scss';
 import App from './components/FileManager/index';
 import { Context, AppContextInterface } from './store/index';
 import { QueryClientProvider } from 'react-query';
-import { queryClient } from './config/config';
+import { queryClient, validExtensionList } from './config/config';
 import { ToastContainer } from 'react-toastify';
 import WithAxios from './utils/WithAxios';
 import { OrderByTypes } from './config/types';
@@ -37,7 +37,7 @@ const FileManagerReact = ({ ...props }: Props) => {
   const [selectedItems, setSelectedItems] = useState<[]>([]);
   const [orderBy, setOrderBy] = useState<string>(OrderByTypes.Updated);
   const [desc, setDesc] = useState<boolean>(true);
-  const [validExtension, setValidExtension] = useState<string[]>(props.validExtension? props.validExtension: []);
+  const [validExtension, setValidExtension] = useState<string[]>(props.validExtension ? props.validExtension : validExtensionList);
   const [config, setConfig] = useState<any>(props.config);
   const [header, setHeader] = useState<any>({
     clientId: props.clientId,
@@ -124,7 +124,7 @@ function FileManager(props: any, elementId: any) {
   const [selectedItems, setSelectedItems] = useState<[]>([]);
   const [orderBy, setOrderBy] = useState<string>(OrderByTypes.Updated);
   const [desc, setDesc] = useState<boolean>(true);
-  const [validExtension, setValidExtension] = useState<string[]>(props.validExtension);
+  const [validExtension, setValidExtension] = useState<string[]>(props.validExtension ? props.validExtension : validExtensionList);
 
   const [config, setConfig] = useState<any>(props.config);
   const [header, setHeader] = useState<any>({
