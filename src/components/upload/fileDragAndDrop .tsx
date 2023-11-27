@@ -16,9 +16,6 @@ import { faCloudUploadAlt, faTimes } from '@fortawesome/free-solid-svg-icons';
 
 import { upload } from '../../config/api';
 import { Context } from '../../store';
-
-import { queryClient } from '../../config/config';
-
 import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
 import { getHeader } from '../../config/hooks';
@@ -28,13 +25,15 @@ import { IconTick, IconTimes, IconUpload } from '../../utils/icons';
 interface Props {
   modal: boolean;
   toggleModal: (boolean) => void;
+  uploadComplete: boolean;
+  setUploadComplete: (boolean) => void;
 }
 
 interface fileListInterface {
   name: string;
 }
 
-const FilesDragAndDrop: FunctionComponent<Props> = ({ modal, toggleModal }) => {
+const FilesDragAndDrop: FunctionComponent<Props> = ({ modal, toggleModal, uploadComplete, setUploadComplete }) => {
   const { currentHash } = useContext(Context);
   const headers = getHeader(false);
 
@@ -43,7 +42,7 @@ const FilesDragAndDrop: FunctionComponent<Props> = ({ modal, toggleModal }) => {
   const [isUpload, setIsUpload] = useState(false);
   const [fileList, setFileList] = useState<fileListInterface[]>([]);
   const [progress, setProgress] = useState<{}>({});
-  const [uploadComplete, setUploadComplete] = useState<boolean>(false);
+
   const progressRef = useRef({});
   const inputRef = useRef<HTMLInputElement | null>(null);
   const controllerRef: any = useRef([]);
@@ -61,14 +60,7 @@ const FilesDragAndDrop: FunctionComponent<Props> = ({ modal, toggleModal }) => {
       element.removeEventListener('drop', handleDrop);
     };
   }, [element]);
-
-  useEffect(() => {
-    if (uploadComplete) {
-      queryClient.refetchQueries({
-        queryKey: ['folderContentChildren', currentHash]
-      });
-    }
-  }, [uploadComplete])
+  
   const onUpload = (file) => {
     let formData = new FormData();
     setFileList((prevFileList) => [...prevFileList, file]);
@@ -95,19 +87,17 @@ const FilesDragAndDrop: FunctionComponent<Props> = ({ modal, toggleModal }) => {
           (item: number) => item >= 100
         );
         if (progressComplete) {
-          // get list of file again
-          queryClient.refetchQueries({
-            queryKey: ['folderContentChildren', { hash: currentHash, headers }]
-          });
+          // for call file list again
+          setUploadComplete(true);
           // reset of my parameters
           setFileList([]);
           setProgress({});
           if (modal) toggleModal(false);
         }
       })
-      .finally(() => {
-        setUploadComplete(true);
-      });
+      // .finally(() => {
+       
+      // });
   };
   const onUploadProgress = (progressEvent, file) => {
     const { loaded, total, progress } = progressEvent;
@@ -176,7 +166,7 @@ const FilesDragAndDrop: FunctionComponent<Props> = ({ modal, toggleModal }) => {
 
   return (
     <Modal
-      innerRef={isUpload ? setElement : undefined}
+      innerRef={isUpload ? undefined : setElement}
       cssModule={getBs()}
       isOpen={modal}
       toggle={() => toggleModal(false)}
