@@ -14,6 +14,7 @@ interface IProps {
   enTitle?: string;
   clickHandler: () => void;
   type?: number;
+  disabled?: boolean
 }
 
 const MenuItem: React.FunctionComponent<IProps> = ({
@@ -22,11 +23,13 @@ const MenuItem: React.FunctionComponent<IProps> = ({
   enTitle,
   fontAwesomeIcon,
   clickHandler,
-  type
+  type,
+  disabled = false
 }) => {
   return (
     <React.Fragment>
       <DropdownItem
+        disabled={disabled}
         cssModule={getBs()}
         role='button'
         tag={type === OperationTypes.Download ? 'a' : undefined}

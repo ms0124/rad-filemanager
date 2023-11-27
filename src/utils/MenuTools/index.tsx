@@ -227,16 +227,15 @@ const MenuTools: React.FunctionComponent<IProps> = forwardRef(
             )}
             {tabType != TabTypes.ArchiveList ? (
               <React.Fragment>
-                {isShowCheckbox || (
                   <CheckPermissions permissions={['rename']}>
                     <MenuItem
                       clickHandler={() => clickHandler(OperationTypes.Rename)}
                       title='تغییر نام'
                       icon={<IconEdit />}
-                      enTitle='rename'
+                    enTitle='rename'
+                    disabled={isShowCheckbox}
                     />
                   </CheckPermissions>
-                )}
                 <CheckPermissions permissions={['copy']}>
                   <MenuItem
                     clickHandler={() => clickHandler(OperationTypes.Copy)}
@@ -253,16 +252,15 @@ const MenuTools: React.FunctionComponent<IProps> = forwardRef(
                     enTitle='move'
                   />
                 </CheckPermissions>
-                {isShowCheckbox || (
                   <CheckPermissions permissions={['delete']}>
                     <MenuItem
                       clickHandler={() => clickHandler(OperationTypes.Remove)}
                       title='حذف'
                       icon={<IconTrash />}
-                      enTitle='delete'
+                    enTitle='delete'
+                    disabled={isShowCheckbox}
                     />
                   </CheckPermissions>
-                )}
               </React.Fragment>
             ) : (
               <React.Fragment>
@@ -270,7 +268,8 @@ const MenuTools: React.FunctionComponent<IProps> = forwardRef(
                   permissions={['archive_delete', 'archive_restore']}
                 >
                   <CheckPermissions permissions={['archive_delete']}>
-                    <MenuItem
+                      <MenuItem
+                        disabled={isShowCheckbox}
                       clickHandler={() =>
                         clickHandler(OperationTypes.RemoveArchive)
                       }
@@ -279,7 +278,8 @@ const MenuTools: React.FunctionComponent<IProps> = forwardRef(
                     />
                   </CheckPermissions>
                   <CheckPermissions permissions={['archive_restore']}>
-                    <MenuItem
+                      <MenuItem
+                        disabled={isShowCheckbox}
                       clickHandler={() =>
                         clickHandler(OperationTypes.RestoreArchive)
                       }
