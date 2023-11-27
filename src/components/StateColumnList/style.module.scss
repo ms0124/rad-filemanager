@@ -88,16 +88,26 @@
     }
   }
   &__title {
-    padding-top: 10px;
+    font-size: 1.1rem;
+    // padding-top: 10px;
+    padding: 10px 10px 0px 10px;
     text-align: center;
     word-break: break-word;
     direction: ltr;
     unicode-bidi: isolate;
-  }
+    height: 3.1rem;
+
+    -webkit-box-orient: vertical;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    overflow: hidden;
+    white-space: normal;
+  }  
   &__volume {
     font-size: small;
     text-align: center;
     direction: ltr;
+    height: 2rem;
   }
   &__date {
     text-align: center;

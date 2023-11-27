@@ -2,7 +2,7 @@ import styles from './style.module.scss';
 import utilStyles from '../../sass/style.module.scss';
 
 import React, { useContext, useRef } from 'react';
-import { Row, Col } from 'reactstrap';
+import {Row, Col } from "reactstrap";
 import moment from 'moment-jalaali';
 import classnames from 'classnames';
 
@@ -10,13 +10,14 @@ import folder from './folder.png';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faGlobe, faKey } from '@fortawesome/free-solid-svg-icons';
 import MenuTools from '../../utils/MenuTools/';
-import { formatBytes, brifStr, getThumbnailUrl } from '../../utils/index';
+import { formatBytes, getThumbnailUrl } from '../../utils/index';
 import { RightClick } from '../../utils';
 import { TabTypes, FolderTypes } from '../../config/types';
 import { Context } from '../../store/index';
-import { getBs } from '../../utils/index';
+import { getBs, getViewport } from '../../utils/index';
 import DefaultThumnail from './defaultThumbnail/index';
 import { PAGE_SIZE } from '../../config/config';
+
 
 interface IProps {
   pages: any;
@@ -74,7 +75,12 @@ const Column: React.FunctionComponent<IProps> = ({
       onSelect(withOutFolders);
     }
   };
-  
+  const viewportName = getViewport();
+  let colCount = 4;
+  if (viewportName === 'xl' || viewportName === 'xxl') { colCount = 6 }
+  else if (viewportName === 'lg' || viewportName === 'md') {colCount = 4}
+  else if (viewportName === 'xs') {colCount = 2}
+
   return (
     <React.Fragment>
       <RightClick
@@ -87,7 +93,7 @@ const Column: React.FunctionComponent<IProps> = ({
           const _data = page?.result?.list ? page?.result?.list : page?.result;
           return _data.map((item, index) => {
             return (
-              <Col cssModule={getBs()} xs={3} md={3} lg={3} key={index}>
+              <Col cssModule={getBs()} xs={6} md={3} lg={3} xl={2} key={index}>
                 <div
                   onContextMenu={(event: any) => {
                     event.preventDefault();
@@ -133,19 +139,13 @@ const Column: React.FunctionComponent<IProps> = ({
                     <div className={styles['col__menu-wrapper']}>
                       {item ? (
                         <MenuTools
-                          isFirstCol={index % 4 === 0 ? true : false}
-                          item={item}
+                        // isFirstCol={index % 4 === 0 ? true : false}
+                        isFirstCol={index % colCount ===0 ?true:false }
+                        item={item}
                           tabType={currentTab}
                           ref={(ref) => {
                             const currentIndex = pageIndex * PAGE_SIZE + index;
-                            // if (
-                            //   item?.hash &&
-                            //   !contextMenuRef.current.find(
-                            //     (i) => i && i?.getHash() == item.hash
-                            //   )
-                            // ) {
                             return (contextMenuRef.current[currentIndex] = ref);
-                            // }
                           }}
                         />
                       ) : (
@@ -198,8 +198,8 @@ const Column: React.FunctionComponent<IProps> = ({
                       </div>
                     )}
                   </div>
-                  <h4 className={styles['col__title']}>
-                    {brifStr(item?.name, 12)}
+                  <h4 className={styles['col__title']} data-extension={item?.extension ? "."+item.extension.toLowerCase() : ''} title={`${item?.name}${item?.extension ? "."+item.extension.toLowerCase() : ''}`}>
+                    {item?.name}
                     {item?.extension ? `.${item.extension.toLowerCase()}` : ''}
                   </h4>
                   <div className={styles['col__volume']}>

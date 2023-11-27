@@ -16,17 +16,16 @@ const IconBuilder = ({ src, style = {}, ...props }) => {
   return <img src={src} style={style} {...props} />;
 };
 
-export const IconUpload = ({ colorGray = false, size = '' }) => {
-  const style: { filter?: string; width?: string } = colorGray
+export const IconUpload = ({ colorGray = false, size = '', style ={} }) => {
+  let styles:React.CSSProperties | undefined  = colorGray
     ? {
         filter:
           'invert(50%) sepia(11%) saturate(6%) hue-rotate(358deg) brightness(87%) contrast(83%)'
       }
     : {};
-  if (size) {
-    style.width = size;
-  }
-  return <IconBuilder src={upload} style={style} />;
+  if (size) styles.width = size;
+  if (style) styles = {...style, ...styles}
+  return <IconBuilder src={upload} style={styles} />;
 };
 
 export const IconCopy = () => {

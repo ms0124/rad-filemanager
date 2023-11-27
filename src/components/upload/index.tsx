@@ -22,12 +22,12 @@ const Upload = () => {
     <React.Fragment>
       <CheckPermissions permissions={['upload', 'upload_image']}>
         <Button
+          tag={'a'}
           cssModule={getBs()}
           className={`${styles['btn-upload']} ${utilStyles['my-auto']}`}
           onClick={(event)=> handleModalToggle(true)}
         >
           <IconUpload size='18px' />
-          {/* <FontAwesomeIcon icon={faCloudUploadAlt} /> */}
          <span> بارگذاری</span>
         </Button>
       </CheckPermissions>

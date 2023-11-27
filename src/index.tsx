@@ -63,6 +63,10 @@ const FileManagerReact = ({ ...props }: Props) => {
   }, [props.accessToken]);
 
   useEffect(() => {
+    setConfig(props.config);
+  }, [props.config]);
+
+  useEffect(() => {
     document.addEventListener('visibilitychange', handleVisibilitychange);
     return () => {
       document.removeEventListener('visibilitychange', handleVisibilitychange);
@@ -137,6 +141,10 @@ function FileManager(props: any, elementId: any) {
   useEffect(() => {
     setHeader({ clientId: props.clientId, accessToken: props.accessToken });
   }, [props.accessToken]);
+  
+  useEffect(() => {
+    setConfig(props.config);
+  }, [props?.config, props?.config?.height]);
 
   const defaultValues: AppContextInterface = {
     isList,

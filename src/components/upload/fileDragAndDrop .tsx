@@ -10,7 +10,7 @@ import React, {
 } from 'react';
 import { toast } from 'react-toastify';
 import { Modal, ModalBody, ModalHeader } from 'reactstrap';
-
+import classnames from "classnames"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCloudUploadAlt, faTimes } from '@fortawesome/free-solid-svg-icons';
 
@@ -38,7 +38,7 @@ const FilesDragAndDrop: FunctionComponent<Props> = ({ modal, toggleModal }) => {
   const { currentHash } = useContext(Context);
   const headers = getHeader(false);
 
-  const [element, setElement] = useState<HTMLDivElement | null>(null);
+  const [element, setElement] = useState<any | null>(null);
   const [hoverFile, setHoverFile] = useState(false);
   const [isUpload, setIsUpload] = useState(false);
   const [fileList, setFileList] = useState<fileListInterface[]>([]);
@@ -168,14 +168,13 @@ const FilesDragAndDrop: FunctionComponent<Props> = ({ modal, toggleModal }) => {
 
   return (
     <Modal
+      innerRef={isUpload ? setElement : undefined}
       cssModule={getBs()}
       isOpen={modal}
       toggle={() => toggleModal(false)}
-      contentClassName={isUpload ? styles['upload-toast'] : ''}
+      contentClassName={isUpload ? styles['upload-toast'] : styles['upload']}
       className={styles['modal-container']}
       zIndex={99991}
-      // size='lg'
-      // centered={true}
     >
       {isUpload ? (
         <React.Fragment>
@@ -231,7 +230,6 @@ const FilesDragAndDrop: FunctionComponent<Props> = ({ modal, toggleModal }) => {
           </ModalBody>
         </React.Fragment>
       ) : (
-        <div ref={setElement}>
           <ModalBody
             cssModule={getBs()}
             onClick={() => {
@@ -251,10 +249,9 @@ const FilesDragAndDrop: FunctionComponent<Props> = ({ modal, toggleModal }) => {
               style={{ display: 'none', width: '100%', height: '100%' }}
               onChange={handleOnChangesInputFiles}
             />
-            <IconUpload colorGray size={'100px'} />
-            <h5>فایل مورد نظر را در اینجا رها کنید.</h5>
+            <IconUpload colorGray size={'100px'} style={{marginTop: '30px'}} />
+            <h5 className={classnames(utilStyles['mt-5'], utilStyles['mb-4'])}>فایل مورد نظر را در اینجا رها کنید.</h5>
           </ModalBody>
-        </div>
       )}
     </Modal>
   );
