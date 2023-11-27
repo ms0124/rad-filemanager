@@ -43,6 +43,7 @@ const FilesDragAndDrop: FunctionComponent<Props> = ({ modal, toggleModal }) => {
   const [isUpload, setIsUpload] = useState(false);
   const [fileList, setFileList] = useState<fileListInterface[]>([]);
   const [progress, setProgress] = useState<{}>({});
+  const [uploadComplete, setUploadComplete] = useState<boolean>(false);
   const progressRef = useRef({});
   const inputRef = useRef<HTMLInputElement | null>(null);
   const controllerRef: any = useRef([]);
@@ -61,6 +62,13 @@ const FilesDragAndDrop: FunctionComponent<Props> = ({ modal, toggleModal }) => {
     };
   }, [element]);
 
+  useEffect(() => {
+    if (uploadComplete) {
+      queryClient.refetchQueries({
+        queryKey: ['folderContentChildren', currentHash]
+      });
+    }
+  }, [uploadComplete])
   const onUpload = (file) => {
     let formData = new FormData();
     setFileList((prevFileList) => [...prevFileList, file]);
@@ -98,9 +106,7 @@ const FilesDragAndDrop: FunctionComponent<Props> = ({ modal, toggleModal }) => {
         }
       })
       .finally(() => {
-        queryClient.refetchQueries({
-          queryKey: ['folderContentChildren', currentHash]
-        });
+        setUploadComplete(true);
       });
   };
   const onUploadProgress = (progressEvent, file) => {
@@ -146,6 +152,7 @@ const FilesDragAndDrop: FunctionComponent<Props> = ({ modal, toggleModal }) => {
     }
 
     setHoverFile(false);
+    setUploadComplete(false);
     if (files && files.length) {
       setIsUpload(true);
 
@@ -157,6 +164,7 @@ const FilesDragAndDrop: FunctionComponent<Props> = ({ modal, toggleModal }) => {
 
   const handleOnChangesInputFiles = (event) => {
     const files = event.target.files;
+    setUploadComplete(false);
     if (files && files.length) {
       setIsUpload(true);
 
