@@ -29,16 +29,17 @@ const MenuItem: React.FunctionComponent<IProps> = ({
   return (
     <React.Fragment>
       <DropdownItem
-        disabled={disabled}
         cssModule={getBs()}
         role='button'
         tag={type === OperationTypes.Download ? 'a' : undefined}
         onClick={(e) => {
           e.stopPropagation();
+          if (disabled) return;
           clickHandler()
         }}
         target='_blank'
         className={`${styles['dropdown-menu-wrapper__item']}`}
+        style={disabled ? {cursor:"not-allowed", backgroundColor:"transparent"}:{}}
       >
         {fontAwesomeIcon ? (
           <FontAwesomeIcon
