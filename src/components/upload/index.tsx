@@ -10,11 +10,13 @@ import { Context } from '../../store';
 import FileDragAndDrop from './fileDragAndDrop ';
 import CheckPermissions from '../../components/CheckPermissions/index';
 import { getBs } from '../../utils/index';
-import { IconUpload } from "../../utils/icons"
+import { IconUpload } from "../../utils/icons";
 import { queryClient } from '../../config/config';
 
 const Upload = () => {
   const [modal, setModal] = useState(false);
+  const [isOpenCollapse, setIsOpenCollapse] = useState(false); 
+  const [showCollapse, setShowCollapse] = useState(false); 
   const [uploadComplete, setUploadComplete] = useState<boolean>(false);
 
   const { currentHash } = useContext(Context);
@@ -45,9 +47,12 @@ const Upload = () => {
          <span> بارگذاری</span>
         </Button>
       </CheckPermissions>
-      {modal && (
-        <FileDragAndDrop uploadComplete={uploadComplete} setUploadComplete={setUploadComplete} modal={modal} toggleModal={handleModalToggle} />
-      )}
+      <FileDragAndDrop
+        uploadComplete={uploadComplete}
+        setUploadComplete={setUploadComplete}
+        modal={modal}
+        toggleModal={handleModalToggle}
+        isOpenCollapse={isOpenCollapse} setIsOpenCollapse={setIsOpenCollapse} showCollapse={showCollapse} setShowCollapse={setShowCollapse} />
     </React.Fragment>
   );
 };

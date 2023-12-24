@@ -17,7 +17,7 @@ $color-gray: #b5b5b5;
     margin-right: 6px;
   }
 }
-.upload{
+.upload {
   border-radius: 20px !important;
 }
 .upload-toast {
@@ -36,9 +36,9 @@ $color-gray: #b5b5b5;
     }
   }
   &__icon-wrapper {
-    display: flex;
-    width: 55px;
-    justify-content: space-between;
+    // display: flex;
+    // width: 55px;
+    // justify-content: center;
   }
 }
 
@@ -85,4 +85,43 @@ div[role='dialog'] {
   justify-content: end;
   max-width: none;
   margin-left: 20px;
+}
+
+.upload-notification {
+  color: #b4b4b4;
+  width: 340px;
+  position: absolute !important;
+  bottom: 100px;
+  left: 20px;
+  z-index: 2;
+  margin-bottom: 0px !important;
+  &__collapse{
+    max-height: 150px;
+    overflow: scroll;
+  }
+  &__header {
+    display: flex;
+    background-color: #FFFFFF !important;
+    border: none !important;
+  }
+  &__title {
+    width: 100%;
+    flex-grow: 1;
+    text-align: right;
+  }
+  &__chevron {
+    margin-left: 12px;
+  }
+  &__times {
+  }
+  &__divider{
+    border: 1px solid #f2f2f2;
+    margin-left: auto;
+    margin-right: auto;
+    width: 94%;
+  }
+  &__alert{
+    padding: 12px;
+    margin: 12px !important;
+  }
 }
