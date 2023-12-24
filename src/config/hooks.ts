@@ -3,7 +3,7 @@ import { queryClient, PAGE_SIZE } from './config';
 import * as api from './api';
 import { useContext, useState, useEffect } from 'react';
 import { Context } from '../store';
-import { objectToQueryString } from '../utils/';
+import { objectToQueryString, getParamsFromUrl } from '../utils/';
 
 /************************************* */
 /********* get Header ***************/
@@ -59,9 +59,20 @@ export const useGetFolderContentChildren = (
         if (offset >= total) {
           return undefined;
         }
+        const params: {
+          size?: number;
+          offset?: number;
+          order?: string;
+          desc?: boolean;
+        } = getParamsFromUrl(query);
+
+        if (params.size) delete params.size;
+        if (params.offset) delete params.offset;
+
         return {
           size: PAGE_SIZE,
-          offset: offset
+          offset: offset,
+          ...params
         };
       },
       cacheTime: 0

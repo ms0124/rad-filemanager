@@ -37,7 +37,12 @@ const FileTab: FunctionComponent<IProps> = ({ setTotal }) => {
   let { data, isLoading, isFetching, fetchNextPage, hasNextPage, refetch } =
     useGetFolderContentChildren(
       currentHash,
-      objectToQueryString({ size: PAGE_SIZE, offset: 0, order: orderBy, desc })
+      objectToQueryString({
+        size: PAGE_SIZE,
+        offset: 0, // just for first time
+        order: orderBy,
+        desc
+      })
     );
 
   const { inView, ref } = useInView();
