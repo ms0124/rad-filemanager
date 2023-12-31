@@ -14,7 +14,7 @@ import { Context } from '../../store';
 import FileDragAndDrop from './fileDragAndDrop ';
 import CheckPermissions from '../../components/CheckPermissions/index';
 import { getBs } from '../../utils/index';
-import { IconUpload } from '../../utils/icons';
+import { IconStream, IconUpload } from '../../utils/icons';
 import { queryClient } from '../../config/config';
 
 const Upload = () => {
@@ -51,6 +51,7 @@ const Upload = () => {
             <IconUpload size='18px' />
             <span> بارگذاری</span>
             <DropdownToggle
+              tag={'a'}
               style={{
                 background: 'transparent',
                 border: 'none',
@@ -62,8 +63,16 @@ const Upload = () => {
             />
           </Button>
 
-          <DropdownMenu cssModule={getBs()}>
-            <DropdownItem cssModule={getBs()}>Header</DropdownItem>
+          <DropdownMenu
+            className={styles['dropdown-menu']}
+            cssModule={getBs()}
+          >
+            <DropdownItem cssModule={getBs()}>
+              <IconStream />
+              <span style={{ marginRight: '12px', fontSize: '14px' }}>
+                بارگذاری استریم
+              </span>
+            </DropdownItem>
           </DropdownMenu>
         </UncontrolledDropdown>
       </CheckPermissions>

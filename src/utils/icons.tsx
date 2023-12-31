@@ -11,6 +11,7 @@ import circleInfo from '../assets/svg/circle_info.svg';
 import times from '../assets/svg/times.svg';
 import tick from '../assets/svg/tick.svg';
 import multiSelect from '../assets/svg/multi_select.svg';
+import stream from '../assets/svg/stream.svg';
 
 const IconBuilder = ({ src, style = {}, ...props }) => {
   return <img src={src} style={style} {...props} />;
@@ -26,6 +27,10 @@ export const IconUpload = ({ colorGray = false, size = '', style ={} }) => {
   if (size) styles.width = size;
   if (style) styles = {...style, ...styles}
   return <IconBuilder src={upload} style={styles} />;
+};
+
+export const IconStream = () => {
+  return <IconBuilder src={stream} />;
 };
 
 export const IconCopy = () => {

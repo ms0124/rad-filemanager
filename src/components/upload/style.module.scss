@@ -6,7 +6,7 @@ $color-gray: #b5b5b5;
   color: #fff !important;
   border: none;
   border-radius: 4px !important;
-  padding-left: "0px";
+  padding-left: '0px';
   &:hover {
     color: #fff !important;
   }
@@ -96,13 +96,13 @@ div[role='dialog'] {
   left: 20px;
   z-index: 2;
   margin-bottom: 0px !important;
-  &__collapse{
+  &__collapse {
     max-height: 150px;
     overflow: scroll;
   }
   &__header {
     display: flex;
-    background-color: #FFFFFF !important;
+    background-color: #ffffff !important;
     border: none !important;
   }
   &__title {
@@ -115,14 +115,20 @@ div[role='dialog'] {
   }
   &__times {
   }
-  &__divider{
+  &__divider {
     border: 1px solid #f2f2f2;
     margin-left: auto;
     margin-right: auto;
     width: 94%;
   }
-  &__alert{
+  &__alert {
     padding: 12px;
     margin: 12px !important;
   }
+}
+
+.dropdown-menu {
+  margin-top: 8px !important;
+  border-radius: 8px !important;
+  left: -10px !important;
 }
