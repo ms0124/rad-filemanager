@@ -16,7 +16,9 @@ import {
   Collapse,
   Modal,
   ModalBody,
-  Alert
+  Alert,
+  Input,
+  Label
 } from 'reactstrap';
 import classnames from 'classnames';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -37,6 +39,17 @@ import { getHeader } from '../../config/hooks';
 import { getBs } from '../../utils/index';
 import { IconTick, IconTimes, IconUpload } from '../../utils/icons';
 
+const Checkbox = ({ name, index }) => {
+  return (
+    <>
+      <Input id={name + index} type='checkbox' />
+      <Label check for={name + index}>
+        {name}
+      </Label>
+    </>
+  );
+};
+
 interface Props {
   modal: boolean;
   toggleModal: (boolean) => void;
@@ -46,8 +59,9 @@ interface Props {
   setIsOpenCollapse: (boolean) => void;
   showCollapse: boolean;
   setShowCollapse: (boolean) => void;
+  isStream: boolean;
+  setIsStream: (boolean) => void;
 }
-
 interface fileListInterface {
   name: string;
 }
@@ -60,7 +74,9 @@ const FilesDragAndDrop: FunctionComponent<Props> = ({
   isOpenCollapse,
   setIsOpenCollapse,
   showCollapse,
-  setShowCollapse
+  setShowCollapse,
+  isStream,
+  setIsStream
 }) => {
   const { currentHash } = useContext(Context);
   const headers = getHeader(false);
@@ -71,6 +87,7 @@ const FilesDragAndDrop: FunctionComponent<Props> = ({
   const [fileList, setFileList] = useState<fileListInterface[]>([]);
   const [progress, setProgress] = useState<{}>({});
 
+  const fileListRef = useRef<fileListInterface[]>([]);
   const progressRef = useRef({});
   const inputRef = useRef<HTMLInputElement | null>(null);
   const controllerRef: any = useRef([]);
@@ -90,20 +107,24 @@ const FilesDragAndDrop: FunctionComponent<Props> = ({
   }, [element]);
 
   useEffect(() => {
-    if (fileList?.length === 0 || Object.keys(progress).length === 0)
+    if (fileListRef.current?.length === 0 || Object.keys(progress).length === 0)
       setShowCollapse(false);
-  }, [fileList, progress]);
+  }, [fileListRef.current, progress]);
 
   const onUpload = (file) => {
+    console.log(file);
+
     if (modal) toggleModal(false);
     if (!isOpenCollapse) setIsOpenCollapse(true);
     if (!showCollapse) setShowCollapse(true);
+
     let formData = new FormData();
-    setFileList((prevFileList) => [...prevFileList, file]);
     setProgress((prevProgress) => ({
       ...prevProgress,
       [file.name]: { percent: 0, hasError: false, showRemoveButton: true }
     }));
+    //  setFileList((prevFileList) => [...prevFileList, file]);
+    fileListRef.current = [...fileListRef.current, file];
     progressRef.current = { ...progressRef.current, [file.name]: 0 };
 
     formData.append('file', file);
@@ -174,7 +195,11 @@ const FilesDragAndDrop: FunctionComponent<Props> = ({
   const handleDrop = (e: any) => {
     e.preventDefault();
     e.stopPropagation();
-    const { files } = e.dataTransfer;
+
+    setHoverFile(false);
+    setUploadComplete(false);
+
+    const files = e.dataTransfer.files;
     // prevent to drop files and folder with size == 0
     if (files && files.length > 0) {
       let breakFunction = false;
@@ -189,11 +214,7 @@ const FilesDragAndDrop: FunctionComponent<Props> = ({
       }
     }
 
-    setHoverFile(false);
-    setUploadComplete(false);
     if (files && files.length) {
-      // setIsUpload(true);
-
       for (let file of files) {
         onUpload(file);
       }
@@ -204,8 +225,6 @@ const FilesDragAndDrop: FunctionComponent<Props> = ({
     const files = event.target.files;
     setUploadComplete(false);
     if (files && files.length) {
-      // setIsUpload(true);
-
       for (let file of files) {
         onUpload(file);
       }
@@ -228,13 +247,14 @@ const FilesDragAndDrop: FunctionComponent<Props> = ({
 
   const removeAbort = (name, index) => {
     setTimeout(() => {
-      const newFileList = Object.values(fileList).filter(
+      const newFileList = Object.values(fileListRef.current).filter(
         (x) => x.name !== name
       );
       const progressKey = Object.keys(progress).find((x) => x == name);
       if (progressKey) delete progress[progressKey];
 
-      setFileList(newFileList);
+      // setFileList(newFileList);
+      fileListRef.current = newFileList;
       setProgress(progress);
     }, 3000);
     if (progress[name]) {
@@ -243,10 +263,8 @@ const FilesDragAndDrop: FunctionComponent<Props> = ({
         [name]: { ...prevProgress[name], showRemoveButton: false }
       }));
     }
-
     controllerRef.current[index].abort();
   };
-
   return (
     <>
       <Modal
@@ -258,86 +276,59 @@ const FilesDragAndDrop: FunctionComponent<Props> = ({
         className={styles['modal-container']}
         zIndex={99991}
       >
-        {/*  <React.Fragment>
-          <ModalHeader
-            cssModule={getBs()}
-            className={
-              isUpload ? styles['upload-toast__header'] + '   header ' : ''
-            }
-          >
-            <span>بارگذاری</span>
-            <FontAwesomeIcon
-              icon={faTimes}
-              onClick={() => toggleModal(false)}
-              className={styles['icon-times']}
-            />
-          </ModalHeader>
-          <ModalBody cssModule={getBs()}>
-            {fileList &&
-              Object.values(fileList).map((item, index) => {
-                return (
-                  <div
-                    className={`${utilStyles['d-flex']} ${utilStyles['justify-content-between']}`}
-                  >
-                    <span>{item.name}</span>
-                    {progress[item.name] >= 100 ? (
-                      <IconTick style={{ width: '24px' }} />
-                    ) : (
-                      <div className={styles['upload-toast__icon-wrapper']}>
-                        <div style={{ width: 25, height: 25 }}>
-                          <CircularProgressbar
-                            value={progress[item.name]}
-                            styles={buildStyles({
-                              textSize: '30px',
-                              pathColor: '#000000',
-                              textColor: '#000000'
-                            })}
-                            text={`${progress[item.name]} %`}
-                          />
-                        </div>
-                        <span
-                          role='button'
-                          onClick={() => {
-                            controllerRef.current[index].abort();
-                          }}
-                        >
-                          <IconTimes style={{ width: '24px' }} />
-                        </span>
-                      </div>
-                    )}
-                  </div>
-                );
-              })}
-          </ModalBody>
-        </React.Fragment> */}
         {isUpload || (
-          <ModalBody
-            cssModule={getBs()}
-            onClick={() => {
-              inputRef.current?.click();
-            }}
-            className={styles['drag-here']}
-            style={{
-              backgroundColor: hoverFile
-                ? 'rgba(97, 132, 255, 0.2)'
-                : 'rgba(255, 255, 255, 1)'
-            }}
-          >
-            <input
-              ref={inputRef}
-              type='file'
-              multiple
-              style={{ display: 'none', width: '100%', height: '100%' }}
-              onChange={handleOnChangesInputFiles}
-            />
-            <IconUpload
-              colorGray
-              size={'100px'}
-              style={{ marginTop: '30px' }}
-            />
-            <h5 className={classnames(utilStyles['mt-5'], utilStyles['mb-4'])}>
-              فایل مورد نظر را در اینجا رها کنید.
-            </h5>
+          <ModalBody cssModule={getBs()}>
+            {isStream && (
+              <div className={styles['stream']}>
+                <div>
+                  <span className={styles['stream__title']}>
+                    کیفیت فایل صوتی
+                  </span>
+                  <span className={styles['stream__subTitle']}>(mp3)</span>
+                </div>
+                {['64', '128', '192', '256', '320'].map((x, index) => (
+                  <Checkbox name={x} index={index} />
+                ))}
+                <div>
+                  <span className={styles['stream__title']}>
+                    کیفیت فایل تصویری
+                  </span>
+                  <span className={styles['stream__subTitle']}>(mp4)</span>
+                </div>
+                {['240', '360', '480', '720', '1080'].map((x, index) => (
+                  <Checkbox name={x} index={index} />
+                ))}
+              </div>
+            )}
+            <div
+              onClick={() => {
+                inputRef.current?.click();
+              }}
+              className={styles['drag-here']}
+              style={{
+                backgroundColor: hoverFile
+                  ? 'rgba(97, 132, 255, 0.2)'
+                  : 'rgba(255, 255, 255, 1)'
+              }}
+            >
+              <input
+                ref={inputRef}
+                type='file'
+                multiple
+                style={{ display: 'none', width: '100%', height: '100%' }}
+                onChange={handleOnChangesInputFiles}
+              />
+              <IconUpload
+                colorGray
+                size={'100px'}
+                style={{ marginTop: '30px' }}
+              />
+              <h5
+                className={classnames(utilStyles['mt-5'], utilStyles['mb-4'])}
+              >
+                فایل مورد نظر را در اینجا رها کنید.
+              </h5>
+            </div>
           </ModalBody>
         )}
       </Modal>
@@ -348,7 +339,7 @@ const FilesDragAndDrop: FunctionComponent<Props> = ({
             className={styles['upload-notification__header']}
           >
             <span id='test' className={styles['upload-notification__title']}>
-              در حال بارگذاری {Object.keys(fileList).length} فایل
+              در حال بارگذاری {Object.keys(fileListRef.current).length} فایل
             </span>
             {isOpenCollapse ? (
               <FontAwesomeIcon
@@ -378,12 +369,12 @@ const FilesDragAndDrop: FunctionComponent<Props> = ({
             className={styles['upload-notification__collapse']}
           >
             <div className={styles['upload-notification__divider']}></div>
-            {fileList &&
-              Object.values(fileList).map((item, index) => {
+            {fileListRef.current &&
+              Object.values(fileListRef.current).map((item, index) => {
                 return (
                   <Alert
                     color={
-                      progress[item.name]?.hasError
+                      progress[item.name].hasError
                         ? 'danger'
                         : progress[item.name].percent >= 100
                         ? 'success'

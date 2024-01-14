@@ -9,6 +9,8 @@ import {
   DropdownMenu,
   DropdownItem
 } from 'reactstrap';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faChevronDown } from '@fortawesome/free-solid-svg-icons';
 
 import { Context } from '../../store';
 import FileDragAndDrop from './fileDragAndDrop ';
@@ -19,6 +21,7 @@ import { queryClient } from '../../config/config';
 
 const Upload = () => {
   const [modal, setModal] = useState(false);
+  const [isStream, setIsStream] = useState(false);
   const [isOpenCollapse, setIsOpenCollapse] = useState(false);
   const [showCollapse, setShowCollapse] = useState(false);
   const [uploadComplete, setUploadComplete] = useState<boolean>(false);
@@ -36,6 +39,11 @@ const Upload = () => {
 
   const handleModalToggle = (isOpen) => {
     setModal(isOpen);
+  };
+
+  const handleStreamToggle = () => {
+    setModal((prev) => !prev);
+    setIsStream((prev) => !prev);
   };
 
   return (
@@ -58,16 +66,18 @@ const Upload = () => {
                 paddingRight: '5px'
               }}
               cssModule={getBs()}
-              caret
               onClick={(e) => e.stopPropagation()}
-            />
+            >
+              <FontAwesomeIcon icon={faChevronDown} style={{ color: '#fff' }} />
+            </DropdownToggle>
           </Button>
 
-          <DropdownMenu
-            className={styles['dropdown-menu']}
-            cssModule={getBs()}
-          >
-            <DropdownItem cssModule={getBs()}>
+          <DropdownMenu className={styles['dropdown-menu']} cssModule={getBs()}>
+            <DropdownItem
+              cssModule={getBs()}
+              style={{ paddingLeft: 5, paddingRight: 5 }}
+              onClick={handleStreamToggle}
+            >
               <IconStream />
               <span style={{ marginRight: '12px', fontSize: '14px' }}>
                 بارگذاری استریم
@@ -80,6 +90,8 @@ const Upload = () => {
         uploadComplete={uploadComplete}
         setUploadComplete={setUploadComplete}
         modal={modal}
+        isStream={isStream}
+        setIsStream={setIsStream}
         toggleModal={handleModalToggle}
         isOpenCollapse={isOpenCollapse}
         setIsOpenCollapse={setIsOpenCollapse}
