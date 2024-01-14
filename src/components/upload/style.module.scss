@@ -135,9 +135,20 @@ div[role='dialog'] {
   min-width: auto !important;
 }
 
-.stream{
-  border: 2px solid #b5b5b5;
+.stream {
+  border: 2px solid #f2f2f2;
   border-radius: 8px;
   text-align: right;
   padding: 20px;
+  &__title {
+    margin-bottom: 20px;
+  }
+  &__subTitle {
+    color: #b4b4b4;
+  }
+  &__checkboxlabel {
+    color: #b4b4b4;
+    margin-right: 6px;
+    margin-left: 14px;
+  }
 }

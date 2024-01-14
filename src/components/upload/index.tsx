@@ -20,8 +20,11 @@ import { IconStream, IconUpload } from '../../utils/icons';
 import { queryClient } from '../../config/config';
 
 const Upload = () => {
-  const [modal, setModal] = useState(false);
-  const [isStream, setIsStream] = useState(false);
+  const [modal, setModal] = useState<{ upload: boolean; stream: boolean }>({
+    upload: false,
+    stream: false
+  });
+  // const [isStream, setIsStream] = useState(false);
   const [isOpenCollapse, setIsOpenCollapse] = useState(false);
   const [showCollapse, setShowCollapse] = useState(false);
   const [uploadComplete, setUploadComplete] = useState<boolean>(false);
@@ -37,13 +40,14 @@ const Upload = () => {
     }
   }, [uploadComplete]);
 
-  const handleModalToggle = (isOpen) => {
-    setModal(isOpen);
-  };
-
-  const handleStreamToggle = () => {
-    setModal((prev) => !prev);
-    setIsStream((prev) => !prev);
+  const handleModalToggle = ({
+    upload,
+    stream
+  }: {
+    upload: boolean;
+    stream: boolean;
+  }) => {
+    setModal({ upload, stream });
   };
 
   return (
@@ -54,7 +58,9 @@ const Upload = () => {
             tag={'a'}
             cssModule={getBs()}
             className={`${styles['btn-upload']} ${utilStyles['my-auto']}`}
-            onClick={(event) => handleModalToggle(true)}
+            onClick={(event) =>
+              handleModalToggle({ upload: true, stream: false })
+            }
           >
             <IconUpload size='18px' />
             <span> بارگذاری</span>
@@ -76,7 +82,7 @@ const Upload = () => {
             <DropdownItem
               cssModule={getBs()}
               style={{ paddingLeft: 5, paddingRight: 5 }}
-              onClick={handleStreamToggle}
+              onClick={() => handleModalToggle({ upload: true, stream: true })}
             >
               <IconStream />
               <span style={{ marginRight: '12px', fontSize: '14px' }}>
@@ -90,8 +96,8 @@ const Upload = () => {
         uploadComplete={uploadComplete}
         setUploadComplete={setUploadComplete}
         modal={modal}
-        isStream={isStream}
-        setIsStream={setIsStream}
+        // isStream={modal.stream}
+        // setIsStream={setIsStream}
         toggleModal={handleModalToggle}
         isOpenCollapse={isOpenCollapse}
         setIsOpenCollapse={setIsOpenCollapse}

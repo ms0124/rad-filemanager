@@ -38,12 +38,23 @@ import 'react-circular-progressbar/dist/styles.css';
 import { getHeader } from '../../config/hooks';
 import { getBs } from '../../utils/index';
 import { IconTick, IconTimes, IconUpload } from '../../utils/icons';
+import { MP3, MP4 } from './upload.constants';
 
-const Checkbox = ({ name, index }) => {
+const Checkbox = ({ name, index, checked, onClick }) => {
   return (
     <>
-      <Input id={name + index} type='checkbox' />
-      <Label check for={name + index}>
+      <Input
+        id={name + index}
+        type='checkbox'
+        onClick={onClick}
+        checked={checked}
+      />
+      <Label
+        check
+        for={name + index}
+        className={styles['stream__checkboxlabel']}
+        role='button'
+      >
         {name}
       </Label>
     </>
@@ -51,16 +62,22 @@ const Checkbox = ({ name, index }) => {
 };
 
 interface Props {
-  modal: boolean;
-  toggleModal: (boolean) => void;
+  modal: { upload: boolean; stream: boolean };
+  toggleModal: ({
+    upload,
+    stream
+  }: {
+    upload: boolean;
+    stream: boolean;
+  }) => void;
   uploadComplete: boolean;
   setUploadComplete: (boolean) => void;
   isOpenCollapse: boolean;
   setIsOpenCollapse: (boolean) => void;
   showCollapse: boolean;
   setShowCollapse: (boolean) => void;
-  isStream: boolean;
-  setIsStream: (boolean) => void;
+  // isStream: boolean;
+  // setIsStream: (boolean) => void;
 }
 interface fileListInterface {
   name: string;
@@ -74,9 +91,9 @@ const FilesDragAndDrop: FunctionComponent<Props> = ({
   isOpenCollapse,
   setIsOpenCollapse,
   showCollapse,
-  setShowCollapse,
-  isStream,
-  setIsStream
+  setShowCollapse
+  // isStream,
+  // setIsStream
 }) => {
   const { currentHash } = useContext(Context);
   const headers = getHeader(false);
@@ -84,7 +101,7 @@ const FilesDragAndDrop: FunctionComponent<Props> = ({
   const [element, setElement] = useState<any | null>(null);
   const [hoverFile, setHoverFile] = useState(false);
   const [isUpload, setIsUpload] = useState(false);
-  const [fileList, setFileList] = useState<fileListInterface[]>([]);
+  const [qualities, setQualities] = useState<string[]>([]);
   const [progress, setProgress] = useState<{}>({});
 
   const fileListRef = useRef<fileListInterface[]>([]);
@@ -112,9 +129,6 @@ const FilesDragAndDrop: FunctionComponent<Props> = ({
   }, [fileListRef.current, progress]);
 
   const onUpload = (file) => {
-    console.log(file);
-
-    if (modal) toggleModal(false);
     if (!isOpenCollapse) setIsOpenCollapse(true);
     if (!showCollapse) setShowCollapse(true);
 
@@ -130,6 +144,12 @@ const FilesDragAndDrop: FunctionComponent<Props> = ({
     formData.append('file', file);
     formData.append('folderHash', currentHash);
     formData.append('isPublic', 'true');
+    if (qualities.length > 0 && modal.stream) {
+      formData.append('streamNeeded', 'true');
+      for (let quality of qualities) {
+        formData.append('qualities[]', quality);
+      }
+    }
     const controller = new AbortController();
     controllerRef.current.push(controller);
     upload(
@@ -162,7 +182,10 @@ const FilesDragAndDrop: FunctionComponent<Props> = ({
       })
       .finally(() => {
         // setIsUpload(false);
+        setQualities([]);
       });
+    // close modal after all
+    if (modal.upload) toggleModal({ upload: false, stream: false });
   };
   const onUploadProgress = (progressEvent, file) => {
     const { loaded, total } = progressEvent;
@@ -265,38 +288,66 @@ const FilesDragAndDrop: FunctionComponent<Props> = ({
     }
     controllerRef.current[index].abort();
   };
+
+  const handleClickCheckbox = (e, item, type) => {
+    const { checked } = e.target;
+    const currentQualities = qualities.find((x) => MP3.find((y) => x === y))
+      ? 'mp3'
+      : 'mp4';
+
+    if (checked && type !== currentQualities) {
+      setQualities([item]);
+    } else if (checked) {
+      setQualities((prev) => [...prev, item]);
+    } else if (!checked) {
+      const filtredQualities = qualities.filter((i) => i !== item);
+      setQualities(filtredQualities);
+    }
+  };
+
   return (
     <>
       <Modal
         innerRef={isUpload ? undefined : setElement}
         cssModule={getBs()}
-        isOpen={modal}
-        toggle={() => toggleModal(false)}
+        isOpen={modal.upload}
+        toggle={() => toggleModal({ upload: false, stream: false })}
         contentClassName={isUpload ? styles['upload-toast'] : styles['upload']}
         className={styles['modal-container']}
         zIndex={99991}
       >
-        {isUpload || (
+        {
           <ModalBody cssModule={getBs()}>
-            {isStream && (
+            {modal.stream && (
               <div className={styles['stream']}>
-                <div>
-                  <span className={styles['stream__title']}>
-                    کیفیت فایل صوتی
-                  </span>
+                <div className={styles['stream__title']}>
+                  <span>کیفیت فایل صوتی</span>
                   <span className={styles['stream__subTitle']}>(mp3)</span>
                 </div>
-                {['64', '128', '192', '256', '320'].map((x, index) => (
-                  <Checkbox name={x} index={index} />
+                {MP3.map((x, index) => (
+                  <Checkbox
+                    checked={qualities.find((y) => y === x)}
+                    name={x}
+                    index={index}
+                    onClick={(e) => handleClickCheckbox(e, x, 'mp3')}
+                  />
                 ))}
-                <div>
-                  <span className={styles['stream__title']}>
-                    کیفیت فایل تصویری
-                  </span>
+                <div
+                  className={classnames(
+                    styles['stream__title'],
+                    utilStyles['mt-2']
+                  )}
+                >
+                  <span>کیفیت فایل تصویری</span>
                   <span className={styles['stream__subTitle']}>(mp4)</span>
                 </div>
-                {['240', '360', '480', '720', '1080'].map((x, index) => (
-                  <Checkbox name={x} index={index} />
+                {MP4.map((x, index) => (
+                  <Checkbox
+                    checked={qualities.find((y) => y === x)}
+                    name={x}
+                    index={index}
+                    onClick={(e) => handleClickCheckbox(e, x, 'mp4')}
+                  />
                 ))}
               </div>
             )}
@@ -330,7 +381,7 @@ const FilesDragAndDrop: FunctionComponent<Props> = ({
               </h5>
             </div>
           </ModalBody>
-        )}
+        }
       </Modal>
       {showCollapse && (
         <Card cssModule={getBs()} className={styles['upload-notification']}>
