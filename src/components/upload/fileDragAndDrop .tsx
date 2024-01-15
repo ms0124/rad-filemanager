@@ -121,7 +121,7 @@ const FilesDragAndDrop: FunctionComponent<Props> = ({
       element.removeEventListener('dragleave', handleDragLeave);
       element.removeEventListener('drop', handleDrop);
     };
-  }, [element]);
+  }, [element, qualities]);
 
   useEffect(() => {
     if (fileListRef.current?.length === 0 || Object.keys(progress).length === 0)
@@ -137,7 +137,6 @@ const FilesDragAndDrop: FunctionComponent<Props> = ({
       ...prevProgress,
       [file.name]: { percent: 0, hasError: false, showRemoveButton: true }
     }));
-    //  setFileList((prevFileList) => [...prevFileList, file]);
     fileListRef.current = [...fileListRef.current, file];
     progressRef.current = { ...progressRef.current, [file.name]: 0 };
 
@@ -150,6 +149,7 @@ const FilesDragAndDrop: FunctionComponent<Props> = ({
         formData.append('qualities[]', quality);
       }
     }
+
     const controller = new AbortController();
     controllerRef.current.push(controller);
     upload(
@@ -182,7 +182,7 @@ const FilesDragAndDrop: FunctionComponent<Props> = ({
       })
       .finally(() => {
         // setIsUpload(false);
-        setQualities([]);
+        // setQualities([]);
       });
     // close modal after all
     if (modal.upload) toggleModal({ upload: false, stream: false });
@@ -311,7 +311,9 @@ const FilesDragAndDrop: FunctionComponent<Props> = ({
         innerRef={isUpload ? undefined : setElement}
         cssModule={getBs()}
         isOpen={modal.upload}
-        toggle={() => toggleModal({ upload: false, stream: false })}
+        toggle={() => {
+          toggleModal({ upload: false, stream: false });
+        }}
         contentClassName={isUpload ? styles['upload-toast'] : styles['upload']}
         className={styles['modal-container']}
         zIndex={99991}
@@ -326,7 +328,7 @@ const FilesDragAndDrop: FunctionComponent<Props> = ({
                 </div>
                 {MP3.map((x, index) => (
                   <Checkbox
-                    checked={qualities.find((y) => y === x)}
+                    checked={qualities.find((y) => y === x) ? 'checked' : ''}
                     name={x}
                     index={index}
                     onClick={(e) => handleClickCheckbox(e, x, 'mp3')}
@@ -343,7 +345,7 @@ const FilesDragAndDrop: FunctionComponent<Props> = ({
                 </div>
                 {MP4.map((x, index) => (
                   <Checkbox
-                    checked={qualities.find((y) => y === x)}
+                    checked={qualities.find((y) => y === x) ? 'checked' : ''}
                     name={x}
                     index={index}
                     onClick={(e) => handleClickCheckbox(e, x, 'mp4')}
@@ -351,6 +353,15 @@ const FilesDragAndDrop: FunctionComponent<Props> = ({
                 ))}
               </div>
             )}
+            <div className={styles['guide']}>
+              <FontAwesomeIcon
+                className={styles['guide__icon']}
+                icon={faExclamationTriangle}
+              />
+              <span className={styles['guide__title']}>
+                استریم فقط فایل‌های mp3 , mp4 مجاز است.
+              </span>
+            </div>
             <div
               onClick={() => {
                 inputRef.current?.click();

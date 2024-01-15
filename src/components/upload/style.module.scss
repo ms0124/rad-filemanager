@@ -92,8 +92,8 @@ div[role='dialog'] {
 .upload-notification {
   color: #b4b4b4;
   width: 340px;
-  position: absolute !important;
-  bottom: 100px;
+  position: fixed !important;
+  bottom: 20px;
   left: 20px;
   z-index: 2;
   margin-bottom: 0px !important;
@@ -148,7 +148,19 @@ div[role='dialog'] {
   }
   &__checkboxlabel {
     color: #b4b4b4;
-    margin-right: 6px;
+    margin-right: 18px;
     margin-left: 14px;
+  }
+}
+
+.guide {
+  text-align: right;
+  margin-top: 10px;
+  &__title {
+    color: #737373;
+    margin-right: 5px;
+  }
+  &__icon {
+    color: #e4a400;
   }
 }
