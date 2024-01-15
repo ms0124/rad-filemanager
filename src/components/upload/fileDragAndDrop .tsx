@@ -6,7 +6,8 @@ import React, {
   useEffect,
   useState,
   useContext,
-  useRef
+  useRef,
+  useMemo
 } from 'react';
 import { toast } from 'react-toastify';
 import {
@@ -38,7 +39,7 @@ import 'react-circular-progressbar/dist/styles.css';
 import { getHeader } from '../../config/hooks';
 import { getBs } from '../../utils/index';
 import { IconTick, IconTimes, IconUpload } from '../../utils/icons';
-import { MP3, MP4 } from './upload.constants';
+import { audioQualities, videoQualities } from './upload.constants';
 
 const Checkbox = ({ name, index, checked, onClick }) => {
   return (
@@ -98,16 +99,41 @@ const FilesDragAndDrop: FunctionComponent<Props> = ({
   const { currentHash } = useContext(Context);
   const headers = getHeader(false);
 
+  const audioLocal = useMemo(() => {
+    const localstorageData = localStorage.getItem('audio');
+    const json = localstorageData ? localstorageData : '[]';
+    const data = JSON.parse(json);
+    return Array.isArray(data) ? data : [];
+  }, []);
+
+  const videoLocal = useMemo(() => {
+    const localstorageData = localStorage.getItem('video');
+    const json = localstorageData ? localstorageData : '[]';
+    const data = JSON.parse(json);
+    return Array.isArray(data) ? data : [];
+  }, []);
+
   const [element, setElement] = useState<any | null>(null);
   const [hoverFile, setHoverFile] = useState(false);
   const [isUpload, setIsUpload] = useState(false);
-  const [qualities, setQualities] = useState<string[]>([]);
+
+  const [audio, setAudio] = useState<string[]>(audioLocal);
+  const [video, setVideo] = useState<string[]>(videoLocal);
+
   const [progress, setProgress] = useState<{}>({});
 
   const fileListRef = useRef<fileListInterface[]>([]);
   const progressRef = useRef({});
   const inputRef = useRef<HTMLInputElement | null>(null);
   const controllerRef: any = useRef([]);
+
+  useEffect(() => {
+    if (audio) localStorage.setItem('audio', JSON.stringify(audio));
+  }, [audio]);
+
+  useEffect(() => {
+    if (video) localStorage.setItem('video', JSON.stringify(video));
+  }, [video]);
 
   useEffect(() => {
     if (!element) return;
@@ -121,7 +147,7 @@ const FilesDragAndDrop: FunctionComponent<Props> = ({
       element.removeEventListener('dragleave', handleDragLeave);
       element.removeEventListener('drop', handleDrop);
     };
-  }, [element, qualities]);
+  }, [element, audio, video]);
 
   useEffect(() => {
     if (fileListRef.current?.length === 0 || Object.keys(progress).length === 0)
@@ -143,11 +169,19 @@ const FilesDragAndDrop: FunctionComponent<Props> = ({
     formData.append('file', file);
     formData.append('folderHash', currentHash);
     formData.append('isPublic', 'true');
-    if (qualities.length > 0 && modal.stream) {
+    if ((audio.length > 0 || video.length > 0) && modal.stream) {
       formData.append('streamNeeded', 'true');
-      for (let quality of qualities) {
-        formData.append('qualities[]', quality);
+
+      let data: string[] = [];
+      if (file.type?.endsWith('mpeg')) {
+        data = audio;
+      } else if (file.type?.endsWith('mp4')) {
+        data = video;
       }
+      if (data)
+        for (let quality of data) {
+          formData.append('qualities[]', quality);
+        }
     }
 
     const controller = new AbortController();
@@ -182,7 +216,6 @@ const FilesDragAndDrop: FunctionComponent<Props> = ({
       })
       .finally(() => {
         // setIsUpload(false);
-        // setQualities([]);
       });
     // close modal after all
     if (modal.upload) toggleModal({ upload: false, stream: false });
@@ -291,17 +324,16 @@ const FilesDragAndDrop: FunctionComponent<Props> = ({
 
   const handleClickCheckbox = (e, item, type) => {
     const { checked } = e.target;
-    const currentQualities = qualities.find((x) => MP3.find((y) => x === y))
-      ? 'mp3'
-      : 'mp4';
-
-    if (checked && type !== currentQualities) {
-      setQualities([item]);
-    } else if (checked) {
-      setQualities((prev) => [...prev, item]);
-    } else if (!checked) {
-      const filtredQualities = qualities.filter((i) => i !== item);
-      setQualities(filtredQualities);
+    if (checked && type === 'audio') {
+      setAudio((prev) => [...prev, item]);
+    } else if (checked && type === 'video') {
+      setVideo((prev) => [...prev, item]);
+    } else if (!checked && type === 'audio') {
+      const filtredQualities = audio.filter((i) => i !== item);
+      setAudio(filtredQualities);
+    } else if (!checked && type === 'video') {
+      const filtredQualities = video.filter((i) => i !== item);
+      setVideo(filtredQualities);
     }
   };
 
@@ -321,47 +353,50 @@ const FilesDragAndDrop: FunctionComponent<Props> = ({
         {
           <ModalBody cssModule={getBs()}>
             {modal.stream && (
-              <div className={styles['stream']}>
-                <div className={styles['stream__title']}>
-                  <span>کیفیت فایل صوتی</span>
-                  <span className={styles['stream__subTitle']}>(mp3)</span>
+              <>
+                <div className={styles['stream']}>
+                  <div className={styles['stream__title']}>
+                    <span>کیفیت فایل صوتی</span>
+                    <span className={styles['stream__subTitle']}>(mp3)</span>
+                  </div>
+                  {audioQualities.map((x, index) => (
+                    <Checkbox
+                      checked={audio.find((y) => y === x) ? 'checked' : ''}
+                      name={x}
+                      index={index}
+                      onClick={(e) => handleClickCheckbox(e, x, 'audio')}
+                    />
+                  ))}
+                  <div
+                    className={classnames(
+                      styles['stream__title'],
+                      utilStyles['mt-2']
+                    )}
+                  >
+                    <span>کیفیت فایل تصویری</span>
+                    <span className={styles['stream__subTitle']}>(mp4)</span>
+                  </div>
+                  {videoQualities.map((x, index) => (
+                    <Checkbox
+                      checked={video.find((y) => y === x) ? 'checked' : ''}
+                      name={x}
+                      index={index}
+                      onClick={(e) => handleClickCheckbox(e, x, 'video')}
+                    />
+                  ))}
                 </div>
-                {MP3.map((x, index) => (
-                  <Checkbox
-                    checked={qualities.find((y) => y === x) ? 'checked' : ''}
-                    name={x}
-                    index={index}
-                    onClick={(e) => handleClickCheckbox(e, x, 'mp3')}
+                <div className={styles['guide']}>
+                  <FontAwesomeIcon
+                    className={styles['guide__icon']}
+                    icon={faExclamationTriangle}
                   />
-                ))}
-                <div
-                  className={classnames(
-                    styles['stream__title'],
-                    utilStyles['mt-2']
-                  )}
-                >
-                  <span>کیفیت فایل تصویری</span>
-                  <span className={styles['stream__subTitle']}>(mp4)</span>
+                  <span className={styles['guide__title']}>
+                    استریم فقط فایل‌های mp3 , mp4 مجاز است.
+                  </span>
                 </div>
-                {MP4.map((x, index) => (
-                  <Checkbox
-                    checked={qualities.find((y) => y === x) ? 'checked' : ''}
-                    name={x}
-                    index={index}
-                    onClick={(e) => handleClickCheckbox(e, x, 'mp4')}
-                  />
-                ))}
-              </div>
+              </>
             )}
-            <div className={styles['guide']}>
-              <FontAwesomeIcon
-                className={styles['guide__icon']}
-                icon={faExclamationTriangle}
-              />
-              <span className={styles['guide__title']}>
-                استریم فقط فایل‌های mp3 , mp4 مجاز است.
-              </span>
-            </div>
+
             <div
               onClick={() => {
                 inputRef.current?.click();

@@ -1,2 +1,2 @@
-export const MP3 = ['64', '128', '192', '256', '320'];
-export const MP4 = ['240', '360', '480', '720', '1080'];
+export const audioQualities = ['64', '128', '192', '256', '320'];
+export const videoQualities = ['240', '360', '480', '720', '1080'];
