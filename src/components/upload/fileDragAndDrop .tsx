@@ -96,7 +96,8 @@ const FilesDragAndDrop: FunctionComponent<Props> = ({
   // isStream,
   // setIsStream
 }) => {
-  const { currentHash } = useContext(Context);
+  const { currentHash, validExtension } = useContext(Context);
+
   const headers = getHeader(false);
 
   const audioLocal = useMemo(() => {
@@ -126,6 +127,12 @@ const FilesDragAndDrop: FunctionComponent<Props> = ({
   const progressRef = useRef({});
   const inputRef = useRef<HTMLInputElement | null>(null);
   const controllerRef: any = useRef([]);
+
+  const disabledUploadStream = useMemo(() => {
+    return modal.stream && audio.length === 0 && video.length === 0
+      ? true
+      : false;
+  }, [audio, video, modal.stream]);
 
   useEffect(() => {
     if (audio) localStorage.setItem('audio', JSON.stringify(audio));
@@ -240,36 +247,69 @@ const FilesDragAndDrop: FunctionComponent<Props> = ({
   const handleDragOver = (e: any) => {
     e.preventDefault();
     e.stopPropagation();
+    if (disabledUploadStream) return;
     if (!hoverFile) setHoverFile(true);
   };
   const handleDragLeave = (e: any) => {
     e.preventDefault();
     e.stopPropagation();
+    if (disabledUploadStream) return;
     if (!hoverFile) setHoverFile(false);
   };
+  const breakUpload = (files) => {
+    let breakFunction = false;
+    let breakFunctionForStreamExtention = false;
+    let breakFunctionForExtention = false;
+    for (let file of files) {
+      if (!validExtension.find((item) => file?.type?.endsWith(item))) {
+        breakFunctionForExtention = true;
+        break;
+      }
+      if (modal.stream) {
+        const arrStreamType: string[] = [];
+        if (audio.length > 0) {
+          arrStreamType.push('mpeg');
+        }
+        if (video.length > 0) {
+          arrStreamType.push('mp4');
+        }
+        if (!arrStreamType.find((item) => file?.type.endsWith(item))) {
+          breakFunctionForStreamExtention = true;
+          break;
+        }
+      }
+      if (file?.size <= 0) {
+        breakFunction = true;
+        break;
+      }
+    }
+    if (breakFunctionForExtention) {
+      toast.error('فایل مجاز به آپلود نمیباشد');
+      return true;
+    }
+    if (breakFunctionForStreamExtention) {
+      toast.error('فایل انتخاب شده یا کیفیت انتخاب شده درست نیست');
+      return true;
+    }
 
+    if (breakFunction) {
+      toast.error('شما نمی توانید پوشه یا فایل های با اندازه 0 آپلود کنید');
+      return true;
+    }
+    return false;
+  };
   const handleDrop = (e: any) => {
     e.preventDefault();
     e.stopPropagation();
-
+    if (disabledUploadStream) return;
     setHoverFile(false);
     setUploadComplete(false);
 
     const files = e.dataTransfer.files;
-    // prevent to drop files and folder with size == 0
-    if (files && files.length > 0) {
-      let breakFunction = false;
-      for (let file of files) {
-        if (file?.size <= 0) {
-          breakFunction = true;
-        }
-      }
-      if (breakFunction) {
-        toast.error('شما نمی توانید پوشه یا فایل های با اندازه 0 آپلود کنید');
-        return;
-      }
-    }
 
+    if (files && files.length > 0) {
+      if (breakUpload(files)) return;
+    }
     if (files && files.length) {
       for (let file of files) {
         onUpload(file);
@@ -280,6 +320,9 @@ const FilesDragAndDrop: FunctionComponent<Props> = ({
   const handleOnChangesInputFiles = (event) => {
     const files = event.target.files;
     setUploadComplete(false);
+    if (files && files.length > 0) {
+      if (breakUpload(files)) return;
+    }
     if (files && files.length) {
       for (let file of files) {
         onUpload(file);
@@ -399,10 +442,12 @@ const FilesDragAndDrop: FunctionComponent<Props> = ({
 
             <div
               onClick={() => {
+                if (disabledUploadStream) return;
                 inputRef.current?.click();
               }}
               className={styles['drag-here']}
               style={{
+                opacity: disabledUploadStream ? 0.3 : 1,
                 backgroundColor: hoverFile
                   ? 'rgba(97, 132, 255, 0.2)'
                   : 'rgba(255, 255, 255, 1)'
