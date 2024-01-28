@@ -203,7 +203,7 @@ const FilesDragAndDrop: FunctionComponent<Props> = ({
       headers
     )
       .then((res) => {
-        const { hasError } = res.data;
+        const { hasError, message } = res.data;
         // if progress is 100 percent or more progress is complete.
         const progressComplete = Object.values(progressRef.current).every(
           (item: number) => item >= 100
@@ -211,7 +211,11 @@ const FilesDragAndDrop: FunctionComponent<Props> = ({
         if (hasError)
           setProgress((prev) => ({
             ...prev,
-            [file.name]: { ...prev[file.name], hasError: true }
+            [file.name]: {
+              ...prev[file.name],
+              hasError: true,
+              message: message.join('/\n')
+            }
           }));
         if (progressComplete) {
           // for call file list again
@@ -333,11 +337,17 @@ const FilesDragAndDrop: FunctionComponent<Props> = ({
   const handleToggleShowCollapse = () => {
     setShowCollapse((prevShowCollapse) => !prevShowCollapse);
     let newProgress = { ...progress };
+    let newFileList = fileListRef.current 
     Object.keys(progress).forEach((name) => {
-      if (progress[name].percent >= 100 && progress[name].hasError === false) {
+      // if (progress[name].hasError === false) {
+      if (progress[name].percent >= 100) {
         delete newProgress[name];
+         newFileList = Object.values(newFileList).filter(
+          (x) => x.name !== name
+        );
       }
     });
+    fileListRef.current = newFileList;
     setProgress(newProgress);
   };
 
@@ -527,6 +537,7 @@ const FilesDragAndDrop: FunctionComponent<Props> = ({
                     <div className={classnames(utilStyles['d-flex'])}>
                       {progress[item.name].hasError ? (
                         <FontAwesomeIcon
+                          title={progress[item.name]?.message}
                           icon={faExclamationTriangle}
                           style={{ color: '#e4a400', height: '22px' }}
                         />
