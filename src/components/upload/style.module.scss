@@ -2,11 +2,18 @@ $color-orange: #ff9b3f;
 $color-gray: #b5b5b5;
 
 .btn-upload {
+  display: flex !important;
+  align-items: center;
+  justify-content: space-between;
   background-color: $color-orange !important;
   color: #fff !important;
   border: none;
   border-radius: 4px !important;
-  padding-left: '0px';
+  padding-left: 0px !important;
+  padding-top: 0px !important;
+  padding-bottom: 0px !important;
+  padding-right: 8px !important;
+  width: 125px;
   &:hover {
     color: #fff !important;
   }
@@ -133,6 +140,8 @@ div[role='dialog'] {
   border-radius: 8px !important;
   left: -10px !important;
   min-width: auto !important;
+  width: 125px  !important;
+  right: 2px !important;
 }
 
 .stream {

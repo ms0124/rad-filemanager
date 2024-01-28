@@ -69,7 +69,8 @@ const Upload = () => {
               style={{
                 background: 'transparent',
                 border: 'none',
-                paddingRight: '5px'
+                padding: '8px 5px 8px 8px',
+                display: 'inline-block'
               }}
               cssModule={getBs()}
               onClick={(e) => e.stopPropagation()}
@@ -81,11 +82,11 @@ const Upload = () => {
           <DropdownMenu className={styles['dropdown-menu']} cssModule={getBs()}>
             <DropdownItem
               cssModule={getBs()}
-              style={{ paddingLeft: 5, paddingRight: 5 }}
+              style={{ paddingLeft: 2, paddingRight: 5 }}
               onClick={() => handleModalToggle({ upload: true, stream: true })}
             >
               <IconStream />
-              <span style={{ marginRight: '12px', fontSize: '14px' }}>
+              <span style={{ marginRight: '8px', fontSize: '13px' }}>
                 بارگذاری استریم
               </span>
             </DropdownItem>
