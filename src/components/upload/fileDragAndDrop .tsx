@@ -337,14 +337,12 @@ const FilesDragAndDrop: FunctionComponent<Props> = ({
   const handleToggleShowCollapse = () => {
     setShowCollapse((prevShowCollapse) => !prevShowCollapse);
     let newProgress = { ...progress };
-    let newFileList = fileListRef.current 
+    let newFileList = fileListRef.current;
     Object.keys(progress).forEach((name) => {
       // if (progress[name].hasError === false) {
       if (progress[name].percent >= 100) {
         delete newProgress[name];
-         newFileList = Object.values(newFileList).filter(
-          (x) => x.name !== name
-        );
+        newFileList = Object.values(newFileList).filter((x) => x.name !== name);
       }
     });
     fileListRef.current = newFileList;
