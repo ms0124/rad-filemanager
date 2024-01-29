@@ -151,6 +151,9 @@ div[role='dialog'] {
   padding: 20px;
   &__title {
     margin-bottom: 20px;
+    span{
+      color: #737373;
+    }
   }
   &__subTitle {
     color: #b4b4b4;

@@ -62,6 +62,22 @@ const Checkbox = ({ name, index, checked, onClick }) => {
   );
 };
 
+const Radio = ({ name, index, checked, onClick }) => {
+  return (
+    <>
+      <Input id={index} type='radio' onClick={onClick} checked={checked} />
+      <Label
+        check
+        for={index}
+        className={styles['stream__checkboxlabel']}
+        role='button'
+      >
+        {name}
+      </Label>
+    </>
+  );
+};
+
 interface Props {
   modal: { upload: boolean; stream: boolean };
   toggleModal: ({
@@ -123,6 +139,8 @@ const FilesDragAndDrop: FunctionComponent<Props> = ({
 
   const [progress, setProgress] = useState<{}>({});
 
+  const [isPublic, setIsPublic] = useState<boolean>(false);
+
   const fileListRef = useRef<fileListInterface[]>([]);
   const progressRef = useRef({});
   const inputRef = useRef<HTMLInputElement | null>(null);
@@ -175,7 +193,7 @@ const FilesDragAndDrop: FunctionComponent<Props> = ({
 
     formData.append('file', file);
     formData.append('folderHash', currentHash);
-    formData.append('isPublic', 'true');
+    formData.append('isPublic', `${isPublic}`);
     if ((audio.length > 0 || video.length > 0) && modal.stream) {
       formData.append('streamNeeded', 'true');
 
@@ -387,6 +405,9 @@ const FilesDragAndDrop: FunctionComponent<Props> = ({
       setVideo(filtredQualities);
     }
   };
+  const clickHandlerRadio = () => {
+    setIsPublic((prevIsPublic) => !prevIsPublic);
+  };
 
   return (
     <>
@@ -403,39 +424,61 @@ const FilesDragAndDrop: FunctionComponent<Props> = ({
       >
         {
           <ModalBody cssModule={getBs()}>
-            {modal.stream && (
-              <>
-                <div className={styles['stream']}>
-                  <div className={styles['stream__title']}>
-                    <span>کیفیت فایل صوتی</span>
-                    <span className={styles['stream__subTitle']}>(mp3)</span>
-                  </div>
-                  {audioQualities.map((x, index) => (
-                    <Checkbox
-                      checked={audio.find((y) => y === x) ? 'checked' : ''}
-                      name={x}
-                      index={index}
-                      onClick={(e) => handleClickCheckbox(e, x, 'audio')}
-                    />
-                  ))}
-                  <div
-                    className={classnames(
-                      styles['stream__title'],
-                      utilStyles['mt-2']
-                    )}
-                  >
-                    <span>کیفیت فایل تصویری</span>
-                    <span className={styles['stream__subTitle']}>(mp4)</span>
-                  </div>
-                  {videoQualities.map((x, index) => (
-                    <Checkbox
-                      checked={video.find((y) => y === x) ? 'checked' : ''}
-                      name={x}
-                      index={index}
-                      onClick={(e) => handleClickCheckbox(e, x, 'video')}
-                    />
-                  ))}
+            <>
+              <div className={styles['stream']}>
+                {modal.stream && (
+                  <>
+                    <div className={styles['stream__title']}>
+                      <span>کیفیت فایل صوتی</span>
+                      <span className={styles['stream__subTitle']}>(mp3)</span>
+                    </div>
+                    {audioQualities.map((x, index) => (
+                      <Checkbox
+                        checked={audio.find((y) => y === x) ? 'checked' : ''}
+                        name={x}
+                        index={index}
+                        onClick={(e) => handleClickCheckbox(e, x, 'audio')}
+                      />
+                    ))}
+                    <div
+                      className={classnames(
+                        styles['stream__title'],
+                        utilStyles['mt-2']
+                      )}
+                    >
+                      <span>کیفیت فایل تصویری</span>
+                      <span className={styles['stream__subTitle']}>(mp4)</span>
+                    </div>
+                    {videoQualities.map((x, index) => (
+                      <Checkbox
+                        checked={video.find((y) => y === x) ? 'checked' : ''}
+                        name={x}
+                        index={index}
+                        onClick={(e) => handleClickCheckbox(e, x, 'video')}
+                      />
+                    ))}
+                  </>
+                )}
+                <div className={styles['stream__title']}>
+                  <span>نوع دسترسی</span>
                 </div>
+
+                <Radio
+                  onClick={clickHandlerRadio}
+                  name={'عمومی'}
+                  index={0}
+                  checked={isPublic}
+                  key={'x1'}
+                />
+                <Radio
+                  onClick={clickHandlerRadio}
+                  name={'خصوصی'}
+                  index={1}
+                  checked={!isPublic}
+                  key={'x2'}
+                />
+              </div>
+              {modal.stream && (
                 <div className={styles['guide']}>
                   <FontAwesomeIcon
                     className={styles['guide__icon']}
@@ -445,9 +488,8 @@ const FilesDragAndDrop: FunctionComponent<Props> = ({
                     استریم فقط فایل‌های mp3 , mp4 مجاز است.
                   </span>
                 </div>
-              </>
-            )}
-
+              )}
+            </>
             <div
               onClick={() => {
                 if (disabledUploadStream) return;
