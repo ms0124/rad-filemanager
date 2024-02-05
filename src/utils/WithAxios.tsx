@@ -13,7 +13,7 @@ const WithAxios: React.FC<IProps> = ({ children }) => {
       config
     ) {
       config.baseURL = isSandbox
-        ? 'https://rad-sandbox.pod.ir'
+        ? 'https://rad-sandbox.sandpod.ir'
         : 'https://rad-services.pod.ir';
 
       config.headers['Client-Id'] = `${header.clientId}`;

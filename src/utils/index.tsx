@@ -96,7 +96,7 @@ const serializeUrl = (urlParameters) => {
 
 const getThumbnailUrl = (hash, isSandbox) =>
   isSandbox
-    ? `https://sandbox.podspace.ir:8443/api/files/${hash}/thumbnail`
+    ? `https://podspace.sandpod.ir/api/files/${hash}/thumbnail`
     : `https://podspace.pod.ir/api/files/${hash}/thumbnail`;
 
 const isPermitted = (userPermissions, permissions, operator = 'AND') => {

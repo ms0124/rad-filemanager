@@ -18,7 +18,8 @@ export enum OperationTypes {
   Paste = 6,
   Download = 7,
   RemoveArchive = 8,
-  RestoreArchive = 9
+  RestoreArchive = 9,
+  Share = 10
 }
 
 export enum TabTypes {

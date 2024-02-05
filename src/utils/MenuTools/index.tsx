@@ -227,15 +227,15 @@ const MenuTools: React.FunctionComponent<IProps> = forwardRef(
             )}
             {tabType != TabTypes.ArchiveList ? (
               <React.Fragment>
-                  <CheckPermissions permissions={['rename']}>
-                    <MenuItem
-                      clickHandler={() => clickHandler(OperationTypes.Rename)}
-                      title='تغییر نام'
-                      icon={<IconEdit />}
+                <CheckPermissions permissions={['rename']}>
+                  <MenuItem
+                    clickHandler={() => clickHandler(OperationTypes.Rename)}
+                    title='تغییر نام'
+                    icon={<IconEdit />}
                     enTitle='rename'
                     disabled={isShowCheckbox}
-                    />
-                  </CheckPermissions>
+                  />
+                </CheckPermissions>
                 <CheckPermissions permissions={['copy']}>
                   <MenuItem
                     clickHandler={() => clickHandler(OperationTypes.Copy)}
@@ -252,15 +252,25 @@ const MenuTools: React.FunctionComponent<IProps> = forwardRef(
                     enTitle='move'
                   />
                 </CheckPermissions>
-                  <CheckPermissions permissions={['delete']}>
-                    <MenuItem
-                      clickHandler={() => clickHandler(OperationTypes.Remove)}
-                      title='حذف'
-                      icon={<IconTrash />}
+                <CheckPermissions permissions={['delete']}>
+                  <MenuItem
+                    clickHandler={() => clickHandler(OperationTypes.Remove)}
+                    title='حذف'
+                    icon={<IconTrash />}
                     enTitle='delete'
                     disabled={isShowCheckbox}
-                    />
-                  </CheckPermissions>
+                  />
+                </CheckPermissions>
+                {/* <CheckPermissions permissions={['share_detail']}>
+                  <DropdownItem cssModule={getBs()} divider />
+                  <MenuItem
+                    clickHandler={() => clickHandler(OperationTypes.Share)}
+                    title='اشتراک گذاری فایل'
+                    icon={<IconTrash />}
+                    enTitle='share'
+                    disabled={isShowCheckbox}
+                  />
+                </CheckPermissions> */}
               </React.Fragment>
             ) : (
               <React.Fragment>
@@ -268,8 +278,8 @@ const MenuTools: React.FunctionComponent<IProps> = forwardRef(
                   permissions={['archive_delete', 'archive_restore']}
                 >
                   <CheckPermissions permissions={['archive_delete']}>
-                      <MenuItem
-                        disabled={isShowCheckbox}
+                    <MenuItem
+                      disabled={isShowCheckbox}
                       clickHandler={() =>
                         clickHandler(OperationTypes.RemoveArchive)
                       }
@@ -278,8 +288,8 @@ const MenuTools: React.FunctionComponent<IProps> = forwardRef(
                     />
                   </CheckPermissions>
                   <CheckPermissions permissions={['archive_restore']}>
-                      <MenuItem
-                        disabled={isShowCheckbox}
+                    <MenuItem
+                      disabled={isShowCheckbox}
                       clickHandler={() =>
                         clickHandler(OperationTypes.RestoreArchive)
                       }
