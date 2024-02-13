@@ -41,6 +41,8 @@ import { getBs } from '../../utils/index';
 import { IconTick, IconTimes, IconUpload } from '../../utils/icons';
 import { audioQualities, videoQualities } from './upload.constants';
 
+import DefaultThumbnail from '../StateColumnList/defaultThumbnail/index';
+
 const Checkbox = ({ name, index, checked, onClick }) => {
   return (
     <>
@@ -409,6 +411,11 @@ const FilesDragAndDrop: FunctionComponent<Props> = ({
     setIsPublic((prevIsPublic) => !prevIsPublic);
   };
 
+  const getExtension = (item) => {
+    const result = item.name?.split('.');
+    return result[result.length - 1] || '';
+  };
+
   return (
     <>
       <Modal
@@ -430,7 +437,10 @@ const FilesDragAndDrop: FunctionComponent<Props> = ({
                   <>
                     <div className={styles['stream__title']}>
                       <span> کیفیت فایل صوتی</span>
-                      <span className={styles['stream__subTitle']}> (mp3) </span>
+                      <span className={styles['stream__subTitle']}>
+                        {' '}
+                        (mp3){' '}
+                      </span>
                     </div>
                     {audioQualities.map((x, index) => (
                       <Checkbox
@@ -447,7 +457,10 @@ const FilesDragAndDrop: FunctionComponent<Props> = ({
                       )}
                     >
                       <span> کیفیت فایل تصویری</span>
-                      <span className={styles['stream__subTitle']}> (mp4) </span>
+                      <span className={styles['stream__subTitle']}>
+                        {' '}
+                        (mp4){' '}
+                      </span>
                     </div>
                     {videoQualities.map((x, index) => (
                       <Checkbox
@@ -533,6 +546,7 @@ const FilesDragAndDrop: FunctionComponent<Props> = ({
             <span id='test' className={styles['upload-notification__title']}>
               در حال بارگذاری {Object.keys(fileListRef.current).length} فایل
             </span>
+
             {isOpenCollapse ? (
               <FontAwesomeIcon
                 icon={faChevronUp}
@@ -565,13 +579,14 @@ const FilesDragAndDrop: FunctionComponent<Props> = ({
               Object.values(fileListRef.current).map((item, index) => {
                 return (
                   <Alert
-                    color={
-                      progress[item.name].hasError
-                        ? 'danger'
+                    style={{
+                      backgroundColor: progress[item.name].hasError
+                        ? '#FFF0F0'
                         : progress[item.name].percent >= 100
-                        ? 'success'
-                        : ''
-                    }
+                        ? '#EBF8F2'
+                        : '',
+                      borderColor: '#f2f2f2'
+                    }}
                     className={`${utilStyles['d-flex']} ${utilStyles['justify-content-between']} ${styles['upload-notification__alert']}`}
                   >
                     <div className={classnames(utilStyles['d-flex'])}>
@@ -596,14 +611,14 @@ const FilesDragAndDrop: FunctionComponent<Props> = ({
                           />
                         </div>
                       )}
-
-                      <FontAwesomeIcon
-                        icon={faFile}
+                      <DefaultThumbnail
                         style={{
                           paddingRight: '8px',
                           height: '22px',
                           color: '#737373'
                         }}
+                        size='1x'
+                        item={{ extension: getExtension(item) }}
                       />
                       <span
                         style={{
@@ -623,7 +638,9 @@ const FilesDragAndDrop: FunctionComponent<Props> = ({
                         >
                           <FontAwesomeIcon
                             icon={faTimes}
-                            style={{ height: '14px' }}
+                            style={{
+                              height: '14px'
+                            }}
                           />
                         </span>
                       )}

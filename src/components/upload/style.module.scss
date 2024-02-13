@@ -21,9 +21,7 @@ $color-gray: #b5b5b5;
     background-color: $color-orange !important;
     color: #fff;
   }
-  span {
-    margin-right: 6px;
-  }
+ 
 }
 .upload {
   border-radius: 20px !important;
@@ -44,7 +42,8 @@ $color-gray: #b5b5b5;
     }
   }
   &__icon-wrapper {
-    // display: flex;
+    display: flex;
+    align-items: center;
     // width: 55px;
     // justify-content: center;
   }
@@ -132,6 +131,8 @@ div[role='dialog'] {
   &__alert {
     padding: 12px;
     margin: 12px !important;
+    border: 1px solid #f2f2f2;
+    border-radius: 8px;
   }
 }
 
@@ -140,7 +141,7 @@ div[role='dialog'] {
   border-radius: 8px !important;
   left: -10px !important;
   min-width: auto !important;
-  width: 125px  !important;
+  width: 125px !important;
   right: 2px !important;
 }
 
@@ -151,7 +152,7 @@ div[role='dialog'] {
   padding: 20px;
   &__title {
     margin-bottom: 20px;
-    span{
+    span {
       color: #737373;
     }
   }

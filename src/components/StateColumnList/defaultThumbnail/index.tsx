@@ -7,6 +7,7 @@ import {
 } from '../../../config/types';
 
 import * as FontAwesomeIconTypes from '@fortawesome/fontawesome-common-types';
+import { SizeProp } from '@fortawesome/fontawesome-svg-core';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faFileImage,
@@ -19,8 +20,19 @@ import {
   faFileAlt
 } from '@fortawesome/free-solid-svg-icons';
 
-const Index = ({ item }) => {
+interface IProps {
+  item: any;
+  size?: SizeProp;
+  style?: any;
+}
+
+const Index: React.FunctionComponent<IProps> = ({
+  item,
+  size = '3x',
+  style = {}
+}) => {
   let icon: FontAwesomeIconTypes.IconDefinition;
+
   switch (item.extension) {
     case ImageTypes.png:
     case ImageTypes.jpeg:
@@ -51,11 +63,12 @@ const Index = ({ item }) => {
       break;
     case DocumentTypes.txt:
       icon = faFileAlt;
+      break;
     default:
       icon = faFile;
       break;
   }
-  return <FontAwesomeIcon icon={icon} size='3x' />;
+  return <FontAwesomeIcon icon={icon} size={size} style={style} />;
 };
 
 export default Index;
