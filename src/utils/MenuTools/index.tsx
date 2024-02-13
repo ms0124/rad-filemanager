@@ -146,17 +146,19 @@ const MenuTools: React.FunctionComponent<IProps> = forwardRef(
           break;
       }
     };
-    useEffect(() => {
-      const element: any = menuRef.current?.nextSibling;
-      setTimeout(() => {
-        if (isFirstCol && isOpen && element) {
-          element.style.transform = element.style.transform?.replace(
-            /\(-.*?,/,
-            '( -15px,'
-          );
-        }
-      }, 50);
-    }, [isOpen]);
+
+    // useEffect(() => {
+    //   const element: any = menuRef.current?.nextSibling;
+    //   setTimeout(() => {
+    //     if (isFirstCol && isOpen && element) {
+    //       element.style.transform = element.style.transform?.replace(
+    //         /\(-.*?,/,
+    //         '( -15px,'
+    //       );
+    //     }
+    //   }, 50);
+    // }, [isOpen]);
+
     return (
       <React.Fragment>
         {isOpenModal && operationType === OperationTypes.Remove ? (
@@ -207,7 +209,8 @@ const MenuTools: React.FunctionComponent<IProps> = forwardRef(
             />
           </DropdownToggle>
           <DropdownMenu
-            start
+            right
+            end={true}
             cssModule={getBs()}
             {...props}
             className={`${styles['dropdown-menu-wrapper']}`}
