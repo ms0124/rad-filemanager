@@ -283,7 +283,7 @@ const FilesDragAndDrop: FunctionComponent<Props> = ({
     let breakFunctionForStreamExtention = false;
     let breakFunctionForExtention = false;
     for (let file of files) {
-      if (!validExtension.find((item) => file?.type?.endsWith(item))) {
+      if (!validExtension.find((item) => file?.name?.endsWith(item))) {
         breakFunctionForExtention = true;
         break;
       }
@@ -429,8 +429,8 @@ const FilesDragAndDrop: FunctionComponent<Props> = ({
                 {modal.stream && (
                   <>
                     <div className={styles['stream__title']}>
-                      <span>کیفیت فایل صوتی</span>
-                      <span className={styles['stream__subTitle']}>(mp3)</span>
+                      <span> کیفیت فایل صوتی</span>
+                      <span className={styles['stream__subTitle']}> (mp3) </span>
                     </div>
                     {audioQualities.map((x, index) => (
                       <Checkbox
@@ -446,8 +446,8 @@ const FilesDragAndDrop: FunctionComponent<Props> = ({
                         utilStyles['mt-2']
                       )}
                     >
-                      <span>کیفیت فایل تصویری</span>
-                      <span className={styles['stream__subTitle']}>(mp4)</span>
+                      <span> کیفیت فایل تصویری</span>
+                      <span className={styles['stream__subTitle']}> (mp4) </span>
                     </div>
                     {videoQualities.map((x, index) => (
                       <Checkbox

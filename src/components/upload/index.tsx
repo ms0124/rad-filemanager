@@ -82,7 +82,7 @@ const Upload = () => {
           <DropdownMenu className={styles['dropdown-menu']} cssModule={getBs()}>
             <DropdownItem
               cssModule={getBs()}
-              style={{ paddingLeft: 2, paddingRight: 5 }}
+              style={{ paddingRight: 6 }}
               onClick={() => handleModalToggle({ upload: true, stream: true })}
             >
               <IconStream />
