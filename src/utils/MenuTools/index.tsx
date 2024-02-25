@@ -39,6 +39,7 @@ import {
   IconDownload,
   IconCircleInfo
 } from '../../utils/icons';
+import ShareFile from '../../components/ShareFile/index';
 
 interface IProps {
   item: { name: string; hash: string; extension: string; type: string };
@@ -64,6 +65,12 @@ const MenuTools: React.FunctionComponent<IProps> = forwardRef(
     const [isOpenModal, setIsOpenModal] = useState<boolean>(false);
     const [operationType, setOperationType] = useState<number | null>();
     const headers = getHeader(false);
+
+    const [isOpenShareFile, setIsOpenShareFile] = useState<Boolean>(false);
+    const toggleShareFile = () => {
+      setIsOpenShareFile((prev) => !prev);
+    };
+
     const toggleModal: () => void = () => setIsOpenModal(!isOpenModal);
     const toggle: () => void = () => {
       setIsOpen((prev) => {
@@ -144,6 +151,8 @@ const MenuTools: React.FunctionComponent<IProps> = forwardRef(
         case OperationTypes.RestoreArchive:
           archiveRestor.mutateAsync(serializeUrl({ hashes }));
           break;
+        case OperationTypes.Share:
+          setIsOpenShareFile(true);
       }
     };
 
@@ -161,6 +170,9 @@ const MenuTools: React.FunctionComponent<IProps> = forwardRef(
 
     return (
       <React.Fragment>
+        {isOpenShareFile && (
+          <ShareFile isOpen={isOpenShareFile} toggle={toggleShareFile} />
+        )}
         {isOpenModal && operationType === OperationTypes.Remove ? (
           <Modal
             isOpen={isOpenModal}
@@ -264,7 +276,7 @@ const MenuTools: React.FunctionComponent<IProps> = forwardRef(
                     disabled={isShowCheckbox}
                   />
                 </CheckPermissions>
-                {/* <CheckPermissions permissions={['share_detail']}>
+                <CheckPermissions permissions={['share_detail']}>
                   <DropdownItem cssModule={getBs()} divider />
                   <MenuItem
                     clickHandler={() => clickHandler(OperationTypes.Share)}
@@ -273,7 +285,7 @@ const MenuTools: React.FunctionComponent<IProps> = forwardRef(
                     enTitle='share'
                     disabled={isShowCheckbox}
                   />
-                </CheckPermissions> */}
+                </CheckPermissions>
               </React.Fragment>
             ) : (
               <React.Fragment>

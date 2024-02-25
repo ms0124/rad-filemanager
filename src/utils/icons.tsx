@@ -12,20 +12,21 @@ import times from '../assets/svg/times.svg';
 import tick from '../assets/svg/tick.svg';
 import multiSelect from '../assets/svg/multi_select.svg';
 import stream from '../assets/svg/stream.svg';
+import tims_fill from '../assets/svg/tims_fill.svg';
 
 const IconBuilder = ({ src, style = {}, ...props }) => {
   return <img src={src} style={style} {...props} />;
 };
 
-export const IconUpload = ({ colorGray = false, size = '', style ={} }) => {
-  let styles:React.CSSProperties | undefined  = colorGray
+export const IconUpload = ({ colorGray = false, size = '', style = {} }) => {
+  let styles: React.CSSProperties | undefined = colorGray
     ? {
         filter:
           'invert(50%) sepia(11%) saturate(6%) hue-rotate(358deg) brightness(87%) contrast(83%)'
       }
     : {};
   if (size) styles.width = size;
-  if (style) styles = {...style, ...styles}
+  if (style) styles = { ...style, ...styles };
   return <IconBuilder src={upload} style={styles} />;
 };
 
@@ -33,8 +34,8 @@ export const IconStream = () => {
   return <IconBuilder src={stream} />;
 };
 
-export const IconCopy = () => {
-  return <IconBuilder src={copy} />;
+export const IconCopy = ({ style={} , ...props}) => {
+  return <IconBuilder src={copy} style={style} {...props} />;
 };
 
 export const IconEdit = () => {
@@ -75,4 +76,8 @@ export const IconTick = ({ style = {} }) => {
 
 export const IconMultiSelect = ({ style = {} }) => {
   return <IconBuilder src={multiSelect} style={style} />;
+};
+
+export const IconTimsFill = ({ style = {}, ...props }) => {
+  return <IconBuilder src={tims_fill} style={style} {...props} />;
 };
