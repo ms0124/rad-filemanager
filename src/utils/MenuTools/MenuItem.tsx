@@ -7,6 +7,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as FontAwesomeIconTypes from '@fortawesome/fontawesome-common-types';
 import { OperationTypes } from '../../config/types';
 import { getBs } from '../../utils/index';
+import classNames from 'classnames';
 interface IProps {
   fontAwesomeIcon?: FontAwesomeIconTypes.IconDefinition;
   icon?: React.ReactElement;
@@ -14,7 +15,7 @@ interface IProps {
   enTitle?: string;
   clickHandler: () => void;
   type?: number;
-  disabled?: boolean
+  disabled?: boolean;
 }
 
 const MenuItem: React.FunctionComponent<IProps> = ({
@@ -35,11 +36,15 @@ const MenuItem: React.FunctionComponent<IProps> = ({
         onClick={(e) => {
           e.stopPropagation();
           if (disabled) return;
-          clickHandler()
+          clickHandler();
         }}
         target='_blank'
-        className={`${styles['dropdown-menu-wrapper__item']}`}
-        style={disabled ? {cursor:"not-allowed", backgroundColor:"transparent"}:{}}
+        className={`${styles['dropdown-menu-wrapper__item']} 222`}
+        style={
+          disabled
+            ? { cursor: 'not-allowed', backgroundColor: 'transparent' }
+            : {}
+        }
       >
         {fontAwesomeIcon ? (
           <FontAwesomeIcon
@@ -49,10 +54,10 @@ const MenuItem: React.FunctionComponent<IProps> = ({
         ) : (
           icon
         )}
-        <span>{title}</span>
+        <span className={classNames(styles['dropdown-menu-wrapper__title'])} >{title}</span>
         {enTitle ? (
           <span
-            className={`${utilStyles['me-auto']} ${styles['dropdown-menu-wrapper__item--en']}`}
+            className={`${utilStyles['me-auto']} ${styles['dropdown-menu-wrapper__title-en']}`}
           >
             {enTitle}
           </span>

@@ -232,7 +232,10 @@ const MenuTools: React.FunctionComponent<IProps> = forwardRef(
                 <MenuItem
                   clickHandler={() => clickHandler(OperationTypes.Download)}
                   title='دانلود فایل'
-                  icon={<IconDownload />}
+                  enTitle='Download'
+                  icon={
+                    <IconDownload style={{ width: '18px', height: '16px' }} />
+                  }
                   type={OperationTypes.Download}
                 />
               )}
@@ -246,8 +249,10 @@ const MenuTools: React.FunctionComponent<IProps> = forwardRef(
                   <MenuItem
                     clickHandler={() => clickHandler(OperationTypes.Rename)}
                     title='تغییر نام'
-                    icon={<IconEdit />}
-                    enTitle='rename'
+                    icon={
+                      <IconEdit style={{ width: '18px', height: '16px' }} />
+                    }
+                    enTitle='Rename'
                     disabled={isShowCheckbox}
                   />
                 </CheckPermissions>
@@ -255,24 +260,30 @@ const MenuTools: React.FunctionComponent<IProps> = forwardRef(
                   <MenuItem
                     clickHandler={() => clickHandler(OperationTypes.Copy)}
                     title='کپی'
-                    icon={<IconCopy />}
-                    enTitle='copy'
+                    icon={
+                      <IconCopy style={{ width: '18px', height: '16px' }} />
+                    }
+                    enTitle='Copy'
                   />
                 </CheckPermissions>
                 <CheckPermissions permissions={['cut']}>
                   <MenuItem
                     clickHandler={() => clickHandler(OperationTypes.Cut)}
                     title='جابه‌جایی'
-                    icon={<IconMove />}
-                    enTitle='move'
+                    icon={
+                      <IconMove style={{ width: '18px', height: '16px' }} />
+                    }
+                    enTitle='Move'
                   />
                 </CheckPermissions>
                 <CheckPermissions permissions={['delete']}>
                   <MenuItem
                     clickHandler={() => clickHandler(OperationTypes.Remove)}
                     title='حذف'
-                    icon={<IconTrash />}
-                    enTitle='delete'
+                    icon={
+                      <IconTrash style={{ width: '18px', height: '16px' }} />
+                    }
+                    enTitle='Delete'
                     disabled={isShowCheckbox}
                   />
                 </CheckPermissions>
@@ -299,7 +310,9 @@ const MenuTools: React.FunctionComponent<IProps> = forwardRef(
                         clickHandler(OperationTypes.RemoveArchive)
                       }
                       title='حذف دائمی'
-                      icon={<IconTrash />}
+                      icon={
+                        <IconTrash style={{ width: '18px', height: '16px' }} />
+                      }
                     />
                   </CheckPermissions>
                   <CheckPermissions permissions={['archive_restore']}>
@@ -309,7 +322,11 @@ const MenuTools: React.FunctionComponent<IProps> = forwardRef(
                         clickHandler(OperationTypes.RestoreArchive)
                       }
                       title='بازیابی'
-                      icon={<IconCircleInfo />}
+                      icon={
+                        <IconCircleInfo
+                          style={{ width: '18px', height: '16px' }}
+                        />
+                      }
                     />
                   </CheckPermissions>
                 </CheckPermissions>

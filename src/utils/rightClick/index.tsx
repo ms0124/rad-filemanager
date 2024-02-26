@@ -159,7 +159,7 @@ const App: React.FunctionComponent<IProps> = forwardRef(
               style={{ top: position.y, left: position.x }}
               className={styles['context-menu']}
             >
-              <Nav className={styles['']} cssModule={getBs()} vertical>
+              <Nav className={styles['context-menu__wrapper']} cssModule={getBs()} vertical>
                 <CheckPermissions permissions={['folder_create']}>
                   <NavItem
                     cssModule={getBs()}

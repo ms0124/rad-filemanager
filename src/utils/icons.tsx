@@ -30,40 +30,40 @@ export const IconUpload = ({ colorGray = false, size = '', style = {} }) => {
   return <IconBuilder src={upload} style={styles} />;
 };
 
-export const IconStream = ({style={}}) => {
+export const IconStream = ({ style = {} }) => {
   return <IconBuilder src={stream} style={style} />;
 };
 
-export const IconCopy = ({ style={} , ...props}) => {
+export const IconCopy = ({ style = {}, ...props }) => {
   return <IconBuilder src={copy} style={style} {...props} />;
 };
 
-export const IconEdit = () => {
-  return <IconBuilder src={edit} />;
+export const IconEdit = ({ style = {} }) => {
+  return <IconBuilder src={edit} style={style} />;
 };
 
 export const IconFolderPlus = () => {
   return <IconBuilder src={folderPlus} />;
 };
 
-export const IconMove = () => {
-  return <IconBuilder src={move} />;
+export const IconMove = ({ style = {} }) => {
+  return <IconBuilder src={move} style={style} />;
 };
 
 export const IconPaste = () => {
   return <IconBuilder src={paste} />;
 };
 
-export const IconTrash = () => {
-  return <IconBuilder src={trash} />;
+export const IconTrash = ({ style = {} }) => {
+  return <IconBuilder src={trash} style={style} />;
 };
 
-export const IconDownload = () => {
-  return <IconBuilder src={download} />;
+export const IconDownload = ({ style = {} }) => {
+  return <IconBuilder src={download} style={style} />;
 };
 
-export const IconCircleInfo = () => {
-  return <IconBuilder src={circleInfo} />;
+export const IconCircleInfo = ({ style = {} }) => {
+  return <IconBuilder src={circleInfo} style={style} />;
 };
 
 export const IconTimes = ({ style = {}, ...props }) => {
