@@ -53,7 +53,7 @@ const Upload = () => {
   return (
     <React.Fragment>
       <CheckPermissions permissions={['upload', 'upload_image']}>
-        <UncontrolledDropdown cssModule={getBs()}>
+        <UncontrolledDropdown cssModule={getBs()} group>
           <Button
             tag={'a'}
             cssModule={getBs()}
