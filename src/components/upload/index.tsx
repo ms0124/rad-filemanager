@@ -10,7 +10,7 @@ import {
   DropdownItem
 } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faChevronDown } from '@fortawesome/free-solid-svg-icons';
+import { faAngleDown } from '@fortawesome/free-solid-svg-icons';
 
 import { Context } from '../../store';
 import FileDragAndDrop from './fileDragAndDrop ';
@@ -69,13 +69,13 @@ const Upload = () => {
               style={{
                 background: 'transparent',
                 border: 'none',
-                padding: '8px 5px 8px 8px',
+                padding: '8px 5px 2px 8px',
                 display: 'inline-block'
               }}
               cssModule={getBs()}
               onClick={(e) => e.stopPropagation()}
             >
-              <FontAwesomeIcon icon={faChevronDown} style={{ color: '#fff' }} />
+              <FontAwesomeIcon icon={faAngleDown} style={{ color: '#fff' }} />
             </DropdownToggle>
           </Button>
 
