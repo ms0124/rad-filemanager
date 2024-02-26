@@ -589,7 +589,12 @@ const FilesDragAndDrop: FunctionComponent<Props> = ({
                     }}
                     className={`${utilStyles['d-flex']} ${utilStyles['justify-content-between']} ${styles['upload-notification__alert']}`}
                   >
-                    <div className={classnames(utilStyles['d-flex'])}>
+                    <div
+                      className={classnames(
+                        utilStyles['d-flex'],
+                        getBs()['align-items-center']
+                      )}
+                    >
                       {progress[item.name].hasError ? (
                         <FontAwesomeIcon
                           title={progress[item.name]?.message}
@@ -624,7 +629,9 @@ const FilesDragAndDrop: FunctionComponent<Props> = ({
                         style={{
                           paddingRight: '8px',
                           color: '#737373',
-                          textAlign: 'right'
+                          textAlign: 'right',
+                          width: '200px',
+                          wordWrap: 'break-word'
                         }}
                       >
                         {item.name}

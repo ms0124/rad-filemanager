@@ -276,7 +276,7 @@ const MenuTools: React.FunctionComponent<IProps> = forwardRef(
                     disabled={isShowCheckbox}
                   />
                 </CheckPermissions>
-                <CheckPermissions permissions={['share_detail']}>
+                {/* <CheckPermissions permissions={['share_detail']}>
                   <DropdownItem cssModule={getBs()} divider />
                   <MenuItem
                     clickHandler={() => clickHandler(OperationTypes.Share)}
@@ -285,7 +285,7 @@ const MenuTools: React.FunctionComponent<IProps> = forwardRef(
                     enTitle='share'
                     disabled={isShowCheckbox}
                   />
-                </CheckPermissions>
+                </CheckPermissions> */}
               </React.Fragment>
             ) : (
               <React.Fragment>

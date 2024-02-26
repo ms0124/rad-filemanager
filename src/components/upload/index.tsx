@@ -85,7 +85,7 @@ const Upload = () => {
               style={{ paddingRight: 6 }}
               onClick={() => handleModalToggle({ upload: true, stream: true })}
             >
-              <IconStream />
+              <IconStream style={{ width: '18px', height: '18px' }} />
               <span style={{ marginRight: '8px', fontSize: '13px' }}>
                 بارگذاری استریم
               </span>

@@ -30,8 +30,8 @@ export const IconUpload = ({ colorGray = false, size = '', style = {} }) => {
   return <IconBuilder src={upload} style={styles} />;
 };
 
-export const IconStream = () => {
-  return <IconBuilder src={stream} />;
+export const IconStream = ({style={}}) => {
+  return <IconBuilder src={stream} style={style} />;
 };
 
 export const IconCopy = ({ style={} , ...props}) => {

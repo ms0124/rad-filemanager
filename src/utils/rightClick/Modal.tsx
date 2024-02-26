@@ -60,19 +60,22 @@ const Index: React.FC<IProps> = ({
         createNewFolder
           .mutateAsync({ name, parentHash: currentHash })
           .finally(() => {
-            if (isOpen) setTimeout(() => toggle(), 1500);
+            // if (isOpen) setTimeout(() => toggle(), 1500);
+            if (isOpen) toggle();
           });
         break;
       case OperationTypes.Remove:
         deleteFileAndFolder.mutateAsync({ hash: item?.hash }).finally(() => {
-          if (isOpen) setTimeout(() => toggle(), 1500);
+          // if (isOpen) setTimeout(() => toggle(), 1500);
+          if (isOpen) toggle();
         });
         break;
       case OperationTypes.Rename:
         renameFileAndFolder
           .mutateAsync({ hash: item?.hash, newName: `${name}${extension}` })
           .finally(() => {
-            if (isOpen) setTimeout(() => toggle(), 1500);
+            // if (isOpen) setTimeout(() => toggle(), 1500);
+            if (isOpen) toggle();
           });
         break;
     }
@@ -92,7 +95,10 @@ const Index: React.FC<IProps> = ({
         {type === OperationTypes.Remove ? (
           ''
         ) : type === OperationTypes.Rename ? (
-          <div className={styles['input-wrapper']} style={{paddingRight:item?.extension ? 0: '8px'}}>
+          <div
+            className={styles['input-wrapper']}
+            style={{ paddingRight: item?.extension ? 0 : '8px' }}
+          >
             {item?.extension ? (
               <span className={styles['input-wrapper__icon']}>
                 {`.${item.extension.toLocaleLowerCase()}`}
@@ -144,6 +150,9 @@ const Index: React.FC<IProps> = ({
             onClick={execute}
             color='primary'
             className={`${utilStyles['round-8']} ${styles['btn-primary']}`}
+            disabled={
+              deleteFileAndFolder.isLoading || renameFileAndFolder.isLoading
+            }
           >
             {btnOkText}{' '}
             {deleteFileAndFolder.isLoading || renameFileAndFolder.isLoading ? (
