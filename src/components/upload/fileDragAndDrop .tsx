@@ -341,8 +341,8 @@ const FilesDragAndDrop: FunctionComponent<Props> = ({
     }
   };
 
-  const handleOnChangesInputFiles = (event) => {
-    const files = event.target.files;
+  const handleOnChangesInputFiles = (e) => {
+    const files = e.target.files;
     setUploadComplete(false);
     if (files && files.length > 0) {
       if (breakUpload(files)) return;
@@ -498,7 +498,7 @@ const FilesDragAndDrop: FunctionComponent<Props> = ({
                     icon={faExclamationTriangle}
                   />
                   <span className={styles['guide__title']}>
-                    استریم فقط فایل‌های mp3 , mp4 مجاز است.
+                    امکان استریم فقط برای فایل‌های از نوع mp3 و mp4 مجاز است.
                   </span>
                 </div>
               )}
@@ -519,6 +519,8 @@ const FilesDragAndDrop: FunctionComponent<Props> = ({
               <input
                 ref={inputRef}
                 type='file'
+                value={inputRef.current?.value}
+                accept={modal.stream ? '.mp3,.mp4' : ''}
                 multiple
                 style={{ display: 'none', width: '100%', height: '100%' }}
                 onChange={handleOnChangesInputFiles}
