@@ -19,7 +19,6 @@ const ListItem: React.FC<IPprops> = ({
   img = undefined,
   date = undefined
 }) => {
-  console.log(getBs());
 
   return (
     <div className={styles['list-wrapper__item']}>

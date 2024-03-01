@@ -170,3 +170,40 @@ export const downloadThumbnail = async (hash) => {
 export const search = async ({ query }: any) => {
   return await httpRequest(`${namespace}/search/${query}`);
 };
+
+/************************************* */
+/*********** S H A R E ***************/
+/************************************* */
+
+export const detailShare = async ({ hash }: any) => {
+  return await httpRequest(`${namespace}/${hash}/shares`);
+};
+
+export const addShare = async ({ hash, identity, params }: any) => {
+  return await httpRequest(
+    `${namespace}/${hash}/share/user/${identity}`,
+    params,
+    'POST'
+  );
+};
+
+export const deleteShare = async ({ hash, identity }: any) => {
+  return await httpRequest(
+    `${namespace}/${hash}/share/user/${identity}`,
+    // params,
+    {},
+    'DELETE'
+  );
+};
+
+/************************************* */
+/*********** CHANGE ACCESS***************/
+/************************************* */
+
+export const addPublic = async ({ hash, params }: any) => {
+  return await httpRequest(`${namespace}/${hash}/share/public`, params, 'POST');
+};
+
+export const removePublic = async ({ hash }: any) => {
+  return await httpRequest(`${namespace}/${hash}/share/public`, {}, 'DELETE');
+};

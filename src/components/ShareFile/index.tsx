@@ -1,6 +1,7 @@
 import styles from './style.module.scss';
-
-import React, { useState } from 'react';
+import DatePicker from 'persian-reactjs-date-picker';
+import React, { useState, useContext } from 'react';
+import copy from 'copy-to-clipboard';
 import {
   Modal,
   ModalBody,
@@ -14,8 +15,11 @@ import {
   Dropdown,
   DropdownMenu,
   DropdownItem,
-  DropdownToggle
+  DropdownToggle,
+  Spinner
 } from 'reactstrap';
+import moment from 'moment-jalaali';
+import { Context } from '../../store/index';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faPlus,
@@ -24,13 +28,81 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 // import {  } from '@fortawesome/free-regular-svg-icons';
 
+// hooks
+import {
+  useDetailShare,
+  useAddShare,
+  useDeleteShare,
+  useAddPublic,
+  useRemovePublic
+} from '../../config/hooks';
 import { getBs } from '../../utils/index';
 import classNames from 'classnames';
 import ListItem from './listItem';
 import { IconCopy } from '../../utils/icons';
+import { toast } from 'react-toastify';
 
-const ShareFile = ({ isOpen, toggle }) => {
+interface IProps {
+  hash: string;
+  isOpen: boolean;
+  toggle: () => void;
+  isPublic: boolean;
+}
+
+const ShareFile: React.FC<IProps> = ({ isOpen, toggle, hash, isPublic }) => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [isAccessPublic, setIsAccessPublic] = useState<boolean>(
+    isPublic ? true : false
+  );
+  // const { selectedItems, itemHash } = useContext(Context);
+  const { data, isLoading, refetch } = useDetailShare(hash);
+  const addShare = useAddShare();
+  const deleteShare = useDeleteShare();
+
+  const addPublic = useAddPublic();
+  const removePublic = useRemovePublic();
+
+  const accessHandler = () => {
+    setIsAccessPublic((prevAccess) => !prevAccess);
+  };
+
+  const addShareHandller = (identity) => {
+    const params = { expiration: '2024/04/01', level: 'VIEW' };
+    addShare.mutateAsync({ hash, identity, params }).finally(() => {
+      refetch();
+    });
+  };
+
+  const copyHandler = () => {
+    const isSuccess = copy('test');
+    if (isSuccess) toast.success('لینک با موفقیت کپی شد.');
+  };
+
+  const confirmationHandler = () => {
+    if (isPublic == isAccessPublic) {
+      // access configuraiotn not changed
+      toggle();
+    } else {
+      if (!isAccessPublic) {
+        removePublic.mutateAsync({ hash }).then((res) => {
+          const { hasError } = res;
+          if (!hasError) {
+            toast.success('دسترسی با موفقیت تغیر کرد.');
+            toggle();
+          }
+        });
+      } else if (isAccessPublic) {
+        const params = { expiration: '2034/03/01' };
+        addPublic.mutateAsync({ hash, params }).then((res) => {
+          const { hasError } = res;
+          if (!hasError) {
+            toast.success('دسترسی با موفقیت تغیر کرد.');
+            toggle();
+          }
+        });
+      }
+    }
+  };
 
   return (
     <Modal
@@ -77,7 +149,12 @@ const ShareFile = ({ isOpen, toggle }) => {
                 cssModule={getBs()}
                 placeholder='تاریخ انقضا اشتراک گذاری'
               />
-              <Button cssModule={getBs()}>
+              <Button
+                cssModule={getBs()}
+                tag={'a'}
+                className={classNames(styles['sharefile-wrapper__button'])}
+                onClick={() => addShareHandller('phoneNumber')}
+              >
                 <FontAwesomeIcon icon={faPlus} />
               </Button>
             </div>
@@ -85,24 +162,44 @@ const ShareFile = ({ isOpen, toggle }) => {
         </Row>
         <Row cssModule={getBs()}>
           <Col cssModule={getBs()} xs={12} className={classNames()}>
-            <div className={classNames(getBs()['border'], getBs()['rounded'])}>
-              <ListGroup
-                cssModule={getBs()}
-                className={classNames(getBs()['pr-0'], styles['list-wrapper'])}
+            {isLoading ? (
+              <div
+                className={classNames(
+                  getBs()['d-flex'],
+                  getBs()['justify-content-center']
+                )}
               >
-                {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((_, index) => (
-                  <ListGroupItem
-                    cssModule={getBs()}
-                    className={classNames(
-                      getBs()['border-left-0'],
-                      getBs()['border-right-0']
-                    )}
-                  >
-                    <ListItem name={'مسلم'} img={undefined} date={undefined} />
-                  </ListGroupItem>
-                ))}
-              </ListGroup>
-            </div>
+                <Spinner cssModule={getBs()} color='primary' size={'lg'} />
+              </div>
+            ) : (
+              <div
+                className={classNames(getBs()['border'], getBs()['rounded'])}
+              >
+                <ListGroup
+                  cssModule={getBs()}
+                  className={classNames(
+                    getBs()['pr-0'],
+                    styles['list-wrapper']
+                  )}
+                >
+                  {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((_, index) => (
+                    <ListGroupItem
+                      cssModule={getBs()}
+                      className={classNames(
+                        getBs()['border-left-0'],
+                        getBs()['border-right-0']
+                      )}
+                    >
+                      <ListItem
+                        name={'مسلم'}
+                        img={undefined}
+                        date={undefined}
+                      />
+                    </ListGroupItem>
+                  ))}
+                </ListGroup>
+              </div>
+            )}
           </Col>
         </Row>
         <Row cssModule={getBs()}>
@@ -110,20 +207,34 @@ const ShareFile = ({ isOpen, toggle }) => {
             <Dropdown
               cssModule={getBs()}
               isOpen={dropdownOpen}
+              className={classNames(getBs()['pt-3'])}
+              role='button'
               toggle={() => setDropdownOpen((prev) => !prev)}
             >
-              44
               <DropdownToggle
                 cssModule={getBs()}
                 data-toggle='dropdown'
                 tag={'span'}
               >
+                {isAccessPublic ? 'دسترسی عمومی' : 'دسترسی محدود'}
                 <FontAwesomeIcon icon={faCaretDown} />
               </DropdownToggle>
-              <DropdownMenu cssModule={getBs()}>
-                <DropdownItem cssModule={getBs()}>1</DropdownItem>
+              <DropdownMenu cssModule={getBs()} right>
+                <DropdownItem cssModule={getBs()} onClick={accessHandler}>
+                  {!isAccessPublic ? 'دسترسی عمومی' : 'دسترسی محدود'}
+                </DropdownItem>
               </DropdownMenu>
             </Dropdown>
+            <div
+              className={classNames(
+                styles['sharefile-wrapper__guide'],
+                getBs()['pt-2']
+              )}
+            >
+              {isAccessPublic
+                ? 'همه افرادی که لینک را دارند میتوانند به آن دسترسی پیدا کنند'
+                : 'فقط افرادی که دسترسی دارند میتوانند با این پیوند آن را باز کنند'}
+            </div>
           </Col>
           <Col
             cssModule={getBs()}
@@ -139,14 +250,21 @@ const ShareFile = ({ isOpen, toggle }) => {
               <Button
                 cssModule={getBs()}
                 outline
+                tag='a'
                 className={styles['sharefile-wrapper__copy']}
+                onClick={copyHandler}
               >
                 <IconCopy />
                 <span className={getBs()['mr-3']}>کپی لینک</span>
               </Button>
               <Button
                 cssModule={getBs()}
-                className={styles['sharefile-wrapper__confirm']}
+                tag='a'
+                className={classNames(
+                  styles['sharefile-wrapper__confirm'],
+                  styles['sharefile-wrapper__button']
+                )}
+                onClick={confirmationHandler}
               >
                 <span className={classNames(getBs()['ml-2'], getBs()['mr-2'])}>
                   تایید

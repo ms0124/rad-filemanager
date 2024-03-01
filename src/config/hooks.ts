@@ -239,3 +239,60 @@ export const useDebounce = (value, delay) => {
 
   return debouncedValue;
 };
+
+export const useDetailShare = (hash: string) => {
+  return useQuery(['detailShare', { hash }], ({ queryKey }) =>
+    api.detailShare(queryKey[1])
+  );
+};
+
+export const useAddShare = () => {
+  return useMutation({
+    mutationFn: (variables: {
+      hash: string;
+      identity: string;
+      params: object;
+    }) => api.addShare({ ...variables }),
+    onSuccess: (_, variables) => {
+      console.log('success');
+      // queryClient.refetchQueries({
+      //   queryKey: ['folderContentChildren', folderHash]
+      // });
+    }
+  });
+};
+
+export const useDeleteShare = () => {
+  return useMutation({
+    mutationFn: (variables: {
+      hash: string;
+      identity: string;
+      // params: object;
+    }) => api.deleteShare({ ...variables }),
+    onSuccess: (_, variables) => {
+      // queryClient.refetchQueries({
+      //   queryKey: ['folderContentChildren', folderHash]
+      // });
+    }
+  });
+};
+
+export const useAddPublic = () => {
+  return useMutation({
+    mutationFn: (variables: { hash: string; params: object }) =>
+      api.addPublic({ ...variables }),
+    onSuccess: (_, variables) => {
+      console.log('success');
+    }
+  });
+};
+
+export const useRemovePublic = () => {
+  return useMutation({
+    mutationFn: (variables: { hash: string }) =>
+      api.removePublic({ ...variables }),
+    onSuccess: (_, variables) => {
+      console.log('success');
+    }
+  });
+};

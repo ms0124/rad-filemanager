@@ -13,10 +13,10 @@
     input {
       font-size: 14px;
     }
-    button {
-      background-color: #6184ff;
-      border-color: #6184ff;
-    }
+  }
+  &__button {
+    background-color: #6184ff;
+    border-color: #6184ff;
   }
   .list-wrapper {
     max-height: 200px;
@@ -71,5 +71,8 @@
     //   filter: brightness(0) saturate(100%);
     //   background-color: #ffffff;
     // }
+  }
+  &__guide {
+    color: #b5b5b5;
   }
 }
