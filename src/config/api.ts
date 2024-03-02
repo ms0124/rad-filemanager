@@ -187,11 +187,11 @@ export const addShare = async ({ hash, identity, params }: any) => {
   );
 };
 
-export const deleteShare = async ({ hash, identity }: any) => {
+export const deleteShare = async ({ hash, identity, params }: any) => {
   return await httpRequest(
     `${namespace}/${hash}/share/user/${identity}`,
-    // params,
-    {},
+    params,
+    // {},
     'DELETE'
   );
 };

@@ -102,15 +102,16 @@ const ShareFile: React.FC<IProps> = ({ isOpen, toggle, hash, isPublic }) => {
   };
 
   const deleteShareHandler = (identity) => {
-    deleteShare.mutateAsync({ hash, identity }).then((res) => {
+    const params = { identityType: 'username' };
+    deleteShare.mutateAsync({ hash, identity, params }).then((res) => {
       const { hasError } = res;
       if (!hasError) refetch();
     });
   };
   const copyHandler = () => {
     const baseUrl = isSandbox
-    ? 'https://rad-sandbox.sandpod.ir'
-    : 'https://rad-services.pod.ir';
+      ? 'https://rad-sandbox.sandpod.ir'
+      : 'https://rad-services.pod.ir';
     const isSuccess = copy(`${baseUrl}/api/core/drives/download/${hash}/`);
     if (isSuccess) toast.success('لینک با موفقیت کپی شد.');
   };

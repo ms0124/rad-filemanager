@@ -51,7 +51,7 @@ const ListItem: React.FC<IPprops> = ({
             {name ? name : 'بدون نام'}
           </div>
           <div className={styles['list-wrapper__date']}>
-            <span>تاریخ انقضا</span>:
+            <span>تاریخ انقضا</span>: {" "}
             <span>{date ? moment(date).format('jYYYY/jMM/jDD') : ''}</span>
           </div>
         </div>

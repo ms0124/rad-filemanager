@@ -267,7 +267,7 @@ export const useDeleteShare = () => {
     mutationFn: (variables: {
       hash: string;
       identity: string;
-      // params: object;
+      params: object;
     }) => api.deleteShare({ ...variables }),
     onSuccess: (_, variables) => {
       // queryClient.refetchQueries({
@@ -297,7 +297,6 @@ export const useRemovePublic = () => {
   });
 };
 
-
 export function useOnClickOutside(ref, handler) {
   useEffect(() => {
     const listener = (event) => {
@@ -306,11 +305,11 @@ export function useOnClickOutside(ref, handler) {
       }
       handler(event);
     };
-    document.addEventListener("mousedown", listener);
-    document.addEventListener("touchstart", listener);
+    document.addEventListener('mousedown', listener);
+    document.addEventListener('touchstart', listener);
     return () => {
-      document.removeEventListener("mousedown", listener);
-      document.removeEventListener("touchstart", listener);
+      document.removeEventListener('mousedown', listener);
+      document.removeEventListener('touchstart', listener);
     };
   }, [ref, handler]);
 }
