@@ -1,5 +1,5 @@
 import styles from './style.module.scss';
-import DatePicker from 'persian-reactjs-date-picker';
+import { DatePicker } from 'react-persian-datepicker-rad';
 import React, { useState, useContext } from 'react';
 import copy from 'copy-to-clipboard';
 import {
@@ -42,6 +42,7 @@ import classNames from 'classnames';
 import ListItem from './listItem';
 import { IconCopy } from '../../utils/icons';
 import { toast } from 'react-toastify';
+import cs from './basic.css';
 
 interface IProps {
   hash: string;
@@ -50,10 +51,25 @@ interface IProps {
   isPublic: boolean;
 }
 
+const styleCalendar = {
+  currentMonth: cs['currentMonth'],
+  calendarContainer: classNames(cs['calendarContainer']),
+  dayPickerContainer: cs['dayPickerContainer'],
+  monthsList: cs['monthsList'],
+  daysOfWeek: cs['daysOfWeek'],
+  dayWrapper: cs['dayWrapper'],
+  selected: cs['selected'],
+  heading: cs['heading'],
+  next: cs['next'],
+  prev: cs['prev'],
+  title: cs['title']
+};
+
 const ShareFile: React.FC<IProps> = ({ isOpen, toggle, hash, isPublic }) => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [identity, setIdentity] = useState<string>('');
-  // const [date, setDate] = useState(moment().format('YYYY/MM/DD'));
+  const [date, setDate] = useState(moment());
+  const { isSandbox } = useContext(Context);
   // const [showPicker, setShowPicker] = useState(false);
   // const datePickerRef = useRef();
   // useOnClickOutside(datePickerRef, () => setShowPicker(false));
@@ -78,7 +94,7 @@ const ShareFile: React.FC<IProps> = ({ isOpen, toggle, hash, isPublic }) => {
   };
 
   const addShareHandller = () => {
-    const params = { expiration: '2026/04/01', level: 'VIEW' };
+    const params = { expiration: date.format('YYYY/MM/DD'), level: 'VIEW' };
     addShare.mutateAsync({ hash, identity, params }).then((res) => {
       const { hasError } = res;
       if (!hasError) refetch();
@@ -92,7 +108,10 @@ const ShareFile: React.FC<IProps> = ({ isOpen, toggle, hash, isPublic }) => {
     });
   };
   const copyHandler = () => {
-    const isSuccess = copy('test');
+    const baseUrl = isSandbox
+    ? 'https://rad-sandbox.sandpod.ir'
+    : 'https://rad-services.pod.ir';
+    const isSuccess = copy(`${baseUrl}/api/core/drives/download/${hash}/`);
     if (isSuccess) toast.success('لینک با موفقیت کپی شد.');
   };
 
@@ -129,12 +148,6 @@ const ShareFile: React.FC<IProps> = ({ isOpen, toggle, hash, isPublic }) => {
       }
     }
   };
-
-  // const handleSelectDate = (value) => {
-  //   console.log(111, moment(value).format('jYYYY/jMM/jDD'));
-
-  //   return () => setDate(value);
-  // };
 
   return (
     <Modal
@@ -183,9 +196,29 @@ const ShareFile: React.FC<IProps> = ({ isOpen, toggle, hash, isPublic }) => {
                 onChange={identityHandler}
               />
               <div>
-                <Input
+                {/* <Input
                   cssModule={getBs()}
                   placeholder='تاریخ انقضا اشتراک گذاری'
+                /> */}
+                <DatePicker
+                  calendarStyles={styleCalendar}
+                  value={date}
+                  className={classNames(getBs()['form-control'])}
+                  placeholder='تاریخ انقضا اشتراک گذاری'
+                  onFocus={() => {
+                    setTimeout(() => {
+                      const el = document.querySelector(
+                        '.tether-element'
+                      ) as HTMLDivElement;
+                      if (el) {
+                        el!.style!.zIndex = '10000';
+                      }
+                    }, 100);
+                  }}
+                  onChange={(value) => {
+                    setDate(value);
+                  }}
+                  // calendarContainer={}
                 />
               </div>
               <Button
@@ -282,8 +315,8 @@ const ShareFile: React.FC<IProps> = ({ isOpen, toggle, hash, isPublic }) => {
               )}
             >
               {isAccessPublic
-                ? 'همه افرادی که لینک را دارند میتوانند به آن دسترسی پیدا کنند'
-                : 'فقط افرادی که دسترسی دارند میتوانند با این پیوند آن را باز کنند'}
+                ? 'با توجه به این‌که فایل یا فولدر به صورت عمومی اشتراک‌گذاری شده است، همه افرادی که به لینک دانلود دسترسی داشته باشند، امکان دریافت و مشاهده فایل را خواهند داشت.'
+                : 'با توجه به این‌که اشتراک‌گذاری فایل یا فولدر در وضعیت محدود است، فقط افرادی که در لیست بالا قرار دارند و فایل با آن‌ها اشتراک‌گذاری شده است، امکان دریافت و مشاهده فایل را خواهند داشت.'}
             </div>
           </Col>
           <Col

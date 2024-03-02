@@ -23,7 +23,7 @@ module.exports = (env, argv) => {
         // all files with a `.ts`, `.cts`, `.mts` or `.tsx` extension will be handled by `ts-loader`
         { test: /\.([cm]?ts|tsx)$/, loader: 'ts-loader' },
         {
-          test: /(\.module.scss$)|(\.module.css$)|(bootstrap.min.scss$)|(bootstrap.min.css$)/,
+          test: /(\.module.scss$)|(\.module.css$)|(bootstrap.min.scss$)|(bootstrap.min.css$)|(basic.css$)/,
           use: [
             {
               loader: 'style-loader'

@@ -39,7 +39,7 @@ const MenuItem: React.FunctionComponent<IProps> = ({
           clickHandler();
         }}
         target='_blank'
-        className={`${styles['dropdown-menu-wrapper__item']} 222`}
+        className={`${styles['dropdown-menu-wrapper__item']}`}
         style={
           disabled
             ? { cursor: 'not-allowed', backgroundColor: 'transparent' }
@@ -54,7 +54,9 @@ const MenuItem: React.FunctionComponent<IProps> = ({
         ) : (
           icon
         )}
-        <span className={classNames(styles['dropdown-menu-wrapper__title'])} >{title}</span>
+        <span className={classNames(styles['dropdown-menu-wrapper__title'])}>
+          {title}
+        </span>
         {enTitle ? (
           <span
             className={`${utilStyles['me-auto']} ${styles['dropdown-menu-wrapper__title-en']}`}

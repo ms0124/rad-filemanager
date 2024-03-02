@@ -76,7 +76,7 @@ module.exports = (env, argv) => {
         // },
         // { test: /\.([cm]?ts|tsx)$/, loader: 'ts-loader' },
         {
-          test: /(\.module.scss$)|(\.module.css$)|(bootstrap\.min.\scss$)|(bootstrap\.min\.css$)/,
+          test: /(\.module.scss$)|(\.module.css$)|(bootstrap\.min.\scss$)|(bootstrap\.min\.css$)|(basic\.css$)/,
           use: [
             {
               loader: 'style-loader'
@@ -103,7 +103,7 @@ module.exports = (env, argv) => {
           test: /(styles.scss$)|(styles.css$)/,
           use: ['style-loader', 'css-loader', 'sass-loader']
         },
-       
+
         // {
         //   test: /(\.scss$)|(\.css$)/,
         //   use: ['style-loader', 'css-loader', 'sass-loader']

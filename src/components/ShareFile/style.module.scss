@@ -1,4 +1,9 @@
+.calendarContainer {
+  z-index: 100000;
+}
+
 .sharefile-wrapper {
+  font-family: IRANSans;
   text-align: right;
   &__header {
     h5 {
