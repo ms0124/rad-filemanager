@@ -34,7 +34,8 @@ import {
   useAddShare,
   useDeleteShare,
   useAddPublic,
-  useRemovePublic
+  useRemovePublic,
+  useOnClickOutside
 } from '../../config/hooks';
 import { getBs } from '../../utils/index';
 import classNames from 'classnames';
@@ -51,11 +52,17 @@ interface IProps {
 
 const ShareFile: React.FC<IProps> = ({ isOpen, toggle, hash, isPublic }) => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [identity, setIdentity] = useState<string>('');
+  // const [date, setDate] = useState(moment().format('YYYY/MM/DD'));
+  // const [showPicker, setShowPicker] = useState(false);
+  // const datePickerRef = useRef();
+  // useOnClickOutside(datePickerRef, () => setShowPicker(false));
+
   const [isAccessPublic, setIsAccessPublic] = useState<boolean>(
     isPublic ? true : false
   );
   // const { selectedItems, itemHash } = useContext(Context);
-  const { data, isLoading, refetch } = useDetailShare(hash);
+  const { data: dataShare, isLoading, refetch }: any = useDetailShare(hash);
   const addShare = useAddShare();
   const deleteShare = useDeleteShare();
 
@@ -65,26 +72,45 @@ const ShareFile: React.FC<IProps> = ({ isOpen, toggle, hash, isPublic }) => {
   const accessHandler = () => {
     setIsAccessPublic((prevAccess) => !prevAccess);
   };
+  const identityHandler = (event) => {
+    const { value } = event.target;
+    setIdentity(value);
+  };
 
-  const addShareHandller = (identity) => {
-    const params = { expiration: '2024/04/01', level: 'VIEW' };
-    addShare.mutateAsync({ hash, identity, params }).finally(() => {
-      refetch();
+  const addShareHandller = () => {
+    const params = { expiration: '2026/04/01', level: 'VIEW' };
+    addShare.mutateAsync({ hash, identity, params }).then((res) => {
+      const { hasError } = res;
+      if (!hasError) refetch();
     });
   };
 
+  const deleteShareHandler = (identity) => {
+    deleteShare.mutateAsync({ hash, identity }).then((res) => {
+      const { hasError } = res;
+      if (!hasError) refetch();
+    });
+  };
   const copyHandler = () => {
     const isSuccess = copy('test');
     if (isSuccess) toast.success('لینک با موفقیت کپی شد.');
   };
 
   const confirmationHandler = () => {
+    const { result } = dataShare;
+    let hashShare: string = '';
+
+    if (result && Array.isArray(result) && Array.isArray(result[0])) {
+      const tmp = result[0][0] as any;
+      hashShare = tmp?.hash;
+    }
+
     if (isPublic == isAccessPublic) {
       // access configuraiotn not changed
       toggle();
     } else {
       if (!isAccessPublic) {
-        removePublic.mutateAsync({ hash }).then((res) => {
+        removePublic.mutateAsync({ hash: hashShare }).then((res) => {
           const { hasError } = res;
           if (!hasError) {
             toast.success('دسترسی با موفقیت تغیر کرد.');
@@ -104,6 +130,12 @@ const ShareFile: React.FC<IProps> = ({ isOpen, toggle, hash, isPublic }) => {
     }
   };
 
+  // const handleSelectDate = (value) => {
+  //   console.log(111, moment(value).format('jYYYY/jMM/jDD'));
+
+  //   return () => setDate(value);
+  // };
+
   return (
     <Modal
       cssModule={getBs()}
@@ -111,6 +143,9 @@ const ShareFile: React.FC<IProps> = ({ isOpen, toggle, hash, isPublic }) => {
       toggle={toggle}
       size='lg'
       className={styles['sharefile-wrapper']}
+      onClick={(event) => {
+        event.stopPropagation();
+      }}
     >
       <ModalHeader
         cssModule={getBs()}
@@ -144,16 +179,20 @@ const ShareFile: React.FC<IProps> = ({ isOpen, toggle, hash, isPublic }) => {
               <Input
                 cssModule={getBs()}
                 placeholder='شماره موبایل، نام کاربری، ایمیل'
+                value={identity}
+                onChange={identityHandler}
               />
-              <Input
-                cssModule={getBs()}
-                placeholder='تاریخ انقضا اشتراک گذاری'
-              />
+              <div>
+                <Input
+                  cssModule={getBs()}
+                  placeholder='تاریخ انقضا اشتراک گذاری'
+                />
+              </div>
               <Button
                 cssModule={getBs()}
                 tag={'a'}
                 className={classNames(styles['sharefile-wrapper__button'])}
-                onClick={() => addShareHandller('phoneNumber')}
+                onClick={addShareHandller}
               >
                 <FontAwesomeIcon icon={faPlus} />
               </Button>
@@ -172,33 +211,44 @@ const ShareFile: React.FC<IProps> = ({ isOpen, toggle, hash, isPublic }) => {
                 <Spinner cssModule={getBs()} color='primary' size={'lg'} />
               </div>
             ) : (
-              <div
-                className={classNames(getBs()['border'], getBs()['rounded'])}
-              >
-                <ListGroup
-                  cssModule={getBs()}
-                  className={classNames(
-                    getBs()['pr-0'],
-                    styles['list-wrapper']
-                  )}
-                >
-                  {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((_, index) => (
-                    <ListGroupItem
+              <>
+                {dataShare?.result[0]?.length > 0 ? (
+                  <div
+                    className={classNames(
+                      getBs()['border'],
+                      getBs()['rounded']
+                    )}
+                  >
+                    <ListGroup
                       cssModule={getBs()}
                       className={classNames(
-                        getBs()['border-left-0'],
-                        getBs()['border-right-0']
+                        getBs()['pr-0'],
+                        styles['list-wrapper']
                       )}
                     >
-                      <ListItem
-                        name={'مسلم'}
-                        img={undefined}
-                        date={undefined}
-                      />
-                    </ListGroupItem>
-                  ))}
-                </ListGroup>
-              </div>
+                      {dataShare?.result[0]?.map((item, index) => (
+                        <ListGroupItem
+                          cssModule={getBs()}
+                          className={classNames(
+                            getBs()['border-left-0'],
+                            getBs()['border-right-0']
+                          )}
+                        >
+                          <ListItem
+                            name={item?.person?.username}
+                            img={item?.person?.avatar}
+                            date={item?.expiration}
+                            hash={item?.hash}
+                            deleteShareHandler={deleteShareHandler}
+                          />
+                        </ListGroupItem>
+                      ))}
+                    </ListGroup>
+                  </div>
+                ) : (
+                  ''
+                )}
+              </>
             )}
           </Col>
         </Row>
