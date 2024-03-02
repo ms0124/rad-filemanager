@@ -68,7 +68,7 @@ const styleCalendar = {
 const ShareFile: React.FC<IProps> = ({ isOpen, toggle, hash, isPublic }) => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [identity, setIdentity] = useState<string>('');
-  const [date, setDate] = useState(moment());
+  const [date, setDate] = useState<any>();
   const { isSandbox } = useContext(Context);
   // const [showPicker, setShowPicker] = useState(false);
   // const datePickerRef = useRef();
@@ -94,10 +94,14 @@ const ShareFile: React.FC<IProps> = ({ isOpen, toggle, hash, isPublic }) => {
   };
 
   const addShareHandller = () => {
+    if (!date) return;
     const params = { expiration: date.format('YYYY/MM/DD'), level: 'VIEW' };
     addShare.mutateAsync({ hash, identity, params }).then((res) => {
       const { hasError } = res;
-      if (!hasError) refetch();
+      if (!hasError) {
+        refetch();
+        setIdentity('');
+      }
     });
   };
 
@@ -110,9 +114,9 @@ const ShareFile: React.FC<IProps> = ({ isOpen, toggle, hash, isPublic }) => {
   };
   const copyHandler = () => {
     const baseUrl = isSandbox
-      ? 'https://rad-sandbox.sandpod.ir'
-      : 'https://rad-services.pod.ir';
-    const isSuccess = copy(`${baseUrl}/api/core/drives/download/${hash}/`);
+      ? `https://podspace.sandpod.ir/api/files`
+      : `https://podspace.pod.ir/api/files`;
+    const isSuccess = copy(`${baseUrl}/${hash}?dl=1`);
     if (isSuccess) toast.success('لینک با موفقیت کپی شد.');
   };
 
@@ -158,6 +162,9 @@ const ShareFile: React.FC<IProps> = ({ isOpen, toggle, hash, isPublic }) => {
       size='lg'
       className={styles['sharefile-wrapper']}
       onClick={(event) => {
+        event.stopPropagation();
+      }}
+      onDoubleClick={(event) => {
         event.stopPropagation();
       }}
     >
@@ -206,6 +213,7 @@ const ShareFile: React.FC<IProps> = ({ isOpen, toggle, hash, isPublic }) => {
                   value={date}
                   className={classNames(getBs()['form-control'])}
                   placeholder='تاریخ انقضا اشتراک گذاری'
+                  min={moment()}
                   onFocus={() => {
                     setTimeout(() => {
                       const el = document.querySelector(
