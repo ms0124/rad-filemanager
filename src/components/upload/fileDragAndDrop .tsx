@@ -181,14 +181,18 @@ const FilesDragAndDrop: FunctionComponent<Props> = ({
       setShowCollapse(false);
   }, [fileListRef.current, progress]);
 
-  const onUpload = (file) => {
+  const onUpload = (file, index) => {
     if (!isOpenCollapse) setIsOpenCollapse(true);
     if (!showCollapse) setShowCollapse(true);
 
     let formData = new FormData();
     setProgress((prevProgress) => ({
       ...prevProgress,
-      [file.name]: { percent: 0, hasError: false, showRemoveButton: true }
+      [`${file.name}_${index}`]: {
+        percent: 0,
+        hasError: false,
+        showRemoveButton: true
+      }
     }));
     fileListRef.current = [...fileListRef.current, file];
     progressRef.current = { ...progressRef.current, [file.name]: 0 };
@@ -217,7 +221,7 @@ const FilesDragAndDrop: FunctionComponent<Props> = ({
       formData,
       false,
       {
-        onUploadProgress: (e) => onUploadProgress(e, file),
+        onUploadProgress: (e) => onUploadProgress(e, file, index),
         signal: controller.signal
       },
       headers
@@ -228,11 +232,12 @@ const FilesDragAndDrop: FunctionComponent<Props> = ({
         const progressComplete = Object.values(progressRef.current).every(
           (item: number) => item >= 100
         );
+
         if (hasError)
           setProgress((prev) => ({
             ...prev,
-            [file.name]: {
-              ...prev[file.name],
+            [`${file.name}_${index}`]: {
+              ...prev[`${file.name}_${index}`],
               hasError: true,
               message: message.join('/\n')
             }
@@ -251,13 +256,13 @@ const FilesDragAndDrop: FunctionComponent<Props> = ({
     // close modal after all
     if (modal.upload) toggleModal({ upload: false, stream: false });
   };
-  const onUploadProgress = (progressEvent, file) => {
+  const onUploadProgress = (progressEvent, file, index) => {
     const { loaded, total } = progressEvent;
 
     let progressPercent = (100 * loaded) / total;
     setProgress((prevProgress) => ({
       ...prevProgress,
-      [file.name]: {
+      [`${file.name}_${index}`]: {
         percent: parseInt(progressPercent.toFixed()),
         hasError: false,
         showRemoveButton: true
@@ -335,21 +340,26 @@ const FilesDragAndDrop: FunctionComponent<Props> = ({
       if (breakUpload(files)) return;
     }
     if (files && files.length) {
+      let index = fileListRef.current.length;
       for (let file of files) {
-        onUpload(file);
+        onUpload(file, index);
+        index++;
       }
     }
   };
 
   const handleOnChangesInputFiles = (e) => {
     const files = e.target.files;
+
     setUploadComplete(false);
     if (files && files.length > 0) {
       if (breakUpload(files)) return;
     }
+    let index = fileListRef.current.length;
     if (files && files.length) {
       for (let file of files) {
-        onUpload(file);
+        onUpload(file, index);
+        index++;
       }
     }
   };
@@ -377,20 +387,26 @@ const FilesDragAndDrop: FunctionComponent<Props> = ({
       const newFileList = Object.values(fileListRef.current).filter(
         (x) => x.name !== name
       );
-      const progressKey = Object.keys(progress).find((x) => x == name);
+      const progressKey = Object.keys(progress).find(
+        (x) => x == `${name}_${index}`
+      );
       if (progressKey) delete progress[progressKey];
 
       // setFileList(newFileList);
       fileListRef.current = newFileList;
       setProgress(progress);
     }, 3000);
-    if (progress[name]) {
+    if (progress[`${name}_${index}`]) {
       setProgress((prevProgress) => ({
         ...prevProgress,
-        [name]: { ...prevProgress[name], showRemoveButton: false }
+        [`${name}_${index}`]: {
+          ...prevProgress[`${name}_${index}`],
+          showRemoveButton: false
+        }
       }));
     }
     controllerRef.current[index].abort();
+    controllerRef.current.splice(index, 1);
   };
 
   const handleClickCheckbox = (e, item, type) => {
@@ -582,9 +598,10 @@ const FilesDragAndDrop: FunctionComponent<Props> = ({
                 return (
                   <Alert
                     style={{
-                      backgroundColor: progress[item.name].hasError
+                      backgroundColor: progress[`${item.name}_${index}`]
+                        ?.hasError
                         ? '#FFF0F0'
-                        : progress[item.name].percent >= 100
+                        : progress[`${item.name}_${index}`]?.percent >= 100
                         ? '#EBF8F2'
                         : '',
                       borderColor: '#f2f2f2'
@@ -597,24 +614,26 @@ const FilesDragAndDrop: FunctionComponent<Props> = ({
                         getBs()['align-items-center']
                       )}
                     >
-                      {progress[item.name].hasError ? (
+                      {progress[`${item.name}_${index}`]?.hasError ? (
                         <FontAwesomeIcon
-                          title={progress[item.name]?.message}
+                          title={progress[`${item.name}_${index}`]?.message}
                           icon={faExclamationTriangle}
                           style={{ color: '#e4a400', height: '22px' }}
                         />
-                      ) : progress[item.name].percent >= 100 ? (
+                      ) : progress[`${item.name}_${index}`]?.percent >= 100 ? (
                         <IconTick style={{ width: '24px' }} />
                       ) : (
                         <div style={{ width: 25, height: 25 }}>
                           <CircularProgressbar
-                            value={progress[item.name].percent}
+                            value={progress[`${item.name}_${index}`]?.percent}
                             styles={buildStyles({
                               textSize: '30px',
                               pathColor: '#000000',
                               textColor: '#000000'
                             })}
-                            text={`${progress[item.name].percent} %`}
+                            text={`${
+                              progress[`${item.name}_${index}`]?.percent
+                            } %`}
                           />
                         </div>
                       )}
@@ -640,7 +659,7 @@ const FilesDragAndDrop: FunctionComponent<Props> = ({
                       </span>
                     </div>
                     <div className={styles['upload-toast__icon-wrapper']}>
-                      {progress[item.name].showRemoveButton && (
+                      {progress[`${item.name}_${index}`]?.showRemoveButton && (
                         <span
                           role='button'
                           onClick={(_) => removeAbort(item.name, index)}
