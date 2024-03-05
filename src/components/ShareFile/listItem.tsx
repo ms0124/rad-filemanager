@@ -1,9 +1,9 @@
 import styles from './style.module.scss';
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import moment from 'moment-jalaali';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUserCircle, faTimesCircle } from '@fortawesome/free-solid-svg-icons';
+import { faUserCircle, faCircleNotch } from '@fortawesome/free-solid-svg-icons';
 import { getBs } from '../../utils/index';
 import classNames from 'classnames';
 
@@ -13,16 +13,21 @@ interface IPprops {
   name: string;
   img: string | undefined;
   date: string | undefined;
-  hash: string;
   deleteShareHandler: (identity: string) => void;
+  isLoading: boolean;
 }
 const ListItem: React.FC<IPprops> = ({
   name,
   img = undefined,
   date = undefined,
-  hash,
-  deleteShareHandler
+  deleteShareHandler,
+  isLoading
 }) => {
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (isLoading == false && loading == true) setLoading(false);
+  }, [isLoading]);
   return (
     <div className={styles['list-wrapper__item']}>
       <div
@@ -51,16 +56,23 @@ const ListItem: React.FC<IPprops> = ({
             {name ? name : 'بدون نام'}
           </div>
           <div className={styles['list-wrapper__date']}>
-            <span>تاریخ انقضا</span>: {" "}
+            <span>تاریخ انقضا</span>:{' '}
             <span>{date ? moment(date).format('jYYYY/jMM/jDD') : ''}</span>
           </div>
         </div>
       </div>
       <div
         className={styles['list-wrapper__icons']}
-        onClick={() => deleteShareHandler(name)}
+        onClick={() => {
+          setLoading(true);
+          deleteShareHandler(name);
+        }}
       >
-        <IconTimsFill style={{ width: 20, height: 20 }} role='button' />
+        {loading ? (
+          <FontAwesomeIcon icon={faCircleNotch} className='fa-spin' />
+        ) : (
+          <IconTimsFill style={{ width: 20, height: 20 }} role='button' />
+        )}
         {/* <FontAwesomeIcon
           icon={faTimesCircle}
           className={styles['list-wrapper__icon-times']}

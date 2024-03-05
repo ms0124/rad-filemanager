@@ -24,9 +24,9 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faPlus,
   faTimes,
-  faCaretDown
+  faCaretDown,
+  faCircleNotch
 } from '@fortawesome/free-solid-svg-icons';
-// import {  } from '@fortawesome/free-regular-svg-icons';
 
 // hooks
 import {
@@ -70,15 +70,17 @@ const ShareFile: React.FC<IProps> = ({ isOpen, toggle, hash, isPublic }) => {
   const [identity, setIdentity] = useState<string>('');
   const [date, setDate] = useState<any>();
   const { isSandbox } = useContext(Context);
-  // const [showPicker, setShowPicker] = useState(false);
-  // const datePickerRef = useRef();
-  // useOnClickOutside(datePickerRef, () => setShowPicker(false));
 
   const [isAccessPublic, setIsAccessPublic] = useState<boolean>(
     isPublic ? true : false
   );
   // const { selectedItems, itemHash } = useContext(Context);
-  const { data: dataShare, isLoading, refetch }: any = useDetailShare(hash);
+  const {
+    data: dataShare,
+    isLoading,
+    refetch,
+    isFetching
+  }: any = useDetailShare(hash);
   const addShare = useAddShare();
   const deleteShare = useDeleteShare();
 
@@ -235,8 +237,12 @@ const ShareFile: React.FC<IProps> = ({ isOpen, toggle, hash, isPublic }) => {
                 tag={'a'}
                 className={classNames(styles['sharefile-wrapper__button'])}
                 onClick={addShareHandller}
+                disabled={!identity || !date}
               >
-                <FontAwesomeIcon icon={faPlus} />
+                <FontAwesomeIcon
+                  icon={addShare.isLoading ? faCircleNotch : faPlus}
+                  className={classNames({ 'fa-spin': addShare.isLoading })}
+                />
               </Button>
             </div>
           </Col>
@@ -268,23 +274,29 @@ const ShareFile: React.FC<IProps> = ({ isOpen, toggle, hash, isPublic }) => {
                         styles['list-wrapper']
                       )}
                     >
-                      {dataShare?.result[0]?.map((item, index) => (
-                        <ListGroupItem
-                          cssModule={getBs()}
-                          className={classNames(
-                            getBs()['border-left-0'],
-                            getBs()['border-right-0']
-                          )}
-                        >
-                          <ListItem
-                            name={item?.person?.username}
-                            img={item?.person?.avatar}
-                            date={item?.expiration}
-                            hash={item?.hash}
-                            deleteShareHandler={deleteShareHandler}
-                          />
-                        </ListGroupItem>
-                      ))}
+                      {dataShare?.result[0]?.map((item, index) => {
+                        if (item.type === 'PUBLIC') {
+                          return null;
+                        }
+                        return (
+                          <ListGroupItem
+                            key={index}
+                            cssModule={getBs()}
+                            className={classNames(
+                              getBs()['border-left-0'],
+                              getBs()['border-right-0']
+                            )}
+                          >
+                            <ListItem
+                              name={item?.person?.username}
+                              img={item?.person?.avatar}
+                              date={item?.expiration}
+                              deleteShareHandler={deleteShareHandler}
+                              isLoading={deleteShare.isLoading}
+                            />
+                          </ListGroupItem>
+                        );
+                      })}
                     </ListGroup>
                   </div>
                 ) : (
@@ -307,12 +319,27 @@ const ShareFile: React.FC<IProps> = ({ isOpen, toggle, hash, isPublic }) => {
                 cssModule={getBs()}
                 data-toggle='dropdown'
                 tag={'span'}
+                className={classNames(
+                  styles['sharefile-wrapper__dropdown-access']
+                )}
               >
                 {isAccessPublic ? 'دسترسی عمومی' : 'دسترسی محدود'}
-                <FontAwesomeIcon icon={faCaretDown} />
+                <FontAwesomeIcon
+                  icon={faCaretDown}
+                  className={classNames(getBs()['pr-2'], styles['sharefile-wrapper__dropdown-icon'])}
+
+                />
               </DropdownToggle>
-              <DropdownMenu cssModule={getBs()} right>
-                <DropdownItem cssModule={getBs()} onClick={accessHandler}>
+              <DropdownMenu
+                cssModule={getBs()}
+                right
+                style={{ padding: 0, minWidth: '120px', textAlign: 'center' }}
+              >
+                <DropdownItem
+                  cssModule={getBs()}
+                  onClick={accessHandler}
+                  style={{ padding: 0 }}
+                >
                   {!isAccessPublic ? 'دسترسی عمومی' : 'دسترسی محدود'}
                 </DropdownItem>
               </DropdownMenu>

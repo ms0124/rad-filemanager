@@ -34,7 +34,8 @@ const App: React.FunctionComponent<IProps> = forwardRef(
       currentHash,
       currentTab,
       selectedItems,
-      setSelectedItems
+      setSelectedItems,
+      setOperationType: setActionType
     } = useContext(Context);
     const [isOpen, setIsopen] = useState<boolean>(false);
     const [operationType, setOperationType] = useState<number>();
@@ -85,12 +86,12 @@ const App: React.FunctionComponent<IProps> = forwardRef(
     useEffect(() => {
       const elementHtml = document.querySelector(`${query}`);
       // const filemanagerContainer = document.querySelector('#filemanager-container')
-      
+
       elementHtml?.addEventListener('contextmenu', showContextMenu, {
         capture: true
       });
       document?.body?.addEventListener('click', hideContextMenu);
-      
+
       return () => {
         elementHtml?.removeEventListener('contextmenu', showContextMenu, {
           capture: true
@@ -159,7 +160,11 @@ const App: React.FunctionComponent<IProps> = forwardRef(
               style={{ top: position.y, left: position.x }}
               className={styles['context-menu']}
             >
-              <Nav className={styles['context-menu__wrapper']} cssModule={getBs()} vertical>
+              <Nav
+                className={styles['context-menu__wrapper']}
+                cssModule={getBs()}
+                vertical
+              >
                 <CheckPermissions permissions={['folder_create']}>
                   <NavItem
                     cssModule={getBs()}
@@ -174,8 +179,11 @@ const App: React.FunctionComponent<IProps> = forwardRef(
                     </span>
                   </NavItem>
                 </CheckPermissions>
-                {itemHash ||
-                (Array.isArray(selectedItems) && selectedItems.length > 0) ? (
+                {console.log(actionType, itemHash, selectedItems)}
+                {actionType != null &&
+                (itemHash ||
+                  (Array.isArray(selectedItems) &&
+                    selectedItems.length > 0)) ? (
                   <CheckPermissions permissions={['copy', 'cut']}>
                     <NavItem
                       cssModule={getBs()}
