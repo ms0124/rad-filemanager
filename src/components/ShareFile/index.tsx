@@ -69,7 +69,7 @@ const ShareFile: React.FC<IProps> = ({ isOpen, toggle, hash, isPublic }) => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [identity, setIdentity] = useState<string>('');
   const [date, setDate] = useState<any>();
-  const { isSandbox } = useContext(Context);
+  const { isSandbox, currentHash } = useContext(Context);
 
   const [isAccessPublic, setIsAccessPublic] = useState<boolean>(
     isPublic ? true : false
@@ -84,8 +84,8 @@ const ShareFile: React.FC<IProps> = ({ isOpen, toggle, hash, isPublic }) => {
   const addShare = useAddShare();
   const deleteShare = useDeleteShare();
 
-  const addPublic = useAddPublic();
-  const removePublic = useRemovePublic();
+  const addPublic = useAddPublic(currentHash);
+  const removePublic = useRemovePublic(currentHash);
 
   const accessHandler = () => {
     setIsAccessPublic((prevAccess) => !prevAccess);
@@ -326,8 +326,10 @@ const ShareFile: React.FC<IProps> = ({ isOpen, toggle, hash, isPublic }) => {
                 {isAccessPublic ? 'دسترسی عمومی' : 'دسترسی محدود'}
                 <FontAwesomeIcon
                   icon={faCaretDown}
-                  className={classNames(getBs()['pr-2'], styles['sharefile-wrapper__dropdown-icon'])}
-
+                  className={classNames(
+                    getBs()['pr-2'],
+                    styles['sharefile-wrapper__dropdown-icon']
+                  )}
                 />
               </DropdownToggle>
               <DropdownMenu

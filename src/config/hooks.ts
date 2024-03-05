@@ -277,22 +277,26 @@ export const useDeleteShare = () => {
   });
 };
 
-export const useAddPublic = () => {
+export const useAddPublic = (folderHash) => {
   return useMutation({
     mutationFn: (variables: { hash: string; params: object }) =>
       api.addPublic({ ...variables }),
     onSuccess: (_, variables) => {
-      console.log('success');
+      queryClient.refetchQueries({
+        queryKey: ['folderContentChildren', folderHash]
+      });
     }
   });
 };
 
-export const useRemovePublic = () => {
+export const useRemovePublic = (folderHash) => {
   return useMutation({
     mutationFn: (variables: { hash: string }) =>
       api.removePublic({ ...variables }),
     onSuccess: (_, variables) => {
-      console.log('success');
+      queryClient.refetchQueries({
+        queryKey: ['folderContentChildren', folderHash]
+      });
     }
   });
 };
