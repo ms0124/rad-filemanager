@@ -182,7 +182,7 @@ export const detailShare = async ({ hash }: any) => {
 export const addShare = async ({ hash, identity, params }: any) => {
   return await httpRequest(
     `${namespace}/${hash}/share/user/${identity}`,
-    params,
+    { message: successMessage, ...params },
     'POST'
   );
 };
@@ -190,7 +190,7 @@ export const addShare = async ({ hash, identity, params }: any) => {
 export const deleteShare = async ({ hash, identity, params }: any) => {
   return await httpRequest(
     `${namespace}/${hash}/share/user/${identity}`,
-    params,
+    { message: successMessage, ...params },
     // {},
     'DELETE'
   );
