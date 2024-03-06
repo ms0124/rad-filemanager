@@ -121,6 +121,7 @@ const Tab: FunctionComponent<Props> = () => {
         </NavItem>
       </Nav>
       <SortingMenu />
+      <BreadCrumb />
       <TabContent
         activeTab={currentTab}
         style={{ marginTop: 0, overflow: 'scroll', border: 'none' }}
@@ -157,7 +158,6 @@ const Tab: FunctionComponent<Props> = () => {
           {currentTab === TabTypes.SearchList ? <SearchTab /> : ''}
         </TabPane>
       </TabContent>
-      <BreadCrumb />
       <Selected />
     </div>
   );

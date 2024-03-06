@@ -165,7 +165,7 @@ const SortingMenu: FunctionComponent = () => {
 
   return (
     <div className={classNames(styles['sorting-menu'])}>
-      <Nav cssModule={getBs()} style={{ alignItems: 'center' }}>
+      <Nav cssModule={getBs()} style={{ alignItems: 'center', paddingRight:0 }}>
         <NavItem cssModule={getBs()}>
           <FontAwesomeIcon icon={faSort} />
           <span
