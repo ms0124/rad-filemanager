@@ -91,7 +91,7 @@ const index = () => {
         </span>
       </div>
       {/* <div className={styles['bread-crumb__copyright']}>copy right</div> */}
-      {breadCrumbList.length > 0 ? (
+      {currentTab === TabTypes.FileList && breadCrumbList.length > 0 ? (
         <div
           onClick={onBackClickHandler}
           className={classnames(styles['bread-crumb__back'])}
