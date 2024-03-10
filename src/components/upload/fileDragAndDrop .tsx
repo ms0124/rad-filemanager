@@ -216,7 +216,10 @@ const FilesDragAndDrop: FunctionComponent<Props> = ({
     }
 
     const controller = new AbortController();
-    controllerRef.current.push(controller);
+    controllerRef.current = {
+      ...controllerRef.current,
+      [`${file.name}_${index}`]: controller
+    };
     upload(
       formData,
       false,
@@ -385,16 +388,31 @@ const FilesDragAndDrop: FunctionComponent<Props> = ({
   const removeAbort = (name, index) => {
     setTimeout(() => {
       const newFileList = Object.values(fileListRef.current).filter(
-        (x) => x.name !== name
+        (item, currentIndex) => {
+          if (!progress[`${item.name}_${currentIndex}`]) {
+            const progresskey = Object.keys(progress).find((x) =>
+              x.startsWith(item.name)
+            );
+            const splitedkey = progresskey?.split('_');
+            const numberIndex = splitedkey
+              ? parseInt(splitedkey[splitedkey?.length - 1])
+              : 1;
+              currentIndex = numberIndex;
+          }
+          
+          return `${item.name}_${currentIndex}` !== `${name}_${index}`;
+        }
       );
+
       const progressKey = Object.keys(progress).find(
         (x) => x == `${name}_${index}`
       );
-      if (progressKey) delete progress[progressKey];
+      const tmpProgress = { ...progress };
+      if (progressKey) delete tmpProgress[progressKey];
 
-      // setFileList(newFileList);
       fileListRef.current = newFileList;
-      setProgress(progress);
+
+      setProgress(tmpProgress);
     }, 3000);
     if (progress[`${name}_${index}`]) {
       setProgress((prevProgress) => ({
@@ -405,8 +423,9 @@ const FilesDragAndDrop: FunctionComponent<Props> = ({
         }
       }));
     }
-    controllerRef.current[index].abort();
-    controllerRef.current.splice(index, 1);
+
+    controllerRef.current[`${name}_${index}`].abort();
+    delete controllerRef.current[`${name}_${index}`];
   };
 
   const handleClickCheckbox = (e, item, type) => {
@@ -595,6 +614,16 @@ const FilesDragAndDrop: FunctionComponent<Props> = ({
             <div className={styles['upload-notification__divider']}></div>
             {fileListRef.current &&
               Object.values(fileListRef.current).map((item, index) => {
+                if (!progress[`${item.name}_${index}`]) {
+                  const progresskey = Object.keys(progress).find((x) =>
+                    x.startsWith(item.name)
+                  );
+                  const splitedkey = progresskey?.split('_');
+                  const numberIndex = splitedkey
+                    ? parseInt(splitedkey[splitedkey?.length - 1])
+                    : 1;
+                  index = numberIndex;
+                }
                 return (
                   <Alert
                     style={{
