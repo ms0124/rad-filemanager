@@ -143,7 +143,7 @@ const Tab: FunctionComponent<Props> = () => {
           style={{ height: config?.height }}
         >
           {currentTab === TabTypes.ArchiveList ? (
-            <CheckPermissions permissions={['archive_list']} showMessage>
+            <CheckPermissions permissions={['archive_lists']} showMessage>
               <ArchiveTab />
             </CheckPermissions>
           ) : (
