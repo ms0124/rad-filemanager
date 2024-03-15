@@ -37,7 +37,8 @@ import {
   IconEdit,
   IconTrash,
   IconDownload,
-  IconCircleInfo
+  IconCircleInfo,
+  IconShare
 } from '../../utils/icons';
 import ShareFile from '../../components/ShareFile/index';
 
@@ -303,7 +304,7 @@ const MenuTools: React.FunctionComponent<IProps> = forwardRef(
                   <MenuItem
                     clickHandler={() => clickHandler(OperationTypes.Share)}
                     title='اشتراک گذاری فایل'
-                    icon={<IconTrash />}
+                    icon={<IconShare style={{ width: '18px', height: '16px' }}  />}
                     enTitle='share'
                     disabled={isShowCheckbox}
                   />

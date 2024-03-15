@@ -1,5 +1,5 @@
 .bread-crumb {
-  height: 30px;
+  height: 40px;
   background-color: #ffffff;
   color: #b5b5b5;
   display: flex;
@@ -26,9 +26,17 @@
       display: inline-flex;
       align-items: center;
     }
-    &:hover {
-      color: #ff9b3f;
+    &--icon {
+      color: #b5b5b5 !important;
+    }
+    &--title {
       cursor: pointer;
+      &:hover {
+        color: #ff9b3f;
+      }
+    }
+    &:last-child {
+      color: #ff9b3f;
     }
   }
 

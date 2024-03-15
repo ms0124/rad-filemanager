@@ -13,6 +13,7 @@ import tick from '../assets/svg/tick.svg';
 import multiSelect from '../assets/svg/multi_select.svg';
 import stream from '../assets/svg/stream.svg';
 import tims_fill from '../assets/svg/tims_fill.svg';
+import share from '../assets/svg/share.svg';
 
 const IconBuilder = ({ src, style = {}, ...props }) => {
   return <img src={src} style={style} {...props} />;
@@ -81,3 +82,8 @@ export const IconMultiSelect = ({ style = {} }) => {
 export const IconTimsFill = ({ style = {}, ...props }) => {
   return <IconBuilder src={tims_fill} style={style} {...props} />;
 };
+
+export const IconShare = ({ style = {}, ...props }) => {
+  return <IconBuilder src={share} style={style} {...props} />;
+};
+

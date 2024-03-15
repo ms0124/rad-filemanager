@@ -49,7 +49,10 @@ const index = () => {
       <div className={classnames(styles['bread-crumb__wrapper-item'])}>
         {/* <span className={styles['bread-crumb__your-path']}>مسیر شما: </span> */}
         <span
-          className={classnames(styles['bread-crumb__item'])}
+          className={classnames(
+            styles['bread-crumb__item'],
+            styles['bread-crumb__item--title']
+          )}
           onClick={() => {
             // for after search with click go to file tab
             if (TabTypes.SearchList) setSearchText('');
@@ -83,9 +86,14 @@ const index = () => {
             >
               <FontAwesomeIcon
                 icon={faAngleLeft}
-                className={utilStyles['px-2']}
+                className={classnames(
+                  utilStyles['px-2'],
+                  styles['bread-crumb__item--icon']
+                )}
               />
-              <span>{item?.name}</span>
+              <span className={styles['bread-crumb__item--title']}>
+                {item?.name}
+              </span>
             </span>
           ))}
         </span>
