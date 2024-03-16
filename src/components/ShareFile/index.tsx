@@ -260,7 +260,7 @@ const ShareFile: React.FC<IProps> = ({ isOpen, toggle, hash, isPublic }) => {
               </div>
             ) : (
               <>
-                {dataShare?.result[0]?.length > 0 ? (
+                {dataShare?.result?.length > 0 ? (
                   <div
                     className={classNames(
                       getBs()['border'],
@@ -274,7 +274,7 @@ const ShareFile: React.FC<IProps> = ({ isOpen, toggle, hash, isPublic }) => {
                         styles['list-wrapper']
                       )}
                     >
-                      {dataShare?.result[0]?.map((item, index) => {
+                      {dataShare?.result.map((item, index) => {
                         if (item.type === 'PUBLIC') {
                           return null;
                         }
