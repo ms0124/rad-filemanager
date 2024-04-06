@@ -20,6 +20,7 @@ interface Props {
   onSelect?: any;
   isSandbox: boolean;
   validExtension?: string[];
+  dontShowArchive?: boolean;
 }
 
 const FileManagerReact = ({ ...props }: Props) => {
@@ -37,12 +38,17 @@ const FileManagerReact = ({ ...props }: Props) => {
   const [selectedItems, setSelectedItems] = useState<[]>([]);
   const [orderBy, setOrderBy] = useState<string>(OrderByTypes.Updated);
   const [desc, setDesc] = useState<boolean>(true);
-  const [validExtension, setValidExtension] = useState<string[]>(props.validExtension ? props.validExtension : validExtensionList);
+  const [validExtension, setValidExtension] = useState<string[]>(
+    props.validExtension ? props.validExtension : validExtensionList
+  );
   const [config, setConfig] = useState<any>(props.config);
   const [header, setHeader] = useState<any>({
     clientId: props.clientId,
     accessToken: props.accessToken
   });
+  const [dontShowArchive, setDontShowArchive] = useState<boolean>(
+    props.dontShowArchive ? false : true
+  );
 
   const handleVisibilitychange = () => {
     if (document.hidden) {
@@ -101,7 +107,8 @@ const FileManagerReact = ({ ...props }: Props) => {
     setOrderBy,
     desc,
     setDesc,
-    validExtension
+    validExtension,
+    dontShowArchive
   };
   return (
     <Context.Provider value={defaultValues}>
@@ -128,7 +135,9 @@ function FileManager(props: any, elementId: any) {
   const [selectedItems, setSelectedItems] = useState<[]>([]);
   const [orderBy, setOrderBy] = useState<string>(OrderByTypes.Updated);
   const [desc, setDesc] = useState<boolean>(true);
-  const [validExtension, setValidExtension] = useState<string[]>(props.validExtension ? props.validExtension : validExtensionList);
+  const [validExtension, setValidExtension] = useState<string[]>(
+    props.validExtension ? props.validExtension : validExtensionList
+  );
 
   const [config, setConfig] = useState<any>(props.config);
   const [header, setHeader] = useState<any>({
@@ -137,11 +146,14 @@ function FileManager(props: any, elementId: any) {
   });
   const [onSelect, setOnSelect] = useState(() => props.onSelect);
   const [isSandbox, setIsSandbox] = useState<boolean>(props?.isSandbox);
+  const [dontShowArchive, setDontShowArchive] = useState<boolean>(
+    props.dontShowArchive ? false : true
+  );
 
   useEffect(() => {
     setHeader({ clientId: props.clientId, accessToken: props.accessToken });
   }, [props.accessToken]);
-  
+
   useEffect(() => {
     setConfig(props.config);
   }, [props?.config, props?.config?.height]);
@@ -174,7 +186,8 @@ function FileManager(props: any, elementId: any) {
     setOrderBy,
     desc,
     setDesc,
-    validExtension
+    validExtension,
+    dontShowArchive
   };
   ReactDOM.render(
     <Context.Provider value={defaultValues}>

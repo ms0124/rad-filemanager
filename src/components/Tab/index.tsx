@@ -31,7 +31,8 @@ interface Props {}
 const Tab: FunctionComponent<Props> = () => {
   // const [activeTab, setActiveTab] = useState(TabTypes.FileList);
 
-  const { config, setCurrentTab, currentTab, searchText } = useContext(Context);
+  const { config, setCurrentTab, currentTab, searchText, dontShowArchive } =
+    useContext(Context);
 
   // const total = useRef<{ archive: number; file: number }>({archive:0, file:0});
   const total = useRef<number>(0);
@@ -85,30 +86,34 @@ const Tab: FunctionComponent<Props> = () => {
             فایل ها
           </NavLink>
         </NavItem>
-        <NavItem
-          cssModule={getBs()}
-          className={`${styles['nav-wrapper__tab-item']} ${styles['nav-wrapper__item']}`}
-        >
-          <NavLink
-            // disabled={activeTab === TabTypes.SearchList}
-            active={currentTab === TabTypes.ArchiveList}
-            onClick={() => handleTab(TabTypes.ArchiveList)}
-            className={classNames(
-              styles['nav-wrapper__link'],
-              {
-                [styles['nav-wrapper__tab-item--active']]:
-                  currentTab === TabTypes.ArchiveList
-              },
-              {
-                [styles['nav-wrapper__tab-item--disabeld']]:
-                  currentTab === TabTypes.SearchList
-              }
-            )}
+        {dontShowArchive ? (
+          <NavItem
             cssModule={getBs()}
+            className={`${styles['nav-wrapper__tab-item']} ${styles['nav-wrapper__item']}`}
           >
-            آرشیو
-          </NavLink>
-        </NavItem>
+            <NavLink
+              // disabled={activeTab === TabTypes.SearchList}
+              active={currentTab === TabTypes.ArchiveList}
+              onClick={() => handleTab(TabTypes.ArchiveList)}
+              className={classNames(
+                styles['nav-wrapper__link'],
+                {
+                  [styles['nav-wrapper__tab-item--active']]:
+                    currentTab === TabTypes.ArchiveList
+                },
+                {
+                  [styles['nav-wrapper__tab-item--disabeld']]:
+                    currentTab === TabTypes.SearchList
+                }
+              )}
+              cssModule={getBs()}
+            >
+              آرشیو
+            </NavLink>
+          </NavItem>
+        ) : (
+          ''
+        )}
         <NavItem
           className={`${styles['nav-wrapper__container']} ${styles['nav-wrapper__item']}`}
           cssModule={getBs()}
