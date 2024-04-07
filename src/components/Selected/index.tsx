@@ -11,10 +11,18 @@ import DefaultThumnail from '../StateColumnList/defaultThumbnail/index';
 import folder from '../StateColumnList/folder.png';
 
 const Selected = () => {
-  const { selectedItems, setSelectedItems, isSandbox } = useContext(Context);
+  const { selectedItems, setSelectedItems, isSandbox, onSelect } =
+    useContext(Context);
+
   const handleRemoveItem = (item) => {
     const filteredItems = selectedItems.filter((x) => x.hash !== item.hash);
     setSelectedItems(filteredItems);
+    if (onSelect) {
+      const withOutFolders = filteredItems.filter((x) =>
+        x.type === FolderTypes.folder ? false : true
+      );
+      onSelect(withOutFolders);
+    }
   };
   if (!selectedItems.length) return null;
   return (
@@ -38,7 +46,7 @@ const Selected = () => {
               )
             ) : (
               <span className={styles['selected-wrapper__folder']}>
-                <img  src={folder} />
+                <img src={folder} />
               </span>
             )}
             <span className={classNames(styles['selected-wrapper__name'])}>
