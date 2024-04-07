@@ -190,6 +190,7 @@ const Row: FunctionComponent<IProps> = ({ pages = [], setHash }) => {
                   )}
                 </td>
                 <td
+                  width={"30%"}
                   className={`${utilStyles['text-end']}`}
                   scope='row'
                   onClick={(e) => {
@@ -208,7 +209,7 @@ const Row: FunctionComponent<IProps> = ({ pages = [], setHash }) => {
                   }}
                 >
                   <span style={{ direction: 'ltr', unicodeBidi: 'isolate' }}>
-                    {`${brifStr(item?.name)}${
+                    {`${brifStr(item?.name, 50)}${
                       item?.extension ? '.' + item.extension.toLowerCase() : ''
                     }`}
                   </span>
