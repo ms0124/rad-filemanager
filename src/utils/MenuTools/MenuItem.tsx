@@ -42,7 +42,11 @@ const MenuItem: React.FunctionComponent<IProps> = ({
         className={`${styles['dropdown-menu-wrapper__item']}`}
         style={
           disabled
-            ? { cursor: 'not-allowed', backgroundColor: 'transparent' }
+            ? {
+                cursor: 'not-allowed',
+                backgroundColor: 'transparent',
+                opacity: 0.5
+              }
             : {}
         }
       >
