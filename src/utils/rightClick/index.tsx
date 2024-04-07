@@ -16,7 +16,7 @@ import Modal from './Modal';
 import { Context } from '../../store/index';
 import { useCopy, useCut, useCopyMulti, useCutMulti } from '../../config/hooks';
 import CheckPermissions from '../../components/CheckPermissions';
-import { getBs } from '../../utils/index';
+import { Loading, getBs } from '../../utils/index';
 import { IconFolderPlus, IconPaste } from '../icons';
 
 interface IProps {
@@ -106,29 +106,29 @@ const App: React.FunctionComponent<IProps> = forwardRef(
           toggle(OperationTypes.NewFolder);
           break;
         case OperationTypes.Paste:
-          if (OperationTypes.Copy === actionType && selectedItems.length > 0)
+          if (OperationTypes.Copy === actionType && selectedItems.length > 0) {
             // multi copy
+            setSelectedItems([]);
             copyMulti
               .mutateAsync({
                 hashes: selectedItems.map((x) => x.hash),
                 destFolderHash: currentHash
               })
-              .finally(() => {
-                setSelectedItems([]);
-              });
+              .finally(() => {});
+          }
           if (OperationTypes.Copy === actionType && selectedItems.length === 0)
             // one item copy
             copy.mutateAsync({ hash: itemHash, destFolderHash: currentHash });
-          if (OperationTypes.Cut === actionType && selectedItems.length > 0)
+          if (OperationTypes.Cut === actionType && selectedItems.length > 0) {
             // multi cut
+            setSelectedItems([]);
             cutMulti
               .mutateAsync({
                 hashes: selectedItems.map((x) => x.hash),
                 destFolderHash: currentHash
               })
-              .finally(() => {
-                setSelectedItems([]);
-              });
+              .finally(() => {});
+          }
           if (OperationTypes.Cut === actionType && selectedItems.length === 0)
             // one item cut
             cut.mutateAsync({ hash: itemHash, destFolderHash: currentHash });
@@ -207,6 +207,14 @@ const App: React.FunctionComponent<IProps> = forwardRef(
               </Nav>
             </div>
           </CheckPermissions>
+        )}
+        {copy.isLoading ||
+        copyMulti.isLoading ||
+        cut.isLoading ||
+        cutMulti.isLoading ? (
+          <Loading wholePage />
+        ) : (
+          ''
         )}
       </React.Fragment>
     );

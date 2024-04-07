@@ -40,24 +40,28 @@ const Row: FunctionComponent<IProps> = ({ pages = [], setHash }) => {
   const slectedRef = useRef<(HTMLDivElement | null)[]>([]);
   const contextMenuRef: any = useRef<[]>([]);
 
-  const handleSelectItem = (item, multiSelect=true) => {
-    const isValid = validExtension.find(x => x === item?.extension || (!item.extension && x === 'dir' && item.type === FolderTypes.folder))
-    if (!isValid) return; 
+  const handleSelectItem = (item, multiSelect = true) => {
+    const isValid = validExtension.find(
+      (x) =>
+        x === item?.extension ||
+        (!item.extension && x === 'dir' && item.type === FolderTypes.folder)
+    );
+    if (!isValid) return;
     const itemFinded = selectedItems.find((x) => x?.hash === item.hash);
     let newSelectedArray: any = [];
-    
+
     if (itemFinded) {
       // item finded
       newSelectedArray = selectedItems.filter((x) => x.hash !== item.hash);
       setSelectedItems(newSelectedArray);
-    } else if(multiSelect || ( selectedItems.length === 0 && !multiSelect)) {
+    } else if (multiSelect || (selectedItems.length === 0 && !multiSelect)) {
       // can't find item & add item
       newSelectedArray = [...selectedItems, item];
       setSelectedItems(newSelectedArray);
-    } else if (!multiSelect && selectedItems.length==1) {
+    } else if (!multiSelect && selectedItems.length == 1) {
       setSelectedItems([item]);
     }
-    
+
     if (onSelect) {
       const withOutFolders = newSelectedArray.filter((x) =>
         x.type === FolderTypes.folder ? false : true
@@ -102,7 +106,8 @@ const Row: FunctionComponent<IProps> = ({ pages = [], setHash }) => {
                   (x) => x.hash === item?.hash
                 )
                   ? 'cornflowerblue'
-                  : '',  cursor: item?.extension? "pointer": "auto"
+                  : '',
+                cursor: item?.extension ? 'pointer' : 'auto'
               }}
               ref={(ref) => (slectedRef.current[index] = ref)}
             >
@@ -135,7 +140,15 @@ const Row: FunctionComponent<IProps> = ({ pages = [], setHash }) => {
                   />
                 )}
               </td>
-              <td className={styles['thumnail-wrraper']}>
+              <td
+                onDoubleClick={() => {
+                  if (TabTypes.SearchList) {
+                    setSearchText('');
+                  }
+                  item?.extension ? null : setHash(item?.hash);
+                }}
+                className={styles['thumnail-wrraper']}
+              >
                 {item?.type != FolderTypes.folder ? (
                   item?.thumbnail &&
                   item?.thumbnail.startsWith('THUMBNAIL_EXIST') ? (
@@ -162,7 +175,7 @@ const Row: FunctionComponent<IProps> = ({ pages = [], setHash }) => {
                   if (item?.type === FolderTypes.folder) return; // for folder dont select
                   if (!item?.isPublic) return; //don't select private items
                   // if multi select is enable ==> prevent one select work
-                  handleSelectItem(item, isShowCheckbox)
+                  handleSelectItem(item, isShowCheckbox);
                 }}
                 role='button'
                 onDoubleClick={() => {
@@ -190,7 +203,7 @@ const Row: FunctionComponent<IProps> = ({ pages = [], setHash }) => {
               </td>
               <td
                 className={`${styles['dir-ltr']} ${utilStyles['text-center']}`}
-              > 
+              >
                 {item?.type === FolderTypes.folder
                   ? '-'
                   : formatBytes(item?.size)}
