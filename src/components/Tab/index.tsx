@@ -115,7 +115,7 @@ const Tab: FunctionComponent<Props> = () => {
           ''
         )}
         <NavItem
-          className={`${styles['nav-wrapper__container']} ${styles['nav-wrapper__item']}`}
+          className={classNames(styles['nav-wrapper__container'])}
           cssModule={getBs()}
         >
           <Search />
