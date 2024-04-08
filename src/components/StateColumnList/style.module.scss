@@ -124,6 +124,10 @@
   .dir-ltr{
     direction: ltr !important;
   }
+  &__checkbox{
+    margin-right: 10px;
+  }
+
   td {
     vertical-align: baseline;
     padding: 4px ;

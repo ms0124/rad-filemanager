@@ -6,6 +6,7 @@ import { Table } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faKey, faGlobe } from '@fortawesome/free-solid-svg-icons';
 import moment from 'moment-jalaali';
+import classnames from "classnames"
 
 import {
   formatBytes,
@@ -158,7 +159,7 @@ const Row: FunctionComponent<IProps> = ({ pages = [], setHash }) => {
                       checked={
                         !!selectedItems.find((x) => x.hash === item.hash)
                       }
-                      // className={classnames(styles['col__checkbox'])}
+                      className={classnames(styles['table-wrapper__checkbox'])}
                     />
                   )}
                 </td>
@@ -176,7 +177,7 @@ const Row: FunctionComponent<IProps> = ({ pages = [], setHash }) => {
                     item?.thumbnail.startsWith('THUMBNAIL_EXIST') ? (
                       <img src={getThumbnailUrl(item?.hash, isSandbox)} />
                     ) : item ? (
-                      <DefaultThumnail item={item} />
+                      <DefaultThumnail size='2x' item={item} />
                     ) : (
                       ''
                     )
