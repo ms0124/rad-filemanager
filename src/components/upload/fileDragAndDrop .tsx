@@ -191,7 +191,8 @@ const FilesDragAndDrop: FunctionComponent<Props> = ({
       [`${file.name}_${index}`]: {
         percent: 0,
         hasError: false,
-        showRemoveButton: true
+        showRemoveButton: true,
+        completeSuccess: false
       }
     }));
     fileListRef.current = [...fileListRef.current, file];
@@ -236,15 +237,27 @@ const FilesDragAndDrop: FunctionComponent<Props> = ({
           (item: number) => item >= 100
         );
 
-        if (hasError)
+        if (hasError) {
           setProgress((prev) => ({
             ...prev,
             [`${file.name}_${index}`]: {
               ...prev[`${file.name}_${index}`],
               hasError: true,
-              message: message.join('/\n')
+              message: message.join('/\n'),
+              completeSuccess: false
             }
           }));
+        } else {
+          setProgress((prev) => ({
+            ...prev,
+            [`${file.name}_${index}`]: {
+              ...prev[`${file.name}_${index}`],
+              hasError: false,
+              message: '',
+              completeSuccess: true
+            }
+          }));
+        }
         if (progressComplete) {
           // for call file list again
           setUploadComplete(true);
@@ -268,7 +281,8 @@ const FilesDragAndDrop: FunctionComponent<Props> = ({
       [`${file.name}_${index}`]: {
         percent: parseInt(progressPercent.toFixed()),
         hasError: false,
-        showRemoveButton: true
+        showRemoveButton: true,
+        completeSuccess: false
       }
     }));
     progressRef.current = {
@@ -371,13 +385,15 @@ const FilesDragAndDrop: FunctionComponent<Props> = ({
     setShowCollapse((prevShowCollapse) => !prevShowCollapse);
     let newProgress = { ...progress };
     let newFileList = fileListRef.current;
-    
+
     Object.keys(progress).forEach((name) => {
       if (progress[name].percent >= 100) {
         delete newProgress[name];
         // just work for 0-10 **** just work for 10 file upload
-        const realName = name.slice(0, -2)
-        newFileList = Object.values(newFileList).filter((x, index) => x.name !== realName);
+        const realName = name.slice(0, -2);
+        newFileList = Object.values(newFileList).filter(
+          (x, index) => x.name !== realName
+        );
       }
     });
     fileListRef.current = newFileList;
@@ -399,9 +415,9 @@ const FilesDragAndDrop: FunctionComponent<Props> = ({
             const numberIndex = splitedkey
               ? parseInt(splitedkey[splitedkey?.length - 1])
               : 1;
-              currentIndex = numberIndex;
+            currentIndex = numberIndex;
           }
-          
+
           return `${item.name}_${currentIndex}` !== `${name}_${index}`;
         }
       );
@@ -632,7 +648,8 @@ const FilesDragAndDrop: FunctionComponent<Props> = ({
                       backgroundColor: progress[`${item.name}_${index}`]
                         ?.hasError
                         ? '#FFF0F0'
-                        : progress[`${item.name}_${index}`]?.percent >= 100
+                        : progress[`${item.name}_${index}`]?.percent >= 100 &&
+                          progress[`${item.name}_${index}`]?.completeSuccess
                         ? '#EBF8F2'
                         : '',
                       borderColor: '#f2f2f2'
@@ -651,7 +668,8 @@ const FilesDragAndDrop: FunctionComponent<Props> = ({
                           icon={faExclamationTriangle}
                           style={{ color: '#e4a400', height: '22px' }}
                         />
-                      ) : progress[`${item.name}_${index}`]?.percent >= 100 ? (
+                      ) : progress[`${item.name}_${index}`]?.percent >= 100 &&
+                        progress[`${item.name}_${index}`]?.completeSuccess ? (
                         <IconTick style={{ width: '24px' }} />
                       ) : (
                         <div style={{ width: 25, height: 25 }}>
