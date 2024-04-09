@@ -371,11 +371,13 @@ const FilesDragAndDrop: FunctionComponent<Props> = ({
     setShowCollapse((prevShowCollapse) => !prevShowCollapse);
     let newProgress = { ...progress };
     let newFileList = fileListRef.current;
+    
     Object.keys(progress).forEach((name) => {
-      // if (progress[name].hasError === false) {
       if (progress[name].percent >= 100) {
         delete newProgress[name];
-        newFileList = Object.values(newFileList).filter((x) => x.name !== name);
+        // just work for 0-10 **** just work for 10 file upload
+        const realName = name.slice(0, -2)
+        newFileList = Object.values(newFileList).filter((x, index) => x.name !== realName);
       }
     });
     fileListRef.current = newFileList;
