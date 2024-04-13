@@ -644,6 +644,7 @@ const FilesDragAndDrop: FunctionComponent<Props> = ({
                 }
                 return (
                   <Alert
+                  color="light"
                     style={{
                       backgroundColor: progress[`${item.name}_${index}`]
                         ?.hasError

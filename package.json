@@ -1,13 +1,13 @@
 {
   "name": "rad-filemanager",
-  "version": "0.0.56",
+  "version": "0.0.57",
   "description": "rad filemanager",
   "author": "Moslem Seyd Mohammadi",
   "license": "MIT",
   "repository": "/rad-filemanager",
   "main": "dist/index.js",
   "engines": {
-    "node": ">=16.13.0"
+    "node": ">=10"
   },
   "scripts": {
     "start": "webpack --config webpack.config.js --mode development",
