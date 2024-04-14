@@ -31,7 +31,9 @@ const FileTab: FunctionComponent<IProps> = ({ setTotal }) => {
     setCurrentHash,
     currentTab,
     orderBy,
-    desc
+    desc,
+    isShowCheckbox,
+    setIsShowCheckbox
   } = useContext(Context);
 
   let { data, isLoading, isFetching, fetchNextPage, hasNextPage, refetch } =
@@ -59,6 +61,27 @@ const FileTab: FunctionComponent<IProps> = ({ setTotal }) => {
       fetchNextPage();
     }
   }, [inView, hasNextPage, currentHash]);
+
+  const handleKeyDown = function (event) {
+    if (event.key == 'Control' && !isShowCheckbox) {
+      setIsShowCheckbox(true);
+    }
+  };
+  // const handleKeyUp = (event) => {
+  //   console.log('up', { event });
+  //   if (event.key=="Control" && isShowCheckbox) {
+  //     setIsShowCheckbox(false);
+  //   }
+  // };
+
+  useEffect(() => {
+    document.body.addEventListener('keydown', handleKeyDown);
+    // document.body.addEventListener('keyup', handleKeyUp);
+    return () => {
+      document.body.removeEventListener('keydown', handleKeyDown);
+      // document.body.removeEventListener('keyup', handleKeyUp);
+    };
+  }, [isShowCheckbox]);
 
   return (
     <React.Fragment>
