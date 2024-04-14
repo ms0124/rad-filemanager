@@ -296,7 +296,6 @@ const MenuTools: React.FunctionComponent<IProps> = forwardRef(
                       <IconTrash style={{ width: '18px', height: '16px' }} />
                     }
                     enTitle='Delete'
-                    disabled={isShowCheckbox}
                   />
                 </CheckPermissions>
                 <CheckPermissions permissions={['share_detail']}>

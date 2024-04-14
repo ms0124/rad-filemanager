@@ -103,10 +103,9 @@ export const useCreateNewFolder = () => {
 
 export const useDeleteFileAndFolder = (folderHash) => {
   return useMutation({
-    mutationFn: (variables: { hash: string | undefined }) =>
+    mutationFn: (variables: { hashes: string[] | undefined }) =>
       api.deleteFileAndFolder({ ...variables }),
     onSuccess: (_, variables) => {
-      const { hash } = variables;
       queryClient.refetchQueries({
         queryKey: ['folderContentChildren', folderHash]
       });

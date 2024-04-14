@@ -179,7 +179,6 @@ const App: React.FunctionComponent<IProps> = forwardRef(
                     </span>
                   </NavItem>
                 </CheckPermissions>
-                {console.log(actionType, itemHash, selectedItems)}
                 {actionType != null &&
                 (itemHash ||
                   (Array.isArray(selectedItems) &&

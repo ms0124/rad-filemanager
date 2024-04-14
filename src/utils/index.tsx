@@ -23,7 +23,7 @@ export const httpRequest = (
   let instancRequest: Promise<AxiosResponse<any, any>>;
   switch (method.toUpperCase()) {
     case 'DELETE':
-      instancRequest = instance.delete(url, { params });
+      instancRequest = instance.delete(url, { params } );
       break;
     case 'POST':
       instancRequest = instance.post(url, params);

@@ -33,10 +33,11 @@ export const createNewFolder = ({ ...params }: any): Promise<any> => {
   );
 };
 
-export const deleteFileAndFolder = async ({ hash }): Promise<Data> => {
+export const deleteFileAndFolder = async ({ hashes }): Promise<Data> => {
+  const params = { hashes }
   return httpRequest(
-    `${namespace}/${hash}`,
-    { message: successMessage },
+    `${namespace}/batch/delete`,
+    { message: successMessage , ...params},
     'DELETE'
   );
 };

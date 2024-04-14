@@ -42,7 +42,7 @@ const Index: React.FC<IProps> = ({
   btnOkText,
   item
 }) => {
-  const { currentHash } = useContext(Context);
+  const { currentHash, selectedItems, setSelectedItems } = useContext(Context);
 
   const createNewFolder = useCreateNewFolder();
   const deleteFileAndFolder = useDeleteFileAndFolder(currentHash);
@@ -60,21 +60,31 @@ const Index: React.FC<IProps> = ({
         createNewFolder
           .mutateAsync({ name, parentHash: currentHash })
           .finally(() => {
-            // if (isOpen) setTimeout(() => toggle(), 1500);
             if (isOpen) toggle();
           });
         break;
       case OperationTypes.Remove:
-        deleteFileAndFolder.mutateAsync({ hash: item?.hash }).finally(() => {
-          // if (isOpen) setTimeout(() => toggle(), 1500);
-          if (isOpen) toggle();
+        const hashes: string[] = [];
+        // selected items
+        if (selectedItems.length > 0) {
+          selectedItems.map((selected) => {
+            if (selected.hash) hashes.push(selected?.hash);
+          });
+        } else if (item?.hash) {
+          hashes.push(item.hash);
+        }
+
+        deleteFileAndFolder.mutateAsync({ hashes }).finally(() => {
+          if (isOpen) {
+            toggle();
+            setSelectedItems([]);
+          }
         });
         break;
       case OperationTypes.Rename:
         renameFileAndFolder
           .mutateAsync({ hash: item?.hash, newName: `${name}${extension}` })
           .finally(() => {
-            // if (isOpen) setTimeout(() => toggle(), 1500);
             if (isOpen) toggle();
           });
         break;
