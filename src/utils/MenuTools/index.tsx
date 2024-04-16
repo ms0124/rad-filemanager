@@ -288,7 +288,7 @@ const MenuTools: React.FunctionComponent<IProps> = forwardRef(
                     enTitle='Move'
                   />
                 </CheckPermissions>
-                <CheckPermissions permissions={['delete']}>
+                <CheckPermissions permissions={['batch_delete']}>
                   <MenuItem
                     clickHandler={() => clickHandler(OperationTypes.Remove)}
                     title='حذف'
