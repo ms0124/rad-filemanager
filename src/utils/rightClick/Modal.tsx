@@ -42,7 +42,8 @@ const Index: React.FC<IProps> = ({
   btnOkText,
   item
 }) => {
-  const { currentHash, selectedItems, setSelectedItems } = useContext(Context);
+  const { currentHash, selectedItems, setSelectedItems, setIsShowCheckbox } =
+    useContext(Context);
 
   const createNewFolder = useCreateNewFolder();
   const deleteFileAndFolder = useDeleteFileAndFolder(currentHash);
@@ -78,6 +79,7 @@ const Index: React.FC<IProps> = ({
           if (isOpen) {
             toggle();
             setSelectedItems([]);
+            setIsShowCheckbox(false);
           }
         });
         break;

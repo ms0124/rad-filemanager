@@ -35,6 +35,7 @@ const App: React.FunctionComponent<IProps> = forwardRef(
       currentTab,
       selectedItems,
       setSelectedItems,
+      setIsShowCheckbox,
       setOperationType: setActionType
     } = useContext(Context);
     const [isOpen, setIsopen] = useState<boolean>(false);
@@ -109,6 +110,7 @@ const App: React.FunctionComponent<IProps> = forwardRef(
           if (OperationTypes.Copy === actionType && selectedItems.length > 0) {
             // multi copy
             setSelectedItems([]);
+            setIsShowCheckbox(false);
             copyMulti
               .mutateAsync({
                 hashes: selectedItems.map((x) => x.hash),
@@ -122,6 +124,7 @@ const App: React.FunctionComponent<IProps> = forwardRef(
           if (OperationTypes.Cut === actionType && selectedItems.length > 0) {
             // multi cut
             setSelectedItems([]);
+            setIsShowCheckbox(false);
             cutMulti
               .mutateAsync({
                 hashes: selectedItems.map((x) => x.hash),
