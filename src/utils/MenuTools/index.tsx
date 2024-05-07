@@ -240,7 +240,10 @@ const MenuTools: React.FunctionComponent<IProps> = forwardRef(
             className={`${styles['dropdown-menu-wrapper']}`}
           >
             <CheckPermissions permissions={['download']}>
-              {item?.type === FolderTypes.folder || (
+              {item?.type == FolderTypes.folder ||
+              tabType == TabTypes.ArchiveList ? (
+                ''
+              ) : (
                 <MenuItem
                   clickHandler={() => clickHandler(OperationTypes.Download)}
                   title='دانلود فایل'
@@ -252,7 +255,10 @@ const MenuTools: React.FunctionComponent<IProps> = forwardRef(
                 />
               )}
             </CheckPermissions>
-            {item?.type === FolderTypes.folder || (
+            {item?.type == FolderTypes.folder ||
+            tabType == TabTypes.ArchiveList ? (
+              ''
+            ) : (
               <DropdownItem cssModule={getBs()} divider />
             )}
             {tabType != TabTypes.ArchiveList ? (
@@ -303,7 +309,9 @@ const MenuTools: React.FunctionComponent<IProps> = forwardRef(
                   <MenuItem
                     clickHandler={() => clickHandler(OperationTypes.Share)}
                     title='اشتراک گذاری فایل'
-                    icon={<IconShare style={{ width: '18px', height: '16px' }}  />}
+                    icon={
+                      <IconShare style={{ width: '18px', height: '16px' }} />
+                    }
                     enTitle='share'
                     disabled={isShowCheckbox}
                   />
