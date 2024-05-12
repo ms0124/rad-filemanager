@@ -174,7 +174,7 @@ const FilesDragAndDrop: FunctionComponent<Props> = ({
       element.removeEventListener('dragleave', handleDragLeave);
       element.removeEventListener('drop', handleDrop);
     };
-  }, [element, audio, video]);
+  }, [element, audio, video, isPublic]);
 
   useEffect(() => {
     if (fileListRef.current?.length === 0 || Object.keys(progress).length === 0)
