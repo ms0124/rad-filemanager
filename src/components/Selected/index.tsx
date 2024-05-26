@@ -50,7 +50,8 @@ const Selected = () => {
               </span>
             )}
             <span className={classNames(styles['selected-wrapper__name'])}>
-              {x.name}
+              {x?.name}
+              {x?.extension ? '.' + x?.extension : ''}
             </span>
             <IconTimes
               style={{ cursor: 'pointer', marginRight: '15px' }}
