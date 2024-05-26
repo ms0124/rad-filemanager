@@ -2,7 +2,7 @@ import styles from './style.module.scss';
 import utilStyles from '../../sass/style.module.scss';
 
 import React, { useContext, useRef } from 'react';
-import {Row, Col } from "reactstrap";
+import { Row, Col } from 'reactstrap';
 import moment from 'moment-jalaali';
 import classnames from 'classnames';
 
@@ -17,7 +17,6 @@ import { Context } from '../../store/index';
 import { getBs, getViewport } from '../../utils/index';
 import DefaultThumnail from './defaultThumbnail/index';
 import { PAGE_SIZE } from '../../config/config';
-
 
 interface IProps {
   pages: any;
@@ -52,20 +51,24 @@ const Column: React.FunctionComponent<IProps> = ({
   };
 
   const handleSelectItem = (item, multiSelect = true) => {
-    const isValid = validExtension.find(x => x === item?.extension || (!item.extension && x === 'dir' && item.type === FolderTypes.folder))
-    if (!isValid) return; 
+    const isValid = validExtension.find(
+      (x) =>
+        x === item?.extension ||
+        (!item.extension && x === 'dir' && item.type === FolderTypes.folder)
+    );
+    if (!isValid) return;
     const itemFinded = selectedItems.find((x) => x?.hash === item.hash);
     let newSelectedArray: any = [];
-    
+
     if (itemFinded) {
       // item finded
       newSelectedArray = selectedItems.filter((x) => x.hash !== item.hash);
       setSelectedItems(newSelectedArray);
-    } else if(multiSelect || ( selectedItems.length === 0 && !multiSelect)) {
+    } else if (multiSelect || (selectedItems.length === 0 && !multiSelect)) {
       // can't find item & add item
       newSelectedArray = [...selectedItems, item];
       setSelectedItems(newSelectedArray);
-    } else if (!multiSelect && selectedItems.length==1) {
+    } else if (!multiSelect && selectedItems.length == 1) {
       setSelectedItems([item]);
     }
     if (onSelect) {
@@ -77,9 +80,13 @@ const Column: React.FunctionComponent<IProps> = ({
   };
   const viewportName = getViewport();
   let colCount = 4;
-  if (viewportName === 'xl' || viewportName === 'xxl') { colCount = 6 }
-  else if (viewportName === 'lg' || viewportName === 'md') {colCount = 4}
-  else if (viewportName === 'xs') {colCount = 2}
+  if (viewportName === 'xl' || viewportName === 'xxl') {
+    colCount = 6;
+  } else if (viewportName === 'lg' || viewportName === 'md') {
+    colCount = 4;
+  } else if (viewportName === 'xs') {
+    colCount = 2;
+  }
 
   return (
     <React.Fragment>
@@ -115,7 +122,7 @@ const Column: React.FunctionComponent<IProps> = ({
                     // if (item?.type === FolderTypes.folder) return; // for folder dont select
                     // if (!item?.isPublic) return; //don't select private items
                     // if multi select is enable ==> prevent one select work
-                    handleSelectItem(item, isShowCheckbox)
+                    handleSelectItem(item, isShowCheckbox);
                   }}
                   onDoubleClick={() => {
                     if (TabTypes.SearchList) {
@@ -132,16 +139,31 @@ const Column: React.FunctionComponent<IProps> = ({
                       (x) => x.hash === item.hash
                     )
                       ? 'cornflowerblue'
-                      : '', cursor: item?.extension? "pointer": "auto"
+                      : '',
+                    cursor: item?.extension ? 'pointer' : 'auto'
                   }}
                 >
                   <div className={classnames(styles['col__img-wrapper'])}>
                     <div className={styles['col__menu-wrapper']}>
                       {item ? (
                         <MenuTools
-                        // isFirstCol={index % 4 === 0 ? true : false}
-                        isFirstCol={index % colCount ===0 ?true:false }
-                        item={item}
+                          onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            rightClickRef.current.hideContextMenu();
+                            contextMenuRef.current?.map((x, i) => {
+                              if (x?.isOpenState()) {
+                                x?.toggle();
+                              }
+                            });
+                            const currentIndex = pageIndex * PAGE_SIZE + index;
+                            if (item.hash) {
+                              contextMenuRef.current[currentIndex].toggle();
+                            }
+                          }}
+                          // isFirstCol={index % 4 === 0 ? true : false}
+                          isFirstCol={index % colCount === 0 ? true : false}
+                          item={item}
                           tabType={currentTab}
                           ref={(ref) => {
                             const currentIndex = pageIndex * PAGE_SIZE + index;
@@ -198,7 +220,15 @@ const Column: React.FunctionComponent<IProps> = ({
                       </div>
                     )}
                   </div>
-                  <h4 className={styles['col__title']} data-extension={item?.extension ? "."+item.extension.toLowerCase() : ''} title={`${item?.name}${item?.extension ? "."+item.extension.toLowerCase() : ''}`}>
+                  <h4
+                    className={styles['col__title']}
+                    data-extension={
+                      item?.extension ? '.' + item.extension.toLowerCase() : ''
+                    }
+                    title={`${item?.name}${
+                      item?.extension ? '.' + item.extension.toLowerCase() : ''
+                    }`}
+                  >
                     {item?.name}
                     {item?.extension ? `.${item.extension.toLowerCase()}` : ''}
                   </h4>

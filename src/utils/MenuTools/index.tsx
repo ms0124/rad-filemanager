@@ -53,10 +53,11 @@ interface IProps {
   tabType: number;
   ref: any;
   isFirstCol?: boolean;
+  onClick?: (event) => void;
 }
 
 const MenuTools: React.FunctionComponent<IProps> = forwardRef(
-  ({ item, tabType, isFirstCol = false, ...props }, ref) => {
+  ({ item, tabType, isFirstCol = false, onClick, ...props }, ref) => {
     const {
       itemHash,
       setItemHash,
@@ -223,6 +224,7 @@ const MenuTools: React.FunctionComponent<IProps> = forwardRef(
             caret={false}
             className={styles['col__icon-3'] + ' col__icon-3'}
             innerRef={menuRef}
+            onClick={onClick}
           >
             <FontAwesomeIcon
               onClick={toggle}

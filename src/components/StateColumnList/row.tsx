@@ -134,6 +134,18 @@ const Row: FunctionComponent<IProps> = ({ pages = [], setHash }) => {
               >
                 <td className={styles['vertical-align-top']}>
                   <MenuTools
+                    onClick={(event) => {
+                      event.preventDefault();
+                      event.stopPropagation();
+                      rightClickRef.current.hideContextMenu();
+                      contextMenuRef.current.map((item, i) => {
+                        item?.isOpenState() && item?.toggle();
+                      });
+                      const currentIndex = pageIndex * PAGE_SIZE + index;
+                      if (item.hash) {
+                        contextMenuRef.current[currentIndex].toggle();
+                      }
+                    }}
                     item={item}
                     tabType={currentTab}
                     // ref={(ref) => (contextMenuRef.current[index] = ref)}
