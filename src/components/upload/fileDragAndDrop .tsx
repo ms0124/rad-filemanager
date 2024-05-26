@@ -307,7 +307,7 @@ const FilesDragAndDrop: FunctionComponent<Props> = ({
     let breakFunctionForStreamExtention = false;
     let breakFunctionForExtention = false;
     for (let file of files) {
-      if (!validExtension.find((item) => file?.name?.endsWith(item))) {
+      if (!validExtension.find((item) => file?.name?.toLocaleLowerCase()?.endsWith(item))) {
         breakFunctionForExtention = true;
         break;
       }
