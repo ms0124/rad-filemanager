@@ -137,7 +137,7 @@ const MenuTools: React.FunctionComponent<IProps> = forwardRef(
                 download(x?.hash, headers).then((blob) => {
                   FileSaver.saveAs(
                     blob,
-                    `${x?.hash}.${x?.extension?.toLowerCase()}`
+                    `${x?.name}.${x?.extension?.toLowerCase()}`
                   );
                 });
             });
@@ -149,7 +149,7 @@ const MenuTools: React.FunctionComponent<IProps> = forwardRef(
           ) {
             const extension = item.extension.toLowerCase();
             download(item?.hash, headers).then((blob) => {
-              FileSaver.saveAs(blob, `${item?.hash}.${extension}`);
+              FileSaver.saveAs(blob, `${item?.name}.${extension}`);
             });
           }
           break;
