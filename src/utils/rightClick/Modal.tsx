@@ -1,7 +1,7 @@
 import styles from './style.module.scss';
 import utilStyles from '../../sass/style.module.scss';
 
-import React, { useState, useRef, useContext } from 'react';
+import React, { useState, useRef, useContext, useMemo } from 'react';
 import {
   Modal,
   ModalBody,
@@ -92,11 +92,12 @@ const Index: React.FC<IProps> = ({
         break;
     }
   };
+  const btnDangerDisabled = styles['btn-danger__disabled'];
 
   return (
     <Modal
       isOpen={isOpen}
-      toggle={toggle}
+      // toggle={toggle}
       // centered={true}
       className={`${styles['modal-operation']}`}
       cssModule={getBs()}
@@ -151,9 +152,20 @@ const Index: React.FC<IProps> = ({
           <Button
             cssModule={getBs()}
             onClick={toggle}
-            className={`${utilStyles['ms-3']} ${utilStyles['round-8']} ${styles['btn-danger']}`}
+            className={classNames(
+              utilStyles['ms-3'],
+              utilStyles['round-8'],
+              styles['btn-danger'],
+              {
+                [btnDangerDisabled]:
+                  deleteFileAndFolder.isLoading || renameFileAndFolder.isLoading
+              }
+            )}
             color='danger'
             outline
+            disabled={
+              deleteFileAndFolder.isLoading || renameFileAndFolder.isLoading
+            }
           >
             {btnNoText}
           </Button>

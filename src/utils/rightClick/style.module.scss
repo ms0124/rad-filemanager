@@ -42,6 +42,9 @@
   &:hover {
     color: #fff !important;
   }
+  &__disabled:hover{
+    color: #ff6060 !important;
+  }
 }
 .btn-primary {
   color: #ffff !important;
