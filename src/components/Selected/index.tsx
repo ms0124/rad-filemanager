@@ -51,7 +51,7 @@ const Selected = () => {
             )}
             <span className={classNames(styles['selected-wrapper__name'])}>
               {x?.name}
-              {x?.extension ? '.' + x?.extension : ''}
+              {x?.extension ? '.' + x?.extension?.toLowerCase() : ''}
             </span>
             <IconTimes
               style={{ cursor: 'pointer', marginRight: '15px' }}

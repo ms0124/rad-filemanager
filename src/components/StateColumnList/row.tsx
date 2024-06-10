@@ -6,7 +6,7 @@ import { Table } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faKey, faGlobe } from '@fortawesome/free-solid-svg-icons';
 import moment from 'moment-jalaali';
-import classnames from "classnames"
+import classnames from 'classnames';
 
 import {
   formatBytes,
@@ -47,7 +47,7 @@ const Row: FunctionComponent<IProps> = ({ pages = [], setHash }) => {
   const handleSelectItem = (item, multiSelect = true) => {
     const isValid = validExtension.find(
       (x) =>
-        x === item?.extension ||
+        x?.toLowerCase() === item?.extension?.toLowerCase() ||
         (!item.extension && x === 'dir' && item.type === FolderTypes.folder)
     );
     if (!isValid) return;
@@ -204,7 +204,7 @@ const Row: FunctionComponent<IProps> = ({ pages = [], setHash }) => {
                   )}
                 </td>
                 <td
-                  width={"30%"}
+                  width={'30%'}
                   className={`${utilStyles['text-end']}`}
                   scope='row'
                   onClick={(e) => {

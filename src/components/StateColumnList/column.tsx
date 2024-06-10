@@ -53,9 +53,10 @@ const Column: React.FunctionComponent<IProps> = ({
   const handleSelectItem = (item, multiSelect = true) => {
     const isValid = validExtension.find(
       (x) =>
-        x === item?.extension ||
+        x?.toLowerCase() === item?.extension?.toLowerCase() ||
         (!item.extension && x === 'dir' && item.type === FolderTypes.folder)
     );
+
     if (!isValid) return;
     const itemFinded = selectedItems.find((x) => x?.hash === item.hash);
     let newSelectedArray: any = [];

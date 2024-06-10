@@ -33,7 +33,7 @@ const Index: React.FunctionComponent<IProps> = ({
 }) => {
   let icon: FontAwesomeIconTypes.IconDefinition;
 
-  switch (item.extension) {
+  switch (item.extension?.toLowerCase()) {
     case ImageTypes.png:
     case ImageTypes.jpeg:
     case ImageTypes.jpg:
