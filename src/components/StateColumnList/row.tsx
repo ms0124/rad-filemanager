@@ -209,8 +209,8 @@ const Row: FunctionComponent<IProps> = ({ pages = [], setHash }) => {
                   scope='row'
                   onClick={(e) => {
                     e.stopPropagation();
-                    if (item?.type === FolderTypes.folder) return; // for folder dont select
-                    if (!item?.isPublic) return; //don't select private items
+                    // if (item?.type === FolderTypes.folder) return; // for folder dont select
+                    // if (!item?.isPublic) return; //don't select private items
                     // if multi select is enable ==> prevent one select work
                     handleSelectItem(item, isShowCheckbox);
                   }}
