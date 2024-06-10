@@ -63,6 +63,7 @@ const Row: FunctionComponent<IProps> = ({ pages = [], setHash }) => {
       newSelectedArray = [...selectedItems, item];
       setSelectedItems(newSelectedArray);
     } else if (!multiSelect && selectedItems.length == 1) {
+      newSelectedArray = [item];
       setSelectedItems([item]);
     }
 

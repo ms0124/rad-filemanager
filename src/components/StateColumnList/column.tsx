@@ -69,8 +69,10 @@ const Column: React.FunctionComponent<IProps> = ({
       newSelectedArray = [...selectedItems, item];
       setSelectedItems(newSelectedArray);
     } else if (!multiSelect && selectedItems.length == 1) {
+      newSelectedArray = [item];
       setSelectedItems([item]);
     }
+   
     if (onSelect) {
       const withOutFolders = newSelectedArray.filter((x) =>
         x.type === FolderTypes.folder ? false : true
