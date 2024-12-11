@@ -124,18 +124,20 @@ const ShareFile: React.FC<IProps> = ({ isOpen, toggle, hash, isPublic }) => {
 
   const confirmationHandler = () => {
     const { result } = dataShare;
-    let hashShare: string = '';
-
-    if (result && Array.isArray(result) && Array.isArray(result[0])) {
-      const tmp = result[0][0] as any;
-      hashShare = tmp?.hash;
-    }
 
     if (isPublic == isAccessPublic) {
       // access configuraiotn not changed
       toggle();
     } else {
       if (!isAccessPublic) {
+        let hashShare: string = '';
+
+        if (result && Array.isArray(result)) {
+          const tmp: { hash: string } = result.find(
+            (item) => item.type === 'PUBLIC'
+          );
+          hashShare = tmp?.hash;
+        }
         removePublic.mutateAsync({ hash: hashShare }).then((res) => {
           const { hasError } = res;
           if (!hasError) {
@@ -260,7 +262,7 @@ const ShareFile: React.FC<IProps> = ({ isOpen, toggle, hash, isPublic }) => {
               </div>
             ) : (
               <>
-                {dataShare?.result?.length > 0 ? (
+                {dataShare?.result?.length > 1 ? (
                   <div
                     className={classNames(
                       getBs()['border'],
