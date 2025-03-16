@@ -98,7 +98,11 @@ const Index: React.FC<IProps> = ({
     <Modal
       isOpen={isOpen}
       // toggle={toggle}
-      // centered={true}
+      onOpened={() => {
+        if (inputRef.current) {
+          inputRef.current.focus();
+        }
+      }}      // centered={true}
       className={`${styles['modal-operation']}`}
       cssModule={getBs()}
       zIndex={99991}
@@ -128,7 +132,7 @@ const Index: React.FC<IProps> = ({
             />
           </div>
         ) : (
-          <Input
+          <Input 
             innerRef={inputRef}
             placeholder={placeholder}
             defaultValue={type === OperationTypes.Rename ? item?.name : ''}
@@ -175,10 +179,11 @@ const Index: React.FC<IProps> = ({
             color='primary'
             className={`${utilStyles['round-8']} ${styles['btn-primary']}`}
             disabled={
-              deleteFileAndFolder.isLoading || renameFileAndFolder.isLoading
+              createNewFolder.isLoading || deleteFileAndFolder.isLoading || renameFileAndFolder.isLoading
             }
           >
-            {btnOkText}{' '}
+            
+            {createNewFolder.isLoading?<Spinner cssModule={getBs()} size={'sm'} />:btnOkText}
             {deleteFileAndFolder.isLoading || renameFileAndFolder.isLoading ? (
               <Spinner cssModule={getBs()} size={'sm'} />
             ) : (
