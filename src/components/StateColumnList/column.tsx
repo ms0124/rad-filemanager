@@ -103,7 +103,7 @@ const Column: React.FunctionComponent<IProps> = ({
           const _data = page?.result?.list ? page?.result?.list : page?.result;
           return _data.map((item, index) => {
             return (
-              <Col cssModule={getBs()} xs={6} md={3} lg={3} xl={2} key={index}>
+              <Col cssModule={getBs()} xs={6} md={3} lg={3} xl={2} key={item.hash}>
                 <div
                   onContextMenu={(event: any) => {
                     event.preventDefault();

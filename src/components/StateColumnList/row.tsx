@@ -122,7 +122,7 @@ const Row: FunctionComponent<IProps> = ({ pages = [], setHash }) => {
                     contextMenuRef.current[currentIndex].toggle();
                   }
                 }}
-                key={index}
+                key={item.hash}
                 style={{
                   backgroundColor: selectedItems.find(
                     (x) => x.hash === item?.hash
