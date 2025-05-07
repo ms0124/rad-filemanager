@@ -17,6 +17,9 @@ import { Context } from '../../store/index';
 import { getBs, getViewport } from '../../utils/index';
 import DefaultThumnail from './defaultThumbnail/index';
 import { PAGE_SIZE } from '../../config/config';
+import FileIcon from './defaultThumbnail/index'; 
+
+
 
 interface IProps {
   pages: any;
@@ -191,29 +194,37 @@ const Column: React.FunctionComponent<IProps> = ({
                     )}
                     <div className={styles['col__icon-access-wrapper']}>
                       {item?.isPublic ? (
+                        
                         <FontAwesomeIcon
                           className={styles['col__icon-access']}
                           icon={faGlobe}
                         />
-                      ) : (
+                      ) 
+                      : (
+                     
                         <FontAwesomeIcon
                           className={styles['col__icon-access']}
                           icon={faKey}
                         />
                       )}
                     </div>
-                    {item?.type != FolderTypes.folder ? (
+                   
+                    {/* {item?.type != FolderTypes.folder ? (
                       item?.thumbnail &&
-                      item?.thumbnail.startsWith('THUMBNAIL_EXIST') ? (
+                      item?.thumbnail.startsWith('THUMBNAIL_EXIST') ? (                 
                         <img
                           className={styles['col__img']}
                           src={getThumbnailUrl(item?.hash, isSandbox)}
                         />
-                      ) : item ? (
+                      ) : 
+                    item
+                       ? (
+                       
                         <DefaultThumnail item={item} />
                       ) : (
                         ''
                       )
+                      
                     ) : (
                       <div className={styles['col__folder-img-wrapper']}>
                         <img
@@ -221,7 +232,29 @@ const Column: React.FunctionComponent<IProps> = ({
                           src={folder}
                         />
                       </div>
-                    )}
+                    )} */}
+                    
+                  {item?.type !== FolderTypes.folder ? (
+                    (!item?.isPublic || item?.thumbnail === 'WITHOUT_THUMBNAIL') ? (
+                      <FileIcon item={item} size="2x" />
+                    ) : item?.thumbnail && item?.thumbnail.startsWith('THUMBNAIL_EXIST') ? (
+                      <img
+                        className={styles['col__img']}
+                        src={getThumbnailUrl(item?.hash, isSandbox)}
+                      />
+                    ) : item ? (
+                      <DefaultThumnail item={item} />
+                    ) : (
+                      ''
+                    )
+                  ) : (
+                    <div className={styles['col__folder-img-wrapper']}>
+                      <img
+                        className={styles['col__folder-img']}
+                        src={folder}
+                      />
+                    </div>
+                  )}
                   </div>
                   <h4
                     className={styles['col__title']}

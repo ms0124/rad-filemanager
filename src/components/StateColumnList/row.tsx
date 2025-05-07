@@ -21,6 +21,8 @@ import { TabTypes, FolderTypes } from '../../config/types';
 import { PAGE_SIZE } from '../../config/config';
 import folder from './folder.png';
 import { RightClick } from '../../utils';
+import FileIcon from './defaultThumbnail/index'; 
+
 interface IProps {
   pages: any;
   setHash: React.Dispatch<React.SetStateAction<string>>;
@@ -185,7 +187,7 @@ const Row: FunctionComponent<IProps> = ({ pages = [], setHash }) => {
                   }}
                   className={styles['thumnail-wrraper']}
                 >
-                  {item?.type != FolderTypes.folder ? (
+                  {/* {item?.type != FolderTypes.folder ? (
                     item?.thumbnail &&
                     item?.thumbnail.startsWith('THUMBNAIL_EXIST') ? (
                       <img src={getThumbnailUrl(item?.hash, isSandbox)} />
@@ -198,6 +200,27 @@ const Row: FunctionComponent<IProps> = ({ pages = [], setHash }) => {
                     <div>
                       <img
                         className={styles['thumnail-wrraper__folder']}
+                        src={folder}
+                      />
+                    </div>
+                  )} */}
+                  {item?.type !== FolderTypes.folder ? (
+                    (!item?.isPublic || item?.thumbnail === 'WITHOUT_THUMBNAIL') ? (
+                      <FileIcon item={item} size="2x" />
+                    ) : item?.thumbnail && item?.thumbnail.startsWith('THUMBNAIL_EXIST') ? (
+                      <img
+                        className={styles['col__img']}
+                        src={getThumbnailUrl(item?.hash, isSandbox)}
+                      />
+                    ) : item ? (
+                      <DefaultThumnail item={item} />
+                    ) : (
+                      ''
+                    )
+                  ) : (
+                    <div className={styles['col__folder-img-wrapper']}>
+                      <img
+                        className={styles['col__folder-img']}
                         src={folder}
                       />
                     </div>
@@ -249,11 +272,11 @@ const Row: FunctionComponent<IProps> = ({ pages = [], setHash }) => {
                   className={`${utilStyles['text-center']}`}
                   style={{ color: '#6184ff' }}
                 >
-                  {item?.isPublic ? (
+                  {/* {item?.isPublic ? (
                     <FontAwesomeIcon icon={faGlobe} />
                   ) : (
                     <FontAwesomeIcon icon={faKey} />
-                  )}
+                  )} */}
                 </td>
               </tr>
             ));
