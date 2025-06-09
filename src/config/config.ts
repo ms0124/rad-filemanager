@@ -26,7 +26,8 @@ export const validExtensionList = [
   'txt',
   'gz',
   'rar',
-  'zip'
+  'zip',
+  'apk',
 ];
 export const queryClient: QueryClient = new QueryClient({
   defaultOptions: {
