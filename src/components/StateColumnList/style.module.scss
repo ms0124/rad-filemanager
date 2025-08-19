@@ -22,7 +22,7 @@
   background-color: #fafafa;
   padding-bottom: 10px;
   border-radius: 8px;
-  &__checkbox{
+  &__checkbox {
     position: absolute;
     right: 45px;
     top: 18px;
@@ -74,9 +74,9 @@
     border-top-left-radius: 8px;
     border-top-right-radius: 8px;
     width: 100%;
-    height: fit-content;
+    height: 100px;
     user-select: none;
-    max-height: 100px;
+    display: block;
     object-fit: cover;
   }
   &__folder-img {
@@ -102,7 +102,7 @@
     -webkit-line-clamp: 2;
     overflow: hidden;
     white-space: normal;
-  }  
+  }
   &__volume {
     font-size: small;
     text-align: center;
@@ -121,16 +121,16 @@
 
 .table-wrapper {
   color: #737373;
-  .dir-ltr{
+  .dir-ltr {
     direction: ltr !important;
   }
-  &__checkbox{
+  &__checkbox {
     margin-right: 10px;
   }
 
   td {
     vertical-align: baseline;
-    padding: 4px ;
+    padding: 4px;
   }
   .vertical-align-top {
     vertical-align: top !important;
