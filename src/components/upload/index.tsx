@@ -18,18 +18,24 @@ import CheckPermissions from '../../components/CheckPermissions/index';
 import { getBs } from '../../utils/index';
 import { IconStream, IconUpload } from '../../utils/icons';
 import { queryClient } from '../../config/config';
+import { useUploadLink } from "../../config/hooks";
+import { objectToQueryString } from '../../utils/index';
+import moment from "moment-jalaali";
 
 const Upload = () => {
   const [modal, setModal] = useState<{ upload: boolean; stream: boolean }>({
     upload: false,
     stream: false
   });
+  const [uploadHash, setUploadHash] =  useState("");
   // const [isStream, setIsStream] = useState(false);
   const [isOpenCollapse, setIsOpenCollapse] = useState(false);
   const [showCollapse, setShowCollapse] = useState(false);
   const [uploadComplete, setUploadComplete] = useState<boolean>(false);
 
   const { currentHash } = useContext(Context);
+
+  const {data , refetch }= useUploadLink( objectToQueryString({ size: 0, expiration: moment().add(1, "hour").format("YYYY/MM/DD HH:mm:00"), destination: currentHash } ));
 
   useEffect(() => {
     if (uploadComplete) {
@@ -40,7 +46,7 @@ const Upload = () => {
     }
   }, [uploadComplete]);
 
-  const handleModalToggle = ({
+  const handleModalToggle = async ({
     upload,
     stream
   }: {
@@ -48,6 +54,14 @@ const Upload = () => {
     stream: boolean;
   }) => {
     setModal({ upload, stream });
+
+    // get upload hash
+    if(upload || stream){
+
+     const {data} = await refetch();
+     setUploadHash(data.result[0]?.uploadHash);
+    } 
+    
   };
 
   return (
@@ -97,6 +111,7 @@ const Upload = () => {
         uploadComplete={uploadComplete}
         setUploadComplete={setUploadComplete}
         modal={modal}
+        uploadHash={uploadHash}
         // isStream={modal.stream}
         // setIsStream={setIsStream}
         toggleModal={handleModalToggle}

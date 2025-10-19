@@ -225,6 +225,14 @@ export const useSearchList = (query: string) => {
   );
 };
 
+export const useUploadLink = (query: string) => {
+  return useQuery( ['uploadLink', query ], ({ queryKey }) =>
+    api.uploadLink(queryKey[1]),
+   { enabled: false }
+  );
+};
+
+
 export const useDebounce = (value, delay) => {
   const [debouncedValue, setDebouncedValue] = useState(value);
   useEffect(() => {

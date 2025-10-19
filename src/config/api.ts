@@ -1,4 +1,4 @@
-import { instance } from './config';
+import { instance , uploadDirectMain, uploadDirectSandbox} from './config';
 import { Data } from '../config/types';
 import { httpRequest } from '../utils/index';
 
@@ -53,11 +53,21 @@ export const renameFileAndFolder = async ({ hash, newName }) => {
 /************************************* */
 /********* U P L O A D *****************/
 /************************************* */
+// برای یک سری تغیرات مجبور شدن ای پی ای آپلود رو عوض کنم در صورتی که این تغیرات تکمیل شوند این api شبیه الباقی میشود.
+export const upload = async ({ isSandbox, formData, uploadHash, stream}, image = false, configs, headers) => {
 
-export const upload = async (params, image = false, configs, headers) => {
+  let url = `${namespace}/upload${image ? '/image' : ''}`;
+  if(!stream ) {
+    if(isSandbox){
+      url =  `${uploadDirectSandbox}/${uploadHash}`;
+    }else {
+      url = `${uploadDirectMain}/${uploadHash}`;
+    }
+  }
+  
   return await instance.post(
-    `${namespace}/upload${image ? '/image' : ''}`,
-    params,
+    url,
+    formData,
     {
       headers: {
         'Content-Type': 'multipart/form-data',
@@ -68,6 +78,10 @@ export const upload = async (params, image = false, configs, headers) => {
     }
   );
 };
+
+export const uploadLink = async (params) => {
+  return await httpRequest(`${namespace}/upload/link${params}`);
+}
 
 /************************************* */
 /********* C O P Y  &  C U T ***********/

@@ -95,6 +95,7 @@ interface Props {
   setIsOpenCollapse: (boolean) => void;
   showCollapse: boolean;
   setShowCollapse: (boolean) => void;
+  uploadHash: string | "";
   // isStream: boolean;
   // setIsStream: (boolean) => void;
 }
@@ -110,11 +111,11 @@ const FilesDragAndDrop: FunctionComponent<Props> = ({
   isOpenCollapse,
   setIsOpenCollapse,
   showCollapse,
-  setShowCollapse
-  // isStream,
+  setShowCollapse,
+   uploadHash,
   // setIsStream
 }) => {
-  const { currentHash, validExtension } = useContext(Context);
+  const { currentHash, validExtension, isSandbox } = useContext(Context);
 
   const headers = getHeader(false);
 
@@ -199,7 +200,7 @@ const FilesDragAndDrop: FunctionComponent<Props> = ({
     progressRef.current = { ...progressRef.current, [file.name]: 0 };
 
     formData.append('file', file);
-    formData.append('folderHash', currentHash);
+    if(modal?.stream)  formData.append('folderHash', currentHash);
     formData.append('isPublic', `${isPublic}`);
     if ((audio.length > 0 || video.length > 0) && modal.stream) {
       formData.append('streamNeeded', 'true');
@@ -222,7 +223,7 @@ const FilesDragAndDrop: FunctionComponent<Props> = ({
       [`${file.name}_${index}`]: controller
     };
     upload(
-      formData,
+      {isSandbox,uploadHash, formData, stream: modal?.stream},
       false,
       {
         onUploadProgress: (e) => onUploadProgress(e, file, index),
