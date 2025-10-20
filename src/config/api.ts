@@ -1,4 +1,4 @@
-import { instance , uploadDirectMain, uploadDirectSandbox} from './config';
+import { instance , directMain, directSandbox} from './config';
 import { Data } from '../config/types';
 import { httpRequest } from '../utils/index';
 
@@ -59,9 +59,9 @@ export const upload = async ({ isSandbox, formData, uploadHash, stream}, image =
   let url = `${namespace}/upload${image ? '/image' : ''}`;
   if(!stream ) {
     if(isSandbox){
-      url =  `${uploadDirectSandbox}/${uploadHash}`;
+      url =  `${directSandbox}/api/files/${uploadHash}`;
     }else {
-      url = `${uploadDirectMain}/${uploadHash}`;
+      url = `${directMain}/api/files/${uploadHash}`;
     }
   }
   
@@ -162,21 +162,26 @@ export const archiveDelete = async ({ ...params }): Promise<Data> => {
 /********* D O W N L O A D ***************/
 /************************************* */
 
-export const download = async (hash, headers) => {
-  return instance
-    .get(`${namespace}/download/${hash}/`, {
-      responseType: 'blob',
-      headers
-    })
-    .then((response) => {
+export const download = async ({isSandbox,  downloadLink}) => {
+    let url = ''; 
+  if(isSandbox){
+      url =  `${directSandbox}/api/links/${downloadLink}`;
+    }else {
+      url = `${directMain}/api/links/${downloadLink}`;
+    }
+  const response: any = await instance.get(`${url}`, { responseType: 'blob' });
       const blob = response.data;
       return new Blob([blob]);
-    });
+
 };
 
 export const downloadThumbnail = async (hash) => {
   return await instance.get(`${namespace}/download/${hash}/thumbnail`);
 };
+
+export const downloadLink = async (params) => {
+  return await httpRequest(`${namespace}/download/link${params}`);
+}
 
 /************************************* */
 /*********** S E A R C H ***************/

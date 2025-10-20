@@ -38,7 +38,7 @@ export const queryClient: QueryClient = new QueryClient({
 });
 
 
-export const uploadDirectSandbox = "https://podspace.sandpod.ir/api/files";
-export const uploadDirectMain = "https://podspace.pod.ir/api/files";
+export const directSandbox = "https://podspace.sandpod.ir";
+export const directMain = "https://podspace.pod.ir";
 
 export const instance = axios.create();

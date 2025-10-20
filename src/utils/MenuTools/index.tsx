@@ -21,7 +21,7 @@ import MenuItem from './MenuItem';
 import Modal from '../rightClick/Modal';
 import { FolderTypes, OperationTypes } from '../../config/types';
 import { Context } from '../../store/index';
-import { download } from '../../config/api';
+import { download, downloadLink } from '../../config/api';
 import { TabTypes } from '../../config/types';
 import {
   useArchiveDelete,
@@ -60,6 +60,7 @@ const MenuTools: React.FunctionComponent<IProps> = forwardRef(
   ({ item, tabType, isFirstCol = false, onClick, ...props }, ref) => {
     const {
       itemHash,
+      isSandbox,
       setItemHash,
       setOperationType: setActionType,
       isShowCheckbox,
@@ -99,7 +100,7 @@ const MenuTools: React.FunctionComponent<IProps> = forwardRef(
 
     const archiveDelete = useArchiveDelete(currentHash);
     const archiveRestor = useArchiveRestor(currentHash);
-    const clickHandler = (type) => {
+    const clickHandler = async (type) => {
       const hashes: any = [];
       hashes.push(item?.hash);
 
@@ -132,15 +133,24 @@ const MenuTools: React.FunctionComponent<IProps> = forwardRef(
           break;
         case OperationTypes.Download:
           if (Array.isArray(selectedItems) && selectedItems.length > 0) {
-            selectedItems.map((x) => {
-              if (x?.type !== FolderTypes.folder)
-                download(x?.hash, headers).then((blob) => {
-                  FileSaver.saveAs(
-                    blob,
-                    `${x?.name}.${x?.extension?.toLowerCase()}`
-                  );
-                });
-            });
+          await Promise.all(
+          selectedItems.map(async (x) => {
+            if (x?.type !== FolderTypes.folder) {
+              try {
+                const res = await downloadLink(
+                  objectToQueryString({ fileHash: x.hash, revokeAbility: true })
+                );
+                const { result } = res;
+                const downloadLinkData = result[0]?.downloadLink;
+
+                const blob = await download({ isSandbox, downloadLink:downloadLinkData });
+                FileSaver.saveAs(blob, `${x?.name}.${x?.extension?.toLowerCase()}`);
+              } catch (error) {
+                console.error(`Error downloading ${x?.name}:`, error);
+              }
+            }
+          })
+        );
             setSelectedItems([]);
           } else if (
             item &&
@@ -148,9 +158,15 @@ const MenuTools: React.FunctionComponent<IProps> = forwardRef(
             selectedItems.length === 0
           ) {
             const extension = item.extension.toLowerCase();
-            download(item?.hash, headers).then((blob) => {
-              FileSaver.saveAs(blob, `${item?.name}.${extension}`);
-            });
+            downloadLink(objectToQueryString({fileHash:item.hash, revokeAbility:true })).then(res=> {
+              const { result } = res;
+              const downloadLink = result[0]?.downloadLink;
+              
+              download({isSandbox, downloadLink})
+              .then((blob) => {
+                FileSaver.saveAs(blob, `${item?.name}.${extension}`);
+              });
+            })
           }
           break;
         case OperationTypes.RemoveArchive:
