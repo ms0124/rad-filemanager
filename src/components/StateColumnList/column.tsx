@@ -10,7 +10,7 @@ import folder from './folder.png';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faGlobe, faKey } from '@fortawesome/free-solid-svg-icons';
 import MenuTools from '../../utils/MenuTools/';
-import { formatBytes, getThumbnailUrl } from '../../utils/index';
+import { formatBytes, getThumbnailUrl, brifStr } from '../../utils/index';
 import { RightClick } from '../../utils';
 import { TabTypes, FolderTypes } from '../../config/types';
 import { Context } from '../../store/index';
@@ -265,7 +265,7 @@ const Column: React.FunctionComponent<IProps> = ({
                       item?.extension ? '.' + item.extension.toLowerCase() : ''
                     }`}
                   >
-                    {item?.name}
+                    {brifStr(item?.name, 25)}
                     {item?.extension ? `.${item.extension.toLowerCase()}` : ''}
                   </h4>
                   <div className={styles['col__volume']}>
