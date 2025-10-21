@@ -99,6 +99,11 @@ const getThumbnailUrl = (hash, isSandbox) =>
     ? `https://podspace.sandpod.ir/api/files/${hash}/thumbnail`
     : `https://podspace.pod.ir/api/files/${hash}/thumbnail`;
 
+const getFileUrl = (hash, isSandbox) =>
+  isSandbox
+    ? `https://podspace.sandpod.ir/api/files/${hash}`
+    : `https://podspace.pod.ir/api/files/${hash}`;
+
 const isPermitted = (userPermissions, permissions, operator = 'AND') => {
   let isPermitted = false;
 
@@ -162,6 +167,7 @@ export {
   objectToQueryString,
   serializeUrl,
   getThumbnailUrl,
+  getFileUrl,
   getViewport,
   getParamsFromUrl
 };
