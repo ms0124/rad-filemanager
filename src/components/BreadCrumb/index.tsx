@@ -47,6 +47,28 @@ const index = () => {
   return (
     <div className={classnames(styles['bread-crumb'])}>
       <div className={classnames(styles['bread-crumb__wrapper-item'])}>
+        <div
+          style={{
+            marginRight: '6px',
+            marginLeft: '12px',
+            display: 'flex',
+            alignItems: 'center'
+          }}
+        >
+          <input
+            style={{ cursor: 'pointer' }}
+            type='checkbox'
+            onChange={(e) => {
+              const eventName = e.target.checked
+                ? 'fm-select-all'
+                : 'fm-deselect-all';
+              window.dispatchEvent(new Event(eventName));
+            }}
+          />
+          {/* <label className='mb-0'> */}
+          <div style={{ marginRight: '6px' }}>انتخاب همه</div>
+          {/* </label> */}
+        </div>
         {/* <span className={styles['bread-crumb__your-path']}>مسیر شما: </span> */}
         <span
           className={classnames(
