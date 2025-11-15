@@ -95,7 +95,7 @@ interface Props {
   setIsOpenCollapse: (boolean) => void;
   showCollapse: boolean;
   setShowCollapse: (boolean) => void;
-  uploadHash: string | "";
+  uploadHash: string | '';
   // isStream: boolean;
   // setIsStream: (boolean) => void;
 }
@@ -112,7 +112,7 @@ const FilesDragAndDrop: FunctionComponent<Props> = ({
   setIsOpenCollapse,
   showCollapse,
   setShowCollapse,
-   uploadHash,
+  uploadHash
   // setIsStream
 }) => {
   const { currentHash, validExtension, isSandbox } = useContext(Context);
@@ -200,7 +200,7 @@ const FilesDragAndDrop: FunctionComponent<Props> = ({
     progressRef.current = { ...progressRef.current, [file.name]: 0 };
 
     formData.append('file', file);
-    if(modal?.stream)  formData.append('folderHash', currentHash);
+    if (modal?.stream) formData.append('folderHash', currentHash);
     formData.append('isPublic', `${isPublic}`);
     if ((audio.length > 0 || video.length > 0) && modal.stream) {
       formData.append('streamNeeded', 'true');
@@ -223,7 +223,7 @@ const FilesDragAndDrop: FunctionComponent<Props> = ({
       [`${file.name}_${index}`]: controller
     };
     upload(
-      {isSandbox,uploadHash, formData, stream: modal?.stream},
+      { isSandbox, uploadHash, formData, stream: modal?.stream },
       false,
       {
         onUploadProgress: (e) => onUploadProgress(e, file, index),
@@ -308,7 +308,11 @@ const FilesDragAndDrop: FunctionComponent<Props> = ({
     let breakFunctionForStreamExtention = false;
     let breakFunctionForExtention = false;
     for (let file of files) {
-      if (!validExtension.find((item) => file?.name?.toLocaleLowerCase()?.endsWith(item))) {
+      if (
+        !validExtension.find((item) =>
+          file?.name?.toLocaleLowerCase()?.endsWith(item)
+        )
+      ) {
         breakFunctionForExtention = true;
         break;
       }
@@ -486,6 +490,15 @@ const FilesDragAndDrop: FunctionComponent<Props> = ({
         {
           <ModalBody cssModule={getBs()}>
             <>
+              <div className={classnames(styles['guide'], utilStyles['mb-3'])}>
+                <FontAwesomeIcon
+                  className={styles['guide__icon']}
+                  icon={faExclamationTriangle}
+                />
+                <span className={styles['guide__title']}>
+                  حداقل یکی از کیفیت های استریم را انتخاب کنید.
+                </span>
+              </div>
               <div className={styles['stream']}>
                 {modal.stream && (
                   <>
@@ -504,6 +517,7 @@ const FilesDragAndDrop: FunctionComponent<Props> = ({
                         onClick={(e) => handleClickCheckbox(e, x, 'audio')}
                       />
                     ))}
+
                     <div
                       className={classnames(
                         styles['stream__title'],
@@ -645,7 +659,7 @@ const FilesDragAndDrop: FunctionComponent<Props> = ({
                 }
                 return (
                   <Alert
-                  color="light"
+                    color='light'
                     style={{
                       backgroundColor: progress[`${item.name}_${index}`]
                         ?.hasError

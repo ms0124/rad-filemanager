@@ -113,7 +113,7 @@ const FileManagerReact = ({ ...props }: Props) => {
   return (
     <Context.Provider value={defaultValues}>
       <QueryClientProvider client={queryClient}>
-        <ToastContainer position='bottom-left' rtl />
+        <ToastContainer position='bottom-left' style={{ zIndex: 200000 }} rtl />
         <WithAxios>
           <App />
         </WithAxios>
