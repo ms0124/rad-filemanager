@@ -151,6 +151,7 @@ const Row: FunctionComponent<IProps> = ({ pages = [], setHash }) => {
                     }}
                     item={item}
                     tabType={currentTab}
+                    allFiles={pages.flatMap(page => page?.result?.list || page?.result || [])}
                     // ref={(ref) => (contextMenuRef.current[index] = ref)}
                     ref={(ref) => {
                       const currentIndex = pageIndex * PAGE_SIZE + index;

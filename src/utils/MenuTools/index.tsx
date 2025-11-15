@@ -16,7 +16,11 @@ import {
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEllipsisH } from '@fortawesome/free-solid-svg-icons';
 import FileSaver from 'file-saver';
-import { faPlayCircle, faTrashAlt } from '@fortawesome/free-regular-svg-icons';
+import {
+  faPlayCircle,
+  faTrashAlt,
+  faEye
+} from '@fortawesome/free-regular-svg-icons';
 import MenuItem from './MenuItem';
 import Modal from '../rightClick/Modal';
 import { FolderTypes, OperationTypes } from '../../config/types';
@@ -38,9 +42,11 @@ import {
   IconTrash,
   IconDownload,
   IconCircleInfo,
-  IconShare
+  IconShare,
+  IconPreview
 } from '../../utils/icons';
 import ShareFile from '../../components/ShareFile/index';
+import PreviewModal from '../../components/PreviewModal/index';
 
 interface IProps {
   item: {
@@ -54,10 +60,14 @@ interface IProps {
   ref: any;
   isFirstCol?: boolean;
   onClick?: (event) => void;
+  allFiles?: any[];
 }
 
-const MenuTools: React.FunctionComponent<IProps> = forwardRef(
-  ({ item, tabType, isFirstCol = false, onClick, ...props }, ref) => {
+const MenuTools = forwardRef<any, IProps>(
+  (
+    { item, tabType, isFirstCol = false, onClick, allFiles = [], ...props },
+    ref
+  ) => {
     const {
       itemHash,
       isSandbox,
@@ -78,6 +88,11 @@ const MenuTools: React.FunctionComponent<IProps> = forwardRef(
     const [isOpenShareFile, setIsOpenShareFile] = useState<boolean>(false);
     const toggleShareFile = () => {
       setIsOpenShareFile((prev) => !prev);
+    };
+
+    const [isOpenPreview, setIsOpenPreview] = useState<boolean>(false);
+    const togglePreview = () => {
+      setIsOpenPreview((prev) => !prev);
     };
 
     const toggleModal: () => void = () => setIsOpenModal(!isOpenModal);
@@ -133,24 +148,33 @@ const MenuTools: React.FunctionComponent<IProps> = forwardRef(
           break;
         case OperationTypes.Download:
           if (Array.isArray(selectedItems) && selectedItems.length > 0) {
-          await Promise.all(
-          selectedItems.map(async (x) => {
-            if (x?.type !== FolderTypes.folder) {
-              try {
-                const res = await downloadLink(
-                  objectToQueryString({ fileHash: x.hash, revokeAbility: true })
-                );
-                const { result } = res;
-                const downloadLinkData = result[0]?.downloadLink;
+            await Promise.all(
+              selectedItems.map(async (x) => {
+                if (x?.type !== FolderTypes.folder) {
+                  try {
+                    const res = await downloadLink(
+                      objectToQueryString({
+                        fileHash: x.hash,
+                        revokeAbility: true
+                      })
+                    );
+                    const { result } = res;
+                    const downloadLinkData = result[0]?.downloadLink;
 
-                const blob = await download({ isSandbox, downloadLink:downloadLinkData });
-                FileSaver.saveAs(blob, `${x?.name}.${x?.extension?.toLowerCase()}`);
-              } catch (error) {
-                console.error(`Error downloading ${x?.name}:`, error);
-              }
-            }
-          })
-        );
+                    const blob = await download({
+                      isSandbox,
+                      downloadLink: downloadLinkData
+                    });
+                    FileSaver.saveAs(
+                      blob,
+                      `${x?.name}.${x?.extension?.toLowerCase()}`
+                    );
+                  } catch (error) {
+                    console.error(`Error downloading ${x?.name}:`, error);
+                  }
+                }
+              })
+            );
             setSelectedItems([]);
           } else if (
             item &&
@@ -158,15 +182,16 @@ const MenuTools: React.FunctionComponent<IProps> = forwardRef(
             selectedItems.length === 0
           ) {
             const extension = item.extension.toLowerCase();
-            downloadLink(objectToQueryString({fileHash:item.hash, revokeAbility:true })).then(res=> {
+            downloadLink(
+              objectToQueryString({ fileHash: item.hash, revokeAbility: true })
+            ).then((res) => {
               const { result } = res;
               const downloadLink = result[0]?.downloadLink;
-              
-              download({isSandbox, downloadLink})
-              .then((blob) => {
+
+              download({ isSandbox, downloadLink }).then((blob) => {
                 FileSaver.saveAs(blob, `${item?.name}.${extension}`);
               });
-            })
+            });
           }
           break;
         case OperationTypes.RemoveArchive:
@@ -177,6 +202,10 @@ const MenuTools: React.FunctionComponent<IProps> = forwardRef(
           break;
         case OperationTypes.Share:
           setIsOpenShareFile(true);
+          break;
+        case OperationTypes.Preview:
+          setIsOpenPreview(true);
+          break;
       }
     };
 
@@ -200,6 +229,14 @@ const MenuTools: React.FunctionComponent<IProps> = forwardRef(
             toggle={toggleShareFile}
             hash={item?.hash}
             isPublic={item?.isPublic}
+          />
+        )}
+        {isOpenPreview && (
+          <PreviewModal
+            isOpen={isOpenPreview}
+            toggle={togglePreview}
+            item={item}
+            allFiles={allFiles}
           />
         )}
         {isOpenModal && operationType === OperationTypes.Remove ? (
@@ -273,6 +310,23 @@ const MenuTools: React.FunctionComponent<IProps> = forwardRef(
                 />
               )}
             </CheckPermissions>
+            {item?.type == FolderTypes.folder ||
+            tabType == TabTypes.ArchiveList ? (
+              ''
+            ) : (
+              <MenuItem
+                clickHandler={() => clickHandler(OperationTypes.Preview)}
+                title='پیش نمایش'
+                enTitle='Preview'
+                icon={
+                  <FontAwesomeIcon
+                    icon={faEye}
+                    style={{ width: '18px', height: '16px' }}
+                  />
+                }
+                type={OperationTypes.Preview}
+              />
+            )}
             {item?.type == FolderTypes.folder ||
             tabType == TabTypes.ArchiveList ? (
               ''

@@ -171,6 +171,7 @@ const Column: React.FunctionComponent<IProps> = ({
                           isFirstCol={index % colCount === 0 ? true : false}
                           item={item}
                           tabType={currentTab}
+                          allFiles={pages.flatMap(page => page?.result?.list || page?.result || [])}
                           ref={(ref) => {
                             const currentIndex = pageIndex * PAGE_SIZE + index;
                             return (contextMenuRef.current[currentIndex] = ref);
