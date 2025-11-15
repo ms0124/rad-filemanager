@@ -13,7 +13,7 @@ const UserStorage: React.FunctionComponent = () => {
   const { data, isLoading, refetch } = useGetUserStorage();
   let storageLimit: any = '0';
   let storageUsage: any = '0';
-  let percent: string = '0';
+  let percent: number | string = '0';
 
   if (!isLoading && data?.result) {
     percent = (
@@ -33,6 +33,13 @@ const UserStorage: React.FunctionComponent = () => {
       refetch();
     }
   }, []);
+
+  const percentAsNumber =
+    typeof percent === 'string' ? parseFloat(percent) : percent;
+
+  const limitPercent = isNaN(percentAsNumber)
+    ? 0
+    : Math.min(percentAsNumber, 100);
 
   return (
     <React.Fragment>
@@ -59,7 +66,7 @@ const UserStorage: React.FunctionComponent = () => {
             <div className={styles['user-storage__wrapper--bar']}>
               <span
                 className={styles['user-storage__wrapper--fill']}
-                style={{ width: `${percent}%` }}
+                style={{ width: `${limitPercent}%` }}
               ></span>
             </div>
           </div>
