@@ -12,7 +12,7 @@ import Column from '../StateColumnList/column';
 import { getHeader, useGetFolderContentChildren } from '../../config/hooks';
 
 import Empety from '../StateColumnList/empty';
-import { TabTypes } from '../../config/types';
+import { TabTypes, FolderTypes } from '../../config/types';
 import { Loading } from '../../utils/index';
 import { objectToQueryString } from '../../utils';
 import { PAGE_SIZE } from '../../config/config';
@@ -33,7 +33,9 @@ const FileTab: FunctionComponent<IProps> = ({ setTotal }) => {
     orderBy,
     desc,
     isShowCheckbox,
-    setIsShowCheckbox
+    setIsShowCheckbox,
+    validExtension,
+    setSelectedItems
   } = useContext(Context);
 
   let { data, isLoading, isFetching, fetchNextPage, hasNextPage, refetch } =
@@ -66,6 +68,42 @@ const FileTab: FunctionComponent<IProps> = ({ setTotal }) => {
     if (event.key == 'Control' && !isShowCheckbox) {
       setIsShowCheckbox(true);
     }
+    // Ctrl+A selects
+    if (
+      (event.ctrlKey || event.metaKey) &&
+      (event.key === 'a' || event.key === 'A')
+    ) {
+      event.preventDefault();
+      setIsShowCheckbox(true);
+      try {
+        const pagesData = data?.pages || [];
+        const list: any[] = [];
+        pagesData.forEach((page) => {
+          const arr = page?.result?.list ? page?.result?.list : page?.result;
+          if (Array.isArray(arr)) list.push(...arr);
+        });
+        const valid = list.filter((item) =>
+          validExtension.find(
+            (x) =>
+              x?.toLowerCase() === item?.extension?.toLowerCase() ||
+              (!item.extension &&
+                x === 'dir' &&
+                item.type === FolderTypes.folder)
+          )
+        );
+        setSelectedItems((prev) => {
+          const merged: any[] = [];
+          const seen = new Set<string>();
+          [...prev, ...valid].forEach((item) => {
+            if (!seen.has(item.hash)) {
+              seen.add(item.hash);
+              merged.push(item);
+            }
+          });
+          return merged;
+        });
+      } catch (e) {}
+    }
   };
   // const handleKeyUp = (event) => {
   //   console.log('up', { event });
@@ -81,7 +119,7 @@ const FileTab: FunctionComponent<IProps> = ({ setTotal }) => {
       document.body.removeEventListener('keydown', handleKeyDown);
       // document.body.removeEventListener('keyup', handleKeyUp);
     };
-  }, [isShowCheckbox]);
+  }, [isShowCheckbox, data?.pages, validExtension]);
 
   return (
     <React.Fragment>

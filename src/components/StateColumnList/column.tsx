@@ -1,7 +1,7 @@
 import styles from './style.module.scss';
 import utilStyles from '../../sass/style.module.scss';
 
-import React, { useContext, useRef } from 'react';
+import React, { useContext, useEffect, useMemo, useRef } from 'react';
 import { Row, Col } from 'reactstrap';
 import moment from 'moment-jalaali';
 import classnames from 'classnames';
@@ -17,9 +17,7 @@ import { Context } from '../../store/index';
 import { getBs, getViewport } from '../../utils/index';
 import DefaultThumnail from './defaultThumbnail/index';
 import { PAGE_SIZE } from '../../config/config';
-import FileIcon from './defaultThumbnail/index'; 
-
-
+import FileIcon from './defaultThumbnail/index';
 
 interface IProps {
   pages: any;
@@ -45,6 +43,7 @@ const Column: React.FunctionComponent<IProps> = ({
   const slectedRef = useRef<(HTMLDivElement | null)[]>([]);
   const contextMenuRef: any = useRef<[]>([]);
   const rightClickRef: any = useRef<any>(null);
+  const mainCheckboxRef = useRef<HTMLInputElement | null>(null);
   const closeRightClick = () => {
     contextMenuRef.current.map((x) => {
       if (x?.isOpenState()) {
@@ -76,7 +75,7 @@ const Column: React.FunctionComponent<IProps> = ({
       newSelectedArray = [item];
       setSelectedItems([item]);
     }
-   
+
     if (onSelect) {
       const withOutFolders = newSelectedArray.filter((x) =>
         x.type === FolderTypes.folder ? false : true
@@ -84,6 +83,89 @@ const Column: React.FunctionComponent<IProps> = ({
       onSelect(withOutFolders);
     }
   };
+  const allLoadedItems = useMemo(() => {
+    const flat: any[] = [];
+    pages.forEach((page) => {
+      const list = page?.result?.list ? page?.result?.list : page?.result;
+      if (Array.isArray(list)) flat.push(...list);
+    });
+    return flat.filter((item) =>
+      validExtension.find(
+        (x) =>
+          x?.toLowerCase() === item?.extension?.toLowerCase() ||
+          (!item.extension && x === 'dir' && item.type === FolderTypes.folder)
+      )
+    );
+  }, [pages, validExtension]);
+
+  const allSelected = useMemo(() => {
+    if (!allLoadedItems.length) return false;
+    return allLoadedItems.every((item) =>
+      selectedItems.find((x) => x.hash === item.hash)
+    );
+  }, [allLoadedItems, selectedItems]);
+
+  const someSelected = useMemo(() => {
+    if (!allLoadedItems.length) return false;
+    const count = allLoadedItems.filter((item) =>
+      selectedItems.find((x) => x.hash === item.hash)
+    ).length;
+    return count > 0 && count < allLoadedItems.length;
+  }, [allLoadedItems, selectedItems]);
+
+  useEffect(() => {
+    if (mainCheckboxRef.current) {
+      mainCheckboxRef.current.indeterminate = someSelected;
+    }
+  }, [someSelected]);
+
+  const deselectLoaded = () => {
+    if (allLoadedItems.length === 0) return;
+    const remaining = selectedItems.filter(
+      (sel) => !allLoadedItems.find((item) => item.hash === sel.hash)
+    );
+    setSelectedItems(remaining);
+    if (onSelect) {
+      const withOutFolders = remaining.filter((x) =>
+        x.type === FolderTypes.folder ? false : true
+      );
+      onSelect(withOutFolders);
+    }
+  };
+
+  const selectAllLoaded = () => {
+    if (allLoadedItems.length === 0) return;
+    const merged: any[] = [];
+    const seen = new Set<string>();
+    [...selectedItems, ...allLoadedItems].forEach((it) => {
+      if (!seen.has(it.hash)) {
+        seen.add(it.hash);
+        merged.push(it);
+      }
+    });
+    setSelectedItems(merged);
+    if (onSelect) {
+      const withOutFolders = merged.filter((x) =>
+        x.type === FolderTypes.folder ? false : true
+      );
+      onSelect(withOutFolders);
+    }
+  };
+
+  useEffect(() => {
+    const onSelectAll = () => selectAllLoaded();
+    const onDeselectAll = () => deselectLoaded();
+    window.addEventListener('fm-select-all', onSelectAll as EventListener);
+    window.addEventListener('fm-deselect-all', onDeselectAll as EventListener);
+    return () => {
+      window.removeEventListener('fm-select-all', onSelectAll as EventListener);
+      window.removeEventListener(
+        'fm-deselect-all',
+        onDeselectAll as EventListener
+      );
+    };
+  }, [allLoadedItems, selectedItems]);
+
   const viewportName = getViewport();
   let colCount = 4;
   if (viewportName === 'xl' || viewportName === 'xxl') {
@@ -106,7 +188,14 @@ const Column: React.FunctionComponent<IProps> = ({
           const _data = page?.result?.list ? page?.result?.list : page?.result;
           return _data.map((item, index) => {
             return (
-              <Col cssModule={getBs()} xs={6} md={3} lg={3} xl={2} key={item.hash}>
+              <Col
+                cssModule={getBs()}
+                xs={6}
+                md={3}
+                lg={3}
+                xl={2}
+                key={item.hash}
+              >
                 <div
                   onContextMenu={(event: any) => {
                     event.preventDefault();
@@ -195,21 +284,18 @@ const Column: React.FunctionComponent<IProps> = ({
                     )}
                     <div className={styles['col__icon-access-wrapper']}>
                       {item?.isPublic ? (
-                        
                         <FontAwesomeIcon
                           className={styles['col__icon-access']}
                           icon={faGlobe}
                         />
-                      ) 
-                      : (
-                     
+                      ) : (
                         <FontAwesomeIcon
                           className={styles['col__icon-access']}
                           icon={faKey}
                         />
                       )}
                     </div>
-                   
+
                     {/* {item?.type != FolderTypes.folder ? (
                       item?.thumbnail &&
                       item?.thumbnail.startsWith('THUMBNAIL_EXIST') ? (                 
@@ -234,28 +320,30 @@ const Column: React.FunctionComponent<IProps> = ({
                         />
                       </div>
                     )} */}
-                    
-                  {item?.type !== FolderTypes.folder ? (
-                    (!item?.isPublic || item?.thumbnail === 'WITHOUT_THUMBNAIL') ? (
-                      <FileIcon item={item} size="2x" />
-                    ) : item?.thumbnail && item?.thumbnail.startsWith('THUMBNAIL_EXIST') ? (
-                      <img
-                        className={styles['col__img']}
-                        src={getThumbnailUrl(item?.hash, isSandbox)}
-                      />
-                    ) : item ? (
-                      <DefaultThumnail item={item} />
+
+                    {item?.type !== FolderTypes.folder ? (
+                      !item?.isPublic ||
+                      item?.thumbnail === 'WITHOUT_THUMBNAIL' ? (
+                        <FileIcon item={item} size='2x' />
+                      ) : item?.thumbnail &&
+                        item?.thumbnail.startsWith('THUMBNAIL_EXIST') ? (
+                        <img
+                          className={styles['col__img']}
+                          src={getThumbnailUrl(item?.hash, isSandbox)}
+                        />
+                      ) : item ? (
+                        <DefaultThumnail item={item} />
+                      ) : (
+                        ''
+                      )
                     ) : (
-                      ''
-                    )
-                  ) : (
-                    <div className={styles['col__folder-img-wrapper']}>
-                      <img
-                        className={styles['col__folder-img']}
-                        src={folder}
-                      />
-                    </div>
-                  )}
+                      <div className={styles['col__folder-img-wrapper']}>
+                        <img
+                          className={styles['col__folder-img']}
+                          src={folder}
+                        />
+                      </div>
+                    )}
                   </div>
                   <h4
                     className={styles['col__title']}

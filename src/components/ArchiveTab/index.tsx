@@ -14,15 +14,24 @@ import Empty from '../StateColumnList/empty';
 
 import { useArchiveList } from '../../config/hooks';
 import { Loading, objectToQueryString } from '../../utils/';
-import { TabTypes } from '../../config/types';
+import { TabTypes, FolderTypes } from '../../config/types';
 import Empety from '../StateColumnList/empty';
 import { PAGE_SIZE } from '../../config/config';
 
 interface IProps {}
 
 const ArchiveTab: FunctionComponent<IProps> = () => {
-  const { isList, setCurrentHash, currentTab, setBreadCrumb, orderBy, desc } =
-    useContext(Context);
+  const {
+    isList,
+    setCurrentHash,
+    currentTab,
+    setBreadCrumb,
+    orderBy,
+    desc,
+    setIsShowCheckbox,
+    validExtension,
+    setSelectedItems
+  } = useContext(Context);
 
   const { ref, inView } = useInView();
   let { data, isLoading, isFetching, fetchNextPage, hasNextPage, refetch } =
@@ -45,6 +54,48 @@ const ArchiveTab: FunctionComponent<IProps> = () => {
       setBreadCrumb([{ name: 'آرشیو', hash: '', disabled: true }]);
     }
   }, [currentTab]);
+  // Ctrl+A selects
+  useEffect(() => {
+    const handleKeyDown = function (event) {
+      if (
+        (event.ctrlKey || event.metaKey) &&
+        (event.key === 'a' || event.key === 'A')
+      ) {
+        event.preventDefault();
+        setIsShowCheckbox(true);
+        try {
+          const pagesData = data?.pages || [];
+          const list: any[] = [];
+          pagesData.forEach((page) => {
+            const arr = page?.result?.list ? page?.result?.list : page?.result;
+            if (Array.isArray(arr)) list.push(...arr);
+          });
+          const valid = list.filter((item) =>
+            validExtension.find(
+              (x) =>
+                x?.toLowerCase() === item?.extension?.toLowerCase() ||
+                (!item.extension &&
+                  x === 'dir' &&
+                  item.type === FolderTypes.folder)
+            )
+          );
+          setSelectedItems((prev) => {
+            const merged: any[] = [];
+            const seen = new Set<string>();
+            [...prev, ...valid].forEach((item) => {
+              if (!seen.has(item.hash)) {
+                seen.add(item.hash);
+                merged.push(item);
+              }
+            });
+            return merged;
+          });
+        } catch (e) {}
+      }
+    };
+    document.body.addEventListener('keydown', handleKeyDown);
+    return () => document.body.removeEventListener('keydown', handleKeyDown);
+  }, [data?.pages]);
 
   return (
     <React.Fragment>

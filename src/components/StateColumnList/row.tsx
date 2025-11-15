@@ -1,7 +1,13 @@
 import styles from './style.module.scss';
 import utilStyles from '../../sass/style.module.scss';
 
-import React, { FunctionComponent, useContext, useRef } from 'react';
+import React, {
+  FunctionComponent,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef
+} from 'react';
 import { Table } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faKey, faGlobe } from '@fortawesome/free-solid-svg-icons';
@@ -21,7 +27,7 @@ import { TabTypes, FolderTypes } from '../../config/types';
 import { PAGE_SIZE } from '../../config/config';
 import folder from './folder.png';
 import { RightClick } from '../../utils';
-import FileIcon from './defaultThumbnail/index'; 
+import FileIcon from './defaultThumbnail/index';
 
 interface IProps {
   pages: any;
@@ -45,6 +51,101 @@ const Row: FunctionComponent<IProps> = ({ pages = [], setHash }) => {
   const contextMenuRef: any = useRef<[]>([]);
 
   const rightClickRef: any = useRef<any>(null);
+  const mainCheckboxRef = useRef<HTMLInputElement | null>(null);
+
+  const allLoadedItems = useMemo(() => {
+    const flat: any[] = [];
+    pages.forEach((page) => {
+      const list = page?.result?.list ? page?.result?.list : page?.result;
+      if (Array.isArray(list)) flat.push(...list);
+    });
+    return flat.filter((item) =>
+      validExtension.find(
+        (x) =>
+          x?.toLowerCase() === item?.extension?.toLowerCase() ||
+          (!item.extension && x === 'dir' && item.type === FolderTypes.folder)
+      )
+    );
+  }, [pages, validExtension]);
+
+  const allSelected = useMemo(() => {
+    if (!allLoadedItems.length) return false;
+    return allLoadedItems.every((item) =>
+      selectedItems.find((x) => x.hash === item.hash)
+    );
+  }, [allLoadedItems, selectedItems]);
+
+  const someSelected = useMemo(() => {
+    if (!allLoadedItems.length) return false;
+    const count = allLoadedItems.filter((item) =>
+      selectedItems.find((x) => x.hash === item.hash)
+    ).length;
+    return count > 0 && count < allLoadedItems.length;
+  }, [allLoadedItems, selectedItems]);
+
+  useEffect(() => {
+    if (mainCheckboxRef.current) {
+      mainCheckboxRef.current.indeterminate = someSelected;
+    }
+  }, [someSelected]);
+
+  const deselectLoaded = () => {
+    if (allLoadedItems.length === 0) return;
+    // deselect loaded items only
+    const remaining = selectedItems.filter(
+      (sel) => !allLoadedItems.find((item) => item.hash === sel.hash)
+    );
+    setSelectedItems(remaining);
+    if (onSelect) {
+      const withOutFolders = remaining.filter((x) =>
+        x.type === FolderTypes.folder ? false : true
+      );
+      onSelect(withOutFolders);
+    }
+  };
+
+  const selectAllLoaded = () => {
+    if (allLoadedItems.length === 0) return;
+    const merged: any[] = [];
+    const seen = new Set<string>();
+    [...selectedItems, ...allLoadedItems].forEach((it) => {
+      if (!seen.has(it.hash)) {
+        seen.add(it.hash);
+        merged.push(it);
+      }
+    });
+    setSelectedItems(merged);
+    if (onSelect) {
+      const withOutFolders = merged.filter((x) =>
+        x.type === FolderTypes.folder ? false : true
+      );
+      onSelect(withOutFolders);
+    }
+  };
+
+  const handleToggleSelectAll = () => {
+    if (allSelected) {
+      // deselect loaded items only
+      deselectLoaded();
+    } else {
+      // select all loaded
+      selectAllLoaded();
+    }
+  };
+
+  useEffect(() => {
+    const onSelectAll = () => selectAllLoaded();
+    const onDeselectAll = () => deselectLoaded();
+    window.addEventListener('fm-select-all', onSelectAll as EventListener);
+    window.addEventListener('fm-deselect-all', onDeselectAll as EventListener);
+    return () => {
+      window.removeEventListener('fm-select-all', onSelectAll as EventListener);
+      window.removeEventListener(
+        'fm-deselect-all',
+        onDeselectAll as EventListener
+      );
+    };
+  }, [allLoadedItems, selectedItems]);
 
   const handleSelectItem = (item, multiSelect = true) => {
     const isValid = validExtension.find(
@@ -95,7 +196,18 @@ const Row: FunctionComponent<IProps> = ({ pages = [], setHash }) => {
           <tr>
             <th></th>
             <th className={`${utilStyles['text-center']} `} colSpan={3}>
-              نام فایل
+              {/* <span>نام فایل</span>
+              {isShowCheckbox && (
+                <span style={{ marginInlineStart: 12 }}>
+                  <input
+                    ref={mainCheckboxRef}
+                    type='checkbox'
+                    checked={!!allSelected}
+                    onChange={handleToggleSelectAll}
+                  />
+                  <span style={{ marginInlineStart: 6 }}>انتخاب همه</span>
+                </span>
+              )} */}
             </th>
             <th className={`${utilStyles['text-center']}`}>تاریخ ایجاد</th>
             <th className={`${utilStyles['text-center']}`}>تاریخ ویرایش</th>
@@ -206,9 +318,11 @@ const Row: FunctionComponent<IProps> = ({ pages = [], setHash }) => {
                     </div>
                   )} */}
                   {item?.type !== FolderTypes.folder ? (
-                    (!item?.isPublic || item?.thumbnail === 'WITHOUT_THUMBNAIL') ? (
-                      <FileIcon item={item} size="2x" />
-                    ) : item?.thumbnail && item?.thumbnail.startsWith('THUMBNAIL_EXIST') ? (
+                    !item?.isPublic ||
+                    item?.thumbnail === 'WITHOUT_THUMBNAIL' ? (
+                      <FileIcon item={item} size='2x' />
+                    ) : item?.thumbnail &&
+                      item?.thumbnail.startsWith('THUMBNAIL_EXIST') ? (
                       <img
                         className={styles['col__img']}
                         src={getThumbnailUrl(item?.hash, isSandbox)}
@@ -220,10 +334,7 @@ const Row: FunctionComponent<IProps> = ({ pages = [], setHash }) => {
                     )
                   ) : (
                     <div className={styles['col__folder-img-wrapper']}>
-                      <img
-                        className={styles['col__folder-img']}
-                        src={folder}
-                      />
+                      <img className={styles['col__folder-img']} src={folder} />
                     </div>
                   )}
                 </td>
