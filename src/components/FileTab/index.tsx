@@ -100,6 +100,9 @@ const FileTab: FunctionComponent<IProps> = ({ setTotal }) => {
               merged.push(item);
             }
           });
+          if (valid.length > 0) {
+            window.dispatchEvent(new Event('fm-select-all'));
+          }
           return merged;
         });
       } catch (e) {}

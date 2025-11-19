@@ -1,7 +1,7 @@
 import styles from './style.module.scss';
 import utilStyles from '../../sass/style.module.scss';
 
-import React, { useContext, useMemo } from 'react';
+import React, { useContext, useMemo, useEffect, useRef } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faAngleLeft } from '@fortawesome/free-solid-svg-icons';
 import { Context } from '../../store/index';
@@ -18,6 +18,8 @@ const index = () => {
     setCurrentTab,
     setSearchText
   } = useContext(Context);
+
+  const checkboxRef = useRef<HTMLInputElement>(null);
 
   const breadCrumbList = useMemo(() => {
     return breadCrumb
@@ -44,6 +46,26 @@ const index = () => {
     }
   };
 
+  useEffect(() => {
+    const handleSelectAll = () => {
+      if (checkboxRef.current) {
+        checkboxRef.current.checked = true;
+      }
+    };
+    const handleDeselectAll = () => {
+      if (checkboxRef.current) {
+        checkboxRef.current.checked = false;
+      }
+    };
+
+    window.addEventListener('fm-select-all', handleSelectAll);
+    window.addEventListener('fm-deselect-all', handleDeselectAll);
+    return () => {
+      window.removeEventListener('fm-select-all', handleSelectAll);
+      window.removeEventListener('fm-deselect-all', handleDeselectAll);
+    };
+  }, []);
+
   return (
     <div className={classnames(styles['bread-crumb'])}>
       <div className={classnames(styles['bread-crumb__wrapper-item'])}>
@@ -56,6 +78,7 @@ const index = () => {
           }}
         >
           <input
+            ref={checkboxRef}
             style={{ cursor: 'pointer' }}
             type='checkbox'
             onChange={(e) => {

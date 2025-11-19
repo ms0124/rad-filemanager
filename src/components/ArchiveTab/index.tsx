@@ -88,6 +88,9 @@ const ArchiveTab: FunctionComponent<IProps> = () => {
                 merged.push(item);
               }
             });
+            if (valid.length > 0) {
+              window.dispatchEvent(new Event('fm-select-all'));
+            }
             return merged;
           });
         } catch (e) {}
@@ -95,7 +98,7 @@ const ArchiveTab: FunctionComponent<IProps> = () => {
     };
     document.body.addEventListener('keydown', handleKeyDown);
     return () => document.body.removeEventListener('keydown', handleKeyDown);
-  }, [data?.pages]);
+  }, [data?.pages, validExtension, setIsShowCheckbox, setSelectedItems]);
 
   return (
     <React.Fragment>
