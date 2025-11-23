@@ -132,6 +132,10 @@ const MenuTools = forwardRef<any, IProps>(
           if (Array.isArray(selectedItems) && selectedItems.length > 0) {
             // some action in the futuer
             // if multi item select
+            // just for one Item
+            if(selectedItems.length === 1){
+              setItemHash(item?.hash);
+            }
           } else {
             setItemHash(item?.hash);
           }
@@ -141,6 +145,10 @@ const MenuTools = forwardRef<any, IProps>(
           if (Array.isArray(selectedItems) && selectedItems.length > 0) {
             // some action in the futuer
             // if multi item select
+            // just for one Item
+            if(selectedItems.length === 1){
+              setItemHash(item?.hash);
+            }
           } else {
             setItemHash(item?.hash);
           }
