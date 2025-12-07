@@ -44,12 +44,14 @@ const Row: FunctionComponent<IProps> = ({ pages = [], setHash }) => {
     isShowCheckbox,
     selectedItems,
     setSelectedItems,
-    validExtension
+    validExtension,
+    itemHash,
+    setItemHash,
   } = useContext(Context);
 
   const slectedRef = useRef<(HTMLDivElement | null)[]>([]);
   const contextMenuRef: any = useRef<[]>([]);
-
+  const isDoubleClick = useRef<boolean>(false);
   const rightClickRef: any = useRef<any>(null);
   const mainCheckboxRef = useRef<HTMLInputElement | null>(null);
 
@@ -168,6 +170,12 @@ const Row: FunctionComponent<IProps> = ({ pages = [], setHash }) => {
     } else if (!multiSelect && selectedItems.length == 1) {
       newSelectedArray = [item];
       setSelectedItems([item]);
+    }
+
+     if(!multiSelect && !itemHash){
+      setItemHash("");
+    }else if(!multiSelect && itemHash) {
+      setItemHash(itemHash);
     }
 
     if (onSelect) {
@@ -347,10 +355,21 @@ const Row: FunctionComponent<IProps> = ({ pages = [], setHash }) => {
                     // if (item?.type === FolderTypes.folder) return; // for folder dont select
                     // if (!item?.isPublic) return; //don't select private items
                     // if multi select is enable ==> prevent one select work
-                    handleSelectItem(item, isShowCheckbox);
+
+                    isDoubleClick.current = false;
+
+                    const intervalId = setTimeout(()=>{
+                    if(isDoubleClick.current == false){
+                      clearInterval(intervalId);
+                       handleSelectItem(item, isShowCheckbox);
+                      }
+                    }, 300);
                   }}
                   role='button'
                   onDoubleClick={() => {
+
+                    isDoubleClick.current = true;
+                    
                     if (TabTypes.SearchList) {
                       setSearchText('');
                     }

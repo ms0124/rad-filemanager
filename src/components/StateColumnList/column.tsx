@@ -38,12 +38,17 @@ const Column: React.FunctionComponent<IProps> = ({
     isSandbox,
     selectedItems,
     setSelectedItems,
+    itemHash,
+    setItemHash,
     validExtension
   } = useContext(Context);
+  
   const slectedRef = useRef<(HTMLDivElement | null)[]>([]);
   const contextMenuRef: any = useRef<[]>([]);
   const rightClickRef: any = useRef<any>(null);
   const mainCheckboxRef = useRef<HTMLInputElement | null>(null);
+  const isDoubleClick = useRef<boolean>(false);
+
   const closeRightClick = () => {
     contextMenuRef.current.map((x) => {
       if (x?.isOpenState()) {
@@ -60,6 +65,7 @@ const Column: React.FunctionComponent<IProps> = ({
     );
 
     if (!isValid) return;
+
     const itemFinded = selectedItems.find((x) => x?.hash === item.hash);
     let newSelectedArray: any = [];
 
@@ -74,6 +80,12 @@ const Column: React.FunctionComponent<IProps> = ({
     } else if (!multiSelect && selectedItems.length == 1) {
       newSelectedArray = [item];
       setSelectedItems([item]);
+    }
+
+    if(!multiSelect && !itemHash){
+      setItemHash("");
+    }else if(!multiSelect && itemHash) {
+      setItemHash(itemHash);
     }
 
     if (onSelect) {
@@ -217,9 +229,17 @@ const Column: React.FunctionComponent<IProps> = ({
                     // if (item?.type === FolderTypes.folder) return; // for folder dont select
                     // if (!item?.isPublic) return; //don't select private items
                     // if multi select is enable ==> prevent one select work
-                    handleSelectItem(item, isShowCheckbox);
+                    isDoubleClick.current = false;
+
+                    const intervalId = setTimeout(()=>{
+                    if(isDoubleClick.current == false){
+                      clearInterval(intervalId);
+                       handleSelectItem(item, isShowCheckbox);
+                      }
+                    }, 300);
                   }}
                   onDoubleClick={() => {
+                    isDoubleClick.current = true;
                     if (TabTypes.SearchList) {
                       setSearchText('');
                     }
