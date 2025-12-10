@@ -205,7 +205,7 @@ const FilesDragAndDrop: FunctionComponent<Props> = ({
 
     formData.append('file', file);
     if (modal?.stream) formData.append('folderHash', currentHash);
-    // formData.append('isPublic', `${isPublic}`);
+    if(modal?.stream) formData.append('isPublic', `${isPublic}`);
     if ((audio.length > 0 || video.length > 0) && modal.stream) {
       formData.append('streamNeeded', 'true');
 
@@ -353,39 +353,40 @@ const FilesDragAndDrop: FunctionComponent<Props> = ({
     }
     return false;
   };
-  const handleDrop = (e: any) => {
+  const handleDrop = async (e: any) => {
+    
     e.preventDefault();
     e.stopPropagation();
 
     const files = e.dataTransfer.files
-    
-    refetch().then(({data})=>{
-
+    if(!modal.stream){
+      const { data } =await refetch();
       uploadHashRef.current = data?.result[0]?.uploadHash;
+    }
 
-      if (disabledUploadStream) return;
-      setHoverFile(false);
-      setUploadComplete(false);
+    if (disabledUploadStream) return;
+    setHoverFile(false);
+    setUploadComplete(false);
 
-      if (files && files.length > 0) {
-        if (breakUpload(files)) return;
+    if (files && files.length > 0) {
+      if (breakUpload(files)) return;
+    }
+    if (files && files.length) {
+      let index = fileListRef.current.length;
+      for (let file of files) {
+        onUpload(file, index);
+        index++;
       }
-      if (files && files.length) {
-        let index = fileListRef.current.length;
-        for (let file of files) {
-          onUpload(file, index);
-          index++;
-        }
-      }
-    });
+    }
   };
 
-  const handleOnChangesInputFiles =  (e) => {
+  const handleOnChangesInputFiles =  async (e) => {
     
     const files = [...e.target.files]; 
-    refetch().then(({data})=>{
-      
+    if(!modal.stream){
+      const { data } = await refetch(); 
       uploadHashRef.current = data?.result[0]?.uploadHash;
+    }
       
       setUploadComplete(false);
       if (files && files.length > 0) {
@@ -399,7 +400,6 @@ const FilesDragAndDrop: FunctionComponent<Props> = ({
           index++;
         }
       }
-    });
   };
 
   const handleToggleShowCollapse = () => {
@@ -506,7 +506,7 @@ const FilesDragAndDrop: FunctionComponent<Props> = ({
         {
           <ModalBody cssModule={getBs()}>
             <>
-              <div className={classnames(styles['guide'], utilStyles['mb-3'])}>
+              {modal.stream && <div className={classnames(styles['guide'], utilStyles['mb-3'])}>
                 <FontAwesomeIcon
                   className={styles['guide__icon']}
                   icon={faExclamationTriangle}
@@ -514,7 +514,7 @@ const FilesDragAndDrop: FunctionComponent<Props> = ({
                 <span className={styles['guide__title']}>
                   حداقل یکی از کیفیت های استریم را انتخاب کنید.
                 </span>
-              </div>
+              </div>}
               <div className={styles['stream']}>
                 {modal.stream && (
                   <>
