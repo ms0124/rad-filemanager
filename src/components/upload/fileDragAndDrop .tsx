@@ -22,6 +22,7 @@ import {
   Label
 } from 'reactstrap';
 import classnames from 'classnames';
+import moment from "moment-jalaali";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faCloudUploadAlt,
@@ -40,6 +41,8 @@ import { getHeader } from '../../config/hooks';
 import { getBs } from '../../utils/index';
 import { IconTick, IconTimes, IconUpload } from '../../utils/icons';
 import { audioQualities, videoQualities } from './upload.constants';
+import { useUploadLink } from "../../config/hooks";
+import { objectToQueryString } from '../../utils/index';
 
 import DefaultThumbnail from '../StateColumnList/defaultThumbnail/index';
 
@@ -95,7 +98,6 @@ interface Props {
   setIsOpenCollapse: (boolean) => void;
   showCollapse: boolean;
   setShowCollapse: (boolean) => void;
-  uploadHash: string | '';
   // isStream: boolean;
   // setIsStream: (boolean) => void;
 }
@@ -112,7 +114,6 @@ const FilesDragAndDrop: FunctionComponent<Props> = ({
   setIsOpenCollapse,
   showCollapse,
   setShowCollapse,
-  uploadHash
   // setIsStream
 }) => {
   const { currentHash, validExtension, isSandbox } = useContext(Context);
@@ -145,9 +146,12 @@ const FilesDragAndDrop: FunctionComponent<Props> = ({
   const [isPublic, setIsPublic] = useState<boolean>(false);
 
   const fileListRef = useRef<fileListInterface[]>([]);
+  const uploadHashRef = useRef<string>("");
   const progressRef = useRef({});
   const inputRef = useRef<HTMLInputElement | null>(null);
   const controllerRef: any = useRef([]);
+
+  const {data , refetch }= useUploadLink( objectToQueryString({ size: 0, expiration: moment().add(1, "hour").format("YYYY/MM/DD HH:mm:00"), destination: currentHash , isPublic:isPublic} ));
 
   const disabledUploadStream = useMemo(() => {
     return modal.stream && audio.length === 0 && video.length === 0
@@ -201,7 +205,7 @@ const FilesDragAndDrop: FunctionComponent<Props> = ({
 
     formData.append('file', file);
     if (modal?.stream) formData.append('folderHash', currentHash);
-    formData.append('isPublic', `${isPublic}`);
+    // formData.append('isPublic', `${isPublic}`);
     if ((audio.length > 0 || video.length > 0) && modal.stream) {
       formData.append('streamNeeded', 'true');
 
@@ -223,7 +227,7 @@ const FilesDragAndDrop: FunctionComponent<Props> = ({
       [`${file.name}_${index}`]: controller
     };
     upload(
-      { isSandbox, uploadHash, formData, stream: modal?.stream },
+      { isSandbox, uploadHash: uploadHashRef.current, formData, stream: modal?.stream },
       false,
       {
         onUploadProgress: (e) => onUploadProgress(e, file, index),
@@ -352,38 +356,50 @@ const FilesDragAndDrop: FunctionComponent<Props> = ({
   const handleDrop = (e: any) => {
     e.preventDefault();
     e.stopPropagation();
-    if (disabledUploadStream) return;
-    setHoverFile(false);
-    setUploadComplete(false);
 
-    const files = e.dataTransfer.files;
+    const files = e.dataTransfer.files
+    
+    refetch().then(({data})=>{
 
-    if (files && files.length > 0) {
-      if (breakUpload(files)) return;
-    }
-    if (files && files.length) {
-      let index = fileListRef.current.length;
-      for (let file of files) {
-        onUpload(file, index);
-        index++;
+      uploadHashRef.current = data?.result[0]?.uploadHash;
+
+      if (disabledUploadStream) return;
+      setHoverFile(false);
+      setUploadComplete(false);
+
+      if (files && files.length > 0) {
+        if (breakUpload(files)) return;
       }
-    }
+      if (files && files.length) {
+        let index = fileListRef.current.length;
+        for (let file of files) {
+          onUpload(file, index);
+          index++;
+        }
+      }
+    });
   };
 
-  const handleOnChangesInputFiles = (e) => {
-    const files = e.target.files;
-
-    setUploadComplete(false);
-    if (files && files.length > 0) {
-      if (breakUpload(files)) return;
-    }
-    let index = fileListRef.current.length;
-    if (files && files.length) {
-      for (let file of files) {
-        onUpload(file, index);
-        index++;
+  const handleOnChangesInputFiles =  (e) => {
+    
+    const files = [...e.target.files]; 
+    refetch().then(({data})=>{
+      
+      uploadHashRef.current = data?.result[0]?.uploadHash;
+      
+      setUploadComplete(false);
+      if (files && files.length > 0) {
+        if (breakUpload(files)) return;
       }
-    }
+      let index = fileListRef.current.length;
+      
+      if (files && files.length) {
+        for (let file of files) {
+          onUpload(file, index);
+          index++;
+        }
+      }
+    });
   };
 
   const handleToggleShowCollapse = () => {

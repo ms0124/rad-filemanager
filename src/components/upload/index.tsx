@@ -18,8 +18,6 @@ import CheckPermissions from '../../components/CheckPermissions/index';
 import { getBs } from '../../utils/index';
 import { IconStream, IconUpload } from '../../utils/icons';
 import { queryClient } from '../../config/config';
-import { useUploadLink } from "../../config/hooks";
-import { objectToQueryString } from '../../utils/index';
 import moment from "moment-jalaali";
 
 const Upload = () => {
@@ -27,7 +25,6 @@ const Upload = () => {
     upload: false,
     stream: false
   });
-  const [uploadHash, setUploadHash] =  useState("");
   // const [isStream, setIsStream] = useState(false);
   const [isOpenCollapse, setIsOpenCollapse] = useState(false);
   const [showCollapse, setShowCollapse] = useState(false);
@@ -35,8 +32,7 @@ const Upload = () => {
 
   const { currentHash } = useContext(Context);
 
-  const {data , refetch }= useUploadLink( objectToQueryString({ size: 0, expiration: moment().add(1, "hour").format("YYYY/MM/DD HH:mm:00"), destination: currentHash } ));
-
+  
   useEffect(() => {
     if (uploadComplete) {
       queryClient.refetchQueries({
@@ -58,8 +54,8 @@ const Upload = () => {
     // get upload hash
     if(upload || stream){
 
-     const {data} = await refetch();
-     setUploadHash(data.result[0]?.uploadHash);
+    //  const {data} = await refetch();
+    //  setUploadHash(data.result[0]?.uploadHash);
     } 
     
   };
@@ -111,7 +107,6 @@ const Upload = () => {
         uploadComplete={uploadComplete}
         setUploadComplete={setUploadComplete}
         modal={modal}
-        uploadHash={uploadHash}
         // isStream={modal.stream}
         // setIsStream={setIsStream}
         toggleModal={handleModalToggle}
