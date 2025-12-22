@@ -89,10 +89,10 @@ const Column: React.FunctionComponent<IProps> = ({
     }
 
     if (onSelect) {
-      const withOutFolders = newSelectedArray.filter((x) =>
-        x.type === FolderTypes.folder ? false : true
-      );
-      onSelect(withOutFolders);
+      // const withOutFolders = newSelectedArray.filter((x) =>
+      //   x.type === FolderTypes.folder ? false : true
+      // );
+      onSelect(newSelectedArray);
     }
   };
   const allLoadedItems = useMemo(() => {

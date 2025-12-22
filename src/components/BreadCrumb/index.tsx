@@ -16,7 +16,8 @@ const index = () => {
     currentHash,
     currentTab,
     setCurrentTab,
-    setSearchText
+    setSearchText,
+    defaultDirectory
   } = useContext(Context);
 
   const checkboxRef = useRef<HTMLInputElement>(null);
@@ -106,7 +107,7 @@ const index = () => {
               setCurrentTab(TabTypes.FileList);
             }
 
-            setCurrentHash('root');
+            setCurrentHash( defaultDirectory ? defaultDirectory :'root');
           }}
         >
           همه فایل ها{' '}

@@ -75,7 +75,7 @@ export const useGetFolderContentChildren = (
           ...params
         };
       },
-      cacheTime: 0
+      cacheTime: 0,
     }
   );
 };

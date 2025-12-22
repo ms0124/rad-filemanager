@@ -21,12 +21,13 @@ interface Props {
   isSandbox: boolean;
   validExtension?: string[];
   dontShowArchive?: boolean;
+  defaultDirectory?: string; 
 }
 
 const FileManagerReact = ({ ...props }: Props) => {
   const [isList, setIsList] = useState<boolean>(true);
   const [breadCrumb, setBreadCrumb] = useState<[]>([]);
-  const [currentHash, setCurrentHash] = useState<string>('root');
+  const [currentHash, setCurrentHash] = useState<string>(props.defaultDirectory ? props.defaultDirectory : "root");
   const [itemHash, setItemHash] = useState<string>('');
   const [operationType, setOperationType] = useState<number | null>(null);
   const [currentTab, setCurrentTab] = useState<number>(1);
@@ -48,6 +49,10 @@ const FileManagerReact = ({ ...props }: Props) => {
   });
   const [dontShowArchive, setDontShowArchive] = useState<boolean>(
     props.dontShowArchive ? false : true
+  );
+
+  const [defaultDirectory, setDefaultDirectory] = useState<string>(
+    props?.defaultDirectory ? props?.defaultDirectory : "root"
   );
 
   const handleVisibilitychange = () => {
@@ -108,7 +113,8 @@ const FileManagerReact = ({ ...props }: Props) => {
     desc,
     setDesc,
     validExtension,
-    dontShowArchive
+    dontShowArchive,
+    defaultDirectory,
   };
   return (
     <Context.Provider value={defaultValues}>
@@ -125,7 +131,7 @@ const FileManagerReact = ({ ...props }: Props) => {
 function FileManager(props: any, elementId: any) {
   const [isList, setIsList] = useState<boolean>(true);
   const [breadCrumb, setBreadCrumb] = useState<[]>([]);
-  const [currentHash, setCurrentHash] = useState<string>('root');
+  const [currentHash, setCurrentHash] = useState<string>(props.defaultDirectory ? props.defaultDirectory : "root");
   const [itemHash, setItemHash] = useState<string>('');
   const [operationType, setOperationType] = useState<number | null>(null);
   const [currentTab, setCurrentTab] = useState<number>(1);
@@ -148,6 +154,9 @@ function FileManager(props: any, elementId: any) {
   const [isSandbox, setIsSandbox] = useState<boolean>(props?.isSandbox);
   const [dontShowArchive, setDontShowArchive] = useState<boolean>(
     props.dontShowArchive ? false : true
+  );
+  const [defaultDirectory, setDefaultDirectory] = useState<string>(
+    props?.defaultDirectory ? props?.defaultDirectory : "root"
   );
 
   useEffect(() => {
@@ -187,7 +196,8 @@ function FileManager(props: any, elementId: any) {
     desc,
     setDesc,
     validExtension,
-    dontShowArchive
+    dontShowArchive,
+    defaultDirectory,
   };
   ReactDOM.render(
     <Context.Provider value={defaultValues}>

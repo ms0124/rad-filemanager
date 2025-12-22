@@ -49,6 +49,7 @@ export interface AppContextInterface {
   desc: boolean;
   setDesc: (isDesc: boolean) => void;
   dontShowArchive: boolean;
+  defaultDirectory?: string;
 }
 
 export const Context = createContext<AppContextInterface>(
