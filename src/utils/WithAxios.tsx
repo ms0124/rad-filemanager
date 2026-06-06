@@ -15,9 +15,10 @@ const WithAxios: React.FC<IProps> = ({ children }) => {
       config.baseURL = isSandbox
         ? 'https://rad-sandbox.sandpod.ir'
         : 'https://rad-services.pod.ir';
-
-      config.headers['Client-Id'] = `${header.clientId}`;
-      config.headers['Access-Token'] = `${header.accessToken}`;
+      if(config.headers){
+        config.headers['Client-Id'] = `${header.clientId}`;
+        config.headers['Access-Token'] = `${header.accessToken}`;
+      }
 
       return config;
     });

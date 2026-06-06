@@ -2,6 +2,9 @@ import React, { useState, useContext, useEffect } from 'react';
 import Lightbox from 'yet-another-react-lightbox';
 import 'yet-another-react-lightbox/styles.css';
 import { Context } from '../../store/index';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import {faCircleInfo} from '@fortawesome/free-solid-svg-icons';
+
 import {
   ImageTypes,
   VideoTypes,
@@ -34,6 +37,7 @@ const PreviewModal: React.FunctionComponent<IProps> = ({
   const { isSandbox } = useContext(Context);
   const [slides, setSlides] = useState<any[]>([]);
   const [currentSlideIndex, setCurrentSlideIndex] = useState<number>(0);
+  const [showSidebar, setShowSidebar] = useState(false);
 
   const isImageFile = (extension: string) => {
     return Object.values(ImageTypes).includes(
@@ -116,6 +120,16 @@ const PreviewModal: React.FunctionComponent<IProps> = ({
     setSlides(slidesData);
     return currentIndex;
   };
+
+  useEffect(() => {
+  if (isOpen) {
+    setTimeout(() => {
+      setShowSidebar(true);
+    }, 10);
+  } else {
+    setShowSidebar(false);
+  }
+}, [isOpen]);
 
   useEffect(() => {
     if (isOpen) {
@@ -208,6 +222,23 @@ const PreviewModal: React.FunctionComponent<IProps> = ({
 
   return (
     <div className={styles['preview-modal-overlay']} onClick={handleClose}>
+{/* Sidebar */}
+       <div
+      className={`${styles.sidebar} ${
+         showSidebar ? styles.sidebarOpen : ''
+      }`}
+      onClick={(e) => e.stopPropagation()}
+    >
+      <div className={styles['']}>
+
+      <h4><FontAwesomeIcon icon={faCircleInfo} /> اطلاعات فایل</h4>
+      <span>
+      ×
+      </span>
+      </div>
+      <p>{item.name}</p>
+    </div>
+        {/* Modal */}
       <div
         className={styles['preview-modal-content']}
         onClick={(e) => e.stopPropagation()}

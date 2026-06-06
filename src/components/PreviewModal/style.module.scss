@@ -156,3 +156,32 @@
     font-size: 20px;
   }
 }
+
+.sidebar {
+  text-align: right;
+  position: fixed;
+  top: 0;
+  left: 0;
+
+  width: 320px;
+  height: 100vh;
+
+  background: white;
+
+  transform: translateX(-100%);
+  opacity: 0;
+
+  transition:
+    transform 300ms ease,
+    opacity 300ms ease;
+
+  z-index: 10000;
+
+  overflow-y: auto;
+  padding: 20px;
+}
+
+.sidebarOpen {
+  transform: translateX(0);
+  opacity: 1;
+}
