@@ -4,12 +4,13 @@ import { httpRequest } from '../utils/index';
 
 const namespace = 'api/core/drives';
 const successMessage = 'عملیات با موفقیت انجام شد';
+
 export const getBaseDir: () => object = async () => {
   const { data } = await instance.get(`${namespace}`);
   return data;
 };
 
-export const getFolderContent: (hash: string) => object = async (hash) => {
+export const getFileDetails: (hash: string) => object = async (hash) => {
   const { data } = await instance.get(`${namespace}/${hash}`);
   return data;
 };

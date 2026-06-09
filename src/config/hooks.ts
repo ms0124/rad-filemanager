@@ -33,9 +33,9 @@ export const useGetBaseDir = () => {
   return useQuery('baseDir', () => api.getBaseDir);
 };
 
-export const useGetFolderContent = (hash: string) => {
+export const useGetFileDetails = (hash: string) => {
   return useQuery(['folderContent', hash], ({ queryKey }) =>
-    api.getFolderContent(queryKey[1])
+    api.getFileDetails(queryKey[1])
   );
 };
 
