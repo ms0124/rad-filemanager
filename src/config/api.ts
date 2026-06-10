@@ -10,7 +10,7 @@ export const getBaseDir: () => object = async () => {
   return data;
 };
 
-export const getFileDetails: (hash: string) => object = async (hash) => {
+export const getFileDetails: (hash: string) => Promise<Data> = async (hash) => {
   const { data } = await instance.get(`${namespace}/${hash}`);
   return data;
 };

@@ -3,7 +3,7 @@ import Lightbox from 'yet-another-react-lightbox';
 import 'yet-another-react-lightbox/styles.css';
 import { Context } from '../../store/index';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {faCircleInfo} from '@fortawesome/free-solid-svg-icons';
+import { faCircleInfo } from '@fortawesome/free-solid-svg-icons';
 
 import {
   ImageTypes,
@@ -14,6 +14,8 @@ import {
 import { getThumbnailUrl, getFileUrl, formatBytes } from '../../utils/index';
 import DefaultThumnail from '../StateColumnList/defaultThumbnail/index';
 import styles from './style.module.scss';
+import { useGetFileDetails } from '../../config/hooks';
+import moment from 'moment-jalaali';
 
 interface IProps {
   isOpen: boolean;
@@ -27,6 +29,33 @@ interface IProps {
   };
   allFiles?: any[];
 }
+
+interface FileItem {
+  size?: number;
+  name?: string;
+  extension?: string;
+  created?: number;
+  updated?: number;
+  isPublic?: boolean;
+  thumbnail?: string;
+  hash?: string;
+}
+interface SidebarItemProps {
+  label?: string;
+  value?: string;
+}
+
+const SidebarItem: React.FunctionComponent<SidebarItemProps> = ({
+  label,
+  value
+}) => {
+  return (
+    <div className={styles['info-section__sidebar-item']}>
+      <span>{label}</span>
+      <span className={styles['info-section__sidebar-value']}>{value}</span>
+    </div>
+  );
+};
 
 const PreviewModal: React.FunctionComponent<IProps> = ({
   isOpen,
@@ -93,7 +122,8 @@ const PreviewModal: React.FunctionComponent<IProps> = ({
           type: 'image',
           name: file.name,
           size: file.size,
-          extension: file.extension
+          extension: file.extension,
+          hash: file.hash
         };
       } else if (isVideoFile(file.extension)) {
         return {
@@ -102,7 +132,8 @@ const PreviewModal: React.FunctionComponent<IProps> = ({
           type: 'video',
           name: file.name,
           size: file.size,
-          extension: file.extension
+          extension: file.extension,
+          hash: file.hash
         };
       } else {
         return {
@@ -112,7 +143,8 @@ const PreviewModal: React.FunctionComponent<IProps> = ({
           name: file.name,
           size: file.size,
           extension: file.extension,
-          icon: file.extension
+          icon: file.extension,
+          hash: file.hash
         };
       }
     });
@@ -122,14 +154,14 @@ const PreviewModal: React.FunctionComponent<IProps> = ({
   };
 
   useEffect(() => {
-  if (isOpen) {
-    setTimeout(() => {
-      setShowSidebar(true);
-    }, 10);
-  } else {
-    setShowSidebar(false);
-  }
-}, [isOpen]);
+    if (isOpen) {
+      setTimeout(() => {
+        setShowSidebar(true);
+      }, 10);
+    } else {
+      setShowSidebar(false);
+    }
+  }, [isOpen]);
 
   useEffect(() => {
     if (isOpen) {
@@ -219,34 +251,92 @@ const PreviewModal: React.FunctionComponent<IProps> = ({
   }
 
   const currentSlide = slides[currentSlideIndex];
+  const {
+    data: _fileData,
+    isLoading,
+    refetch
+  } = useGetFileDetails(currentSlide?.hash ? currentSlide?.hash : item?.hash);
+
+  let fileData: FileItem | null = null;
+  if (_fileData) {
+    fileData = _fileData.result[0];
+  }
+
+  useEffect(() => {
+    if (slides[currentSlideIndex]?.hash) {
+      refetch();
+    }
+  }, [currentSlideIndex]);
+
+  const renderPreview = (item: any) => {
+    return (
+      <div
+        className={`${styles.sidebar} ${showSidebar ? styles.sidebarOpen : ''}`}
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className={styles['info-section']}>
+          <span className={styles['info-section__title-main']}>
+            <FontAwesomeIcon icon={faCircleInfo} /> اطلاعات فایل
+          </span>
+          <span className={styles['info-section__close']} onClick={handleClose}>
+            ×
+          </span>
+        </div>
+        <br />
+        <br />
+        <br />
+        <div className={styles['info-section__icon']}>
+          {fileData?.thumbnail?.startsWith('THUMBNAIL_EXIST') ? (
+            <img
+              className={styles['info-section__img']}
+              src={getThumbnailUrl(fileData?.hash, isSandbox)}
+            />
+          ) : (
+            <DefaultThumnail
+              item={{ extension: currentSlide?.extension }}
+              size='5x'
+              // style={}
+            />
+          )}
+        </div>
+        <br />
+        <br />
+        <span className={styles['info-section__name']}> {item.name} </span>
+        <br />
+        <div className={styles['info-section__card']}>
+          <SidebarItem label='نوع فایل' value={fileData?.extension} />
+          <SidebarItem
+            label='اندازه فایل'
+            value={formatBytes(fileData?.size || 0)}
+          />
+          <SidebarItem
+            label='نوع دسترسی'
+            value={fileData?.isPublic ? 'عمومی' : 'خصوصی'}
+          />
+        </div>
+        <div className={styles['info-section__card']}>
+          <SidebarItem
+            label='تاریخ ایجاد'
+            value={moment(fileData?.created).format('jYYYY/jMM/jDD HH:mm')}
+          />
+          <SidebarItem
+            label='تاریخ ویرایش'
+            value={moment(fileData?.updated).format('jYYYY/jMM/jDD HH:mm')}
+          />
+        </div>
+      </div>
+    );
+  };
 
   return (
     <div className={styles['preview-modal-overlay']} onClick={handleClose}>
-{/* Sidebar */}
-       <div
-      className={`${styles.sidebar} ${
-         showSidebar ? styles.sidebarOpen : ''
-      }`}
-      onClick={(e) => e.stopPropagation()}
-    >
-      <div className={styles['']}>
-
-      <h4><FontAwesomeIcon icon={faCircleInfo} /> اطلاعات فایل</h4>
-      <span>
-      ×
-      </span>
-      </div>
-      <p>{item.name}</p>
-    </div>
-        {/* Modal */}
+      {/* Sidebar */}
+      {currentSlide && fileData && renderPreview(currentSlide)}
+      {/* Modal */}
       <div
         className={styles['preview-modal-content']}
         onClick={(e) => e.stopPropagation()}
       >
-        <button className={styles['close-button']} onClick={handleClose}>
-          ×
-        </button>
-
         {currentSlide && renderSlide(currentSlide)}
 
         {/* Navigation arrows */}
@@ -254,21 +344,21 @@ const PreviewModal: React.FunctionComponent<IProps> = ({
           <>
             <button
               className={`${styles['nav-button']} ${styles['nav-button-left']}`}
-              onClick={() =>
+              onClick={() => {
                 setCurrentSlideIndex((prev) =>
                   prev < slides.length - 1 ? prev + 1 : 0
-                )
-              }
+                );
+              }}
             >
               {`›`}
             </button>
             <button
               className={`${styles['nav-button']} ${styles['nav-button-right']}`}
-              onClick={() =>
+              onClick={() => {
                 setCurrentSlideIndex((prev) =>
                   prev > 0 ? prev - 1 : slides.length - 1
-                )
-              }
+                );
+              }}
             >
               {`‹`}
             </button>

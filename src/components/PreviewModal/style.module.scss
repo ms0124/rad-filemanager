@@ -185,3 +185,49 @@
   transform: translateX(0);
   opacity: 1;
 }
+
+.info-section{
+
+  text-align: right;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  &__title-main{
+    font-size: 1.2rem;
+  }
+  &__close{
+    font-size: 2rem;
+  }
+  &__icon{
+    text-align: center;
+    display: flex;
+    justify-content: center;
+  }
+  &__img{
+    width: 5rem;
+    
+
+  }
+  &__name{
+    text-align: center;
+    font-size: 0.8;
+    color: #000;
+  }
+  &__sidebar-item {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.8rem;
+  }
+
+  &__sidebar-value{
+    direction: ltr;
+  }
+
+  &__card{
+    margin-top: 20px;
+    border: 1px solid #eee;
+    border-radius: 8px;
+    padding: 12px;
+  }
+}
