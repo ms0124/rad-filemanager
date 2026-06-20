@@ -262,7 +262,7 @@ const ShareFile: React.FC<IProps> = ({ isOpen, toggle, hash, isPublic }) => {
               </div>
             ) : (
               <>
-                {dataShare?.result?.length > 1 ? (
+                {dataShare?.result?.some((item) => item?.person) ? (
                   <div
                     className={classNames(
                       getBs()['border'],
