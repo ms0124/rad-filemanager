@@ -22,7 +22,7 @@ import {
   Label
 } from 'reactstrap';
 import classnames from 'classnames';
-import moment from "moment-jalaali";
+import moment from 'moment-jalaali';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faCloudUploadAlt,
@@ -41,7 +41,7 @@ import { getHeader } from '../../config/hooks';
 import { getBs } from '../../utils/index';
 import { IconTick, IconTimes, IconUpload } from '../../utils/icons';
 import { audioQualities, videoQualities } from './upload.constants';
-import { useUploadLink } from "../../config/hooks";
+import { useUploadLink } from '../../config/hooks';
 import { objectToQueryString } from '../../utils/index';
 
 import DefaultThumbnail from '../StateColumnList/defaultThumbnail/index';
@@ -113,7 +113,7 @@ const FilesDragAndDrop: FunctionComponent<Props> = ({
   isOpenCollapse,
   setIsOpenCollapse,
   showCollapse,
-  setShowCollapse,
+  setShowCollapse
   // setIsStream
 }) => {
   const { currentHash, validExtension, isSandbox } = useContext(Context);
@@ -146,12 +146,19 @@ const FilesDragAndDrop: FunctionComponent<Props> = ({
   const [isPublic, setIsPublic] = useState<boolean>(false);
 
   const fileListRef = useRef<fileListInterface[]>([]);
-  const uploadHashRef = useRef<string>("");
+  const uploadHashRef = useRef<string>('');
   const progressRef = useRef({});
   const inputRef = useRef<HTMLInputElement | null>(null);
   const controllerRef: any = useRef([]);
 
-  const {data , refetch }= useUploadLink( objectToQueryString({ size: 0, expiration: moment().add(1, "hour").format("YYYY/MM/DD HH:mm:00"), destination: currentHash , isPublic:isPublic} ));
+  const { data, refetch } = useUploadLink(
+    objectToQueryString({
+      size: 0,
+      expiration: moment().add(1, 'hour').format('YYYY/MM/DD HH:mm:00'),
+      destination: currentHash,
+      isPublic: isPublic
+    })
+  );
 
   const disabledUploadStream = useMemo(() => {
     return modal.stream && audio.length === 0 && video.length === 0
@@ -205,7 +212,7 @@ const FilesDragAndDrop: FunctionComponent<Props> = ({
 
     formData.append('file', file);
     if (modal?.stream) formData.append('folderHash', currentHash);
-    if(modal?.stream) formData.append('isPublic', `${isPublic}`);
+    if (modal?.stream) formData.append('isPublic', `${isPublic}`);
     if ((audio.length > 0 || video.length > 0) && modal.stream) {
       formData.append('streamNeeded', 'true');
 
@@ -227,7 +234,12 @@ const FilesDragAndDrop: FunctionComponent<Props> = ({
       [`${file.name}_${index}`]: controller
     };
     upload(
-      { isSandbox, uploadHash: uploadHashRef.current, formData, stream: modal?.stream },
+      {
+        isSandbox,
+        uploadHash: uploadHashRef.current,
+        formData,
+        stream: modal?.stream
+      },
       false,
       {
         onUploadProgress: (e) => onUploadProgress(e, file, index),
@@ -270,6 +282,20 @@ const FilesDragAndDrop: FunctionComponent<Props> = ({
           // setFileList([]);
           // setProgress({});
         }
+      })
+      .catch((res) => {
+        const { message } = res.response?.data;
+        // this message come from pod
+        if (message)
+          setProgress((prev) => ({
+            ...prev,
+            [`${file.name}_${index}`]: {
+              ...prev[`${file.name}_${index}`],
+              hasError: true,
+              message: message,
+              completeSuccess: false
+            }
+          }));
       })
       .finally(() => {
         // setIsUpload(false);
@@ -354,13 +380,12 @@ const FilesDragAndDrop: FunctionComponent<Props> = ({
     return false;
   };
   const handleDrop = async (e: any) => {
-    
     e.preventDefault();
     e.stopPropagation();
 
-    const files = e.dataTransfer.files
-    if(!modal.stream){
-      const { data } =await refetch();
+    const files = e.dataTransfer.files;
+    if (!modal.stream) {
+      const { data } = await refetch();
       uploadHashRef.current = data?.result[0]?.uploadHash;
     }
 
@@ -380,26 +405,25 @@ const FilesDragAndDrop: FunctionComponent<Props> = ({
     }
   };
 
-  const handleOnChangesInputFiles =  async (e) => {
-    
-    const files = [...e.target.files]; 
-    if(!modal.stream){
-      const { data } = await refetch(); 
+  const handleOnChangesInputFiles = async (e) => {
+    const files = [...e.target.files];
+    if (!modal.stream) {
+      const { data } = await refetch();
       uploadHashRef.current = data?.result[0]?.uploadHash;
     }
-      
-      setUploadComplete(false);
-      if (files && files.length > 0) {
-        if (breakUpload(files)) return;
+
+    setUploadComplete(false);
+    if (files && files.length > 0) {
+      if (breakUpload(files)) return;
+    }
+    let index = fileListRef.current.length;
+
+    if (files && files.length) {
+      for (let file of files) {
+        onUpload(file, index);
+        index++;
       }
-      let index = fileListRef.current.length;
-      
-      if (files && files.length) {
-        for (let file of files) {
-          onUpload(file, index);
-          index++;
-        }
-      }
+    }
   };
 
   const handleToggleShowCollapse = () => {
@@ -506,15 +530,19 @@ const FilesDragAndDrop: FunctionComponent<Props> = ({
         {
           <ModalBody cssModule={getBs()}>
             <>
-              {modal.stream && <div className={classnames(styles['guide'], utilStyles['mb-3'])}>
-                <FontAwesomeIcon
-                  className={styles['guide__icon']}
-                  icon={faExclamationTriangle}
-                />
-                <span className={styles['guide__title']}>
-                  حداقل یکی از کیفیت های استریم را انتخاب کنید.
-                </span>
-              </div>}
+              {modal.stream && (
+                <div
+                  className={classnames(styles['guide'], utilStyles['mb-3'])}
+                >
+                  <FontAwesomeIcon
+                    className={styles['guide__icon']}
+                    icon={faExclamationTriangle}
+                  />
+                  <span className={styles['guide__title']}>
+                    حداقل یکی از کیفیت های استریم را انتخاب کنید.
+                  </span>
+                </div>
+              )}
               <div className={styles['stream']}>
                 {modal.stream && (
                   <>
