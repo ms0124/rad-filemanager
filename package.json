@@ -1,6 +1,6 @@
 {
   "name": "rad-filemanager",
-  "version": "0.0.77",
+  "version": "0.0.83",
   "description": "rad filemanager",
   "author": "Moslem Seyd Mohammadi",
   "license": "MIT",
@@ -94,7 +94,7 @@
     "@fortawesome/free-regular-svg-icons": "^6.1.1",
     "@fortawesome/free-solid-svg-icons": "^6.1.1",
     "@fortawesome/react-fontawesome": "^0.1.18",
-    "axios": "^1.2.0",
+    "axios": "^1.6.0",
     "classnames": "^2.3.1",
     "copy-to-clipboard": "^3.3.3",
     "file-saver": "^2.0.5",
