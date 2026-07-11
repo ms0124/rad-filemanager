@@ -16,6 +16,7 @@ import DefaultThumnail from '../StateColumnList/defaultThumbnail/index';
 import styles from './style.module.scss';
 import { useGetFileDetails } from '../../config/hooks';
 import moment from 'moment-jalaali';
+import CheckPermissions from '../../components/CheckPermissions/index';
 
 interface IProps {
   isOpen: boolean;
@@ -30,6 +31,23 @@ interface IProps {
   allFiles?: any[];
 }
 
+type EventTypeProps =
+  | 'uploaded'
+  | 'renamed'
+  | 'copied'
+  | 'moved'
+  | 'deleted'
+  | 'restored'
+  | 'published'
+  | 'sharedWithUser';
+
+interface ChangeLogProps {
+  eventType: EventTypeProps | string;
+  timestamp: string | number;
+  updatedBySsoId: string;
+  updatedByUsername: string;
+}
+
 interface FileItem {
   size?: number;
   name?: string;
@@ -39,11 +57,27 @@ interface FileItem {
   isPublic?: boolean;
   thumbnail?: string;
   hash?: string;
+  metaData?: {
+    changeLog?: ChangeLogProps[];
+  };
 }
 interface SidebarItemProps {
   label?: string;
   value?: string;
 }
+const changeLogLabels: Record<string, { by: string; date: string }> = {
+  uploaded: { by: 'کاربر بارگزارکننده', date: 'تاریخ بارگزاری' },
+  renamed: { by: 'کاربر تغییر نام دهنده', date: 'تاریخ تغییر نام' },
+  copied: { by: 'کاربر کپی‌کننده', date: 'تاریخ کپی' },
+  moved: { by: 'کاربر جابه‌جاکننده', date: 'تاریخ جابه‌جایی' },
+  deleted: { by: 'کاربر آرشیوکننده', date: 'تاریخ آرشیو' },
+  restored: { by: 'کاربر بازیابی‌کننده', date: 'تاریخ بازیابی' },
+  published: { by: 'کاربر منتشرکننده', date: 'تاریخ انتشار' },
+  sharedWithUser: {
+    by: 'کاربر اشتراک گذاشته',
+    date: 'تاریخ اشتراک‌گذاری'
+  }
+};
 
 const SidebarItem: React.FunctionComponent<SidebarItemProps> = ({
   label,
@@ -268,6 +302,45 @@ const PreviewModal: React.FunctionComponent<IProps> = ({
     }
   }, [currentSlideIndex]);
 
+  const changeLogDate = (timestamp: string | number) => {
+    const ms = Number(timestamp) * 1000;
+    return moment(ms).format('jYYYY/jMM/jDD HH:mm');
+  };
+
+  const renderChangeLog = (changeLog?: ChangeLogProps[]) => {
+    if (!changeLog || changeLog.length === 0) {
+      return null;
+    }
+
+    return (
+      <div className={styles['info-section__card']}>
+        <div className={styles['info-section__item-wrapper']}>
+          <span className={styles['info-section__file-size mb-2']}>
+            تاریخچه تغییرات
+          </span>
+        </div>
+        {changeLog.map((log, index) => {
+          const labels = changeLogLabels[log.eventType] || {
+            by: 'انجام شده توسط',
+            date: 'تاریخ انجام'
+          };
+
+          return (
+            <React.Fragment key={`${log.eventType}-${log.timestamp}-${index}`}>
+              <div className={styles['info-section__item-wrapper']}>
+                <SidebarItem label={labels.by} value={log.updatedByUsername} />
+                <SidebarItem
+                  label={labels.date}
+                  value={changeLogDate(log.timestamp)}
+                />
+              </div>
+            </React.Fragment>
+          );
+        })}
+      </div>
+    );
+  };
+
   const renderPreview = (item: any) => {
     return (
       <div
@@ -324,6 +397,10 @@ const PreviewModal: React.FunctionComponent<IProps> = ({
             value={moment(fileData?.updated).format('jYYYY/jMM/jDD HH:mm')}
           />
         </div>
+
+        <CheckPermissions permissions={['drives_details']} showMessage>
+          {renderChangeLog(fileData?.metaData?.changeLog)}
+        </CheckPermissions>
       </div>
     );
   };
