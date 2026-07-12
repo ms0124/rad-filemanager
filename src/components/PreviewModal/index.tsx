@@ -63,20 +63,21 @@ interface FileItem {
 }
 interface SidebarItemProps {
   label?: string;
-  value?: string;
+  value?: string | React.ReactNode;
 }
-const changeLogLabels: Record<string, { by: string; date: string }> = {
-  uploaded: { by: 'کاربر بارگزارکننده', date: 'تاریخ بارگزاری' },
-  renamed: { by: 'کاربر تغییر نام دهنده', date: 'تاریخ تغییر نام' },
-  copied: { by: 'کاربر کپی‌کننده', date: 'تاریخ کپی' },
-  moved: { by: 'کاربر جابه‌جاکننده', date: 'تاریخ جابه‌جایی' },
-  deleted: { by: 'کاربر آرشیوکننده', date: 'تاریخ آرشیو' },
-  restored: { by: 'کاربر بازیابی‌کننده', date: 'تاریخ بازیابی' },
-  published: { by: 'کاربر منتشرکننده', date: 'تاریخ انتشار' },
-  sharedWithUser: {
-    by: 'کاربر اشتراک گذاشته',
-    date: 'تاریخ اشتراک‌گذاری'
-  }
+const changeLogLabels: Record<string, string> = {
+  uploaded: 'بارگذاری',
+  renamed: 'تغییر نام',
+  copied: 'کپی',
+  moved: 'جابه‌جایی',
+  deleted: 'آرشیو',
+  restored: 'بازیابی',
+  published: 'انتشار',
+  sharedWithUser: 'اشتراک گذاری'
+};
+
+const getChangeLogAction = (eventType: string): string => {
+  return changeLogLabels[eventType] || eventType;
 };
 
 const SidebarItem: React.FunctionComponent<SidebarItemProps> = ({
@@ -301,10 +302,19 @@ const PreviewModal: React.FunctionComponent<IProps> = ({
       refetch();
     }
   }, [currentSlideIndex]);
+  const toMilliseconds = (timestamp: string | number) => {
+    const value = Number(timestamp);
 
-  const changeLogDate = (timestamp: string | number) => {
-    const ms = Number(timestamp) * 1000;
-    return moment(ms).format('jYYYY/jMM/jDD HH:mm');
+    const isSeconds = value < 10_000_000_000;
+    return isSeconds ? value * 1000 : value;
+  };
+
+  const formatChangeLogDate = (timestamp: string | number) => {
+    return moment(toMilliseconds(timestamp)).format('jYYYY/jMM/jDD');
+  };
+
+  const formatChangeLogTime = (timestamp: string | number) => {
+    return moment(toMilliseconds(timestamp)).format('HH:mm');
   };
 
   const renderChangeLog = (changeLog?: ChangeLogProps[]) => {
@@ -313,28 +323,35 @@ const PreviewModal: React.FunctionComponent<IProps> = ({
     }
 
     return (
-      <div className={styles['info-section__card']}>
-        <div className={styles['info-section__item-wrapper']}>
-          <span className={styles['info-section__file-size mb-2']}>
-            تاریخچه تغییرات
-          </span>
-        </div>
+      <div className={styles['info-section__log-card']}>
+        <span className={styles['info-section__log-title-wrapper']}>
+          تاریخچه تغییرات
+        </span>
         {changeLog.map((log, index) => {
-          const labels = changeLogLabels[log.eventType] || {
-            by: 'انجام شده توسط',
-            date: 'تاریخ انجام'
-          };
+          const action = getChangeLogAction(log.eventType);
 
           return (
-            <React.Fragment key={`${log.eventType}-${log.timestamp}-${index}`}>
-              <div className={styles['info-section__item-wrapper']}>
-                <SidebarItem label={labels.by} value={log.updatedByUsername} />
-                <SidebarItem
-                  label={labels.date}
-                  value={changeLogDate(log.timestamp)}
-                />
-              </div>
-            </React.Fragment>
+            <div
+              key={`${log.eventType}-${log.timestamp}-${index}`}
+              className={styles['info-section__item-wrapper']}
+            >
+              <SidebarItem
+                label='عملیات'
+                value={`(${log.eventType}) ${action}`}
+              />
+              <SidebarItem label='کاربر' value={log.updatedByUsername} />
+              <SidebarItem
+                label='تاریخ'
+                value={
+                  <div className={styles['info-section__log-card-item']}>
+                    <span>{formatChangeLogDate(log.timestamp)}</span>
+                    {`:ساعت`}
+                    &nbsp;
+                    <span>{formatChangeLogTime(log.timestamp)}</span>
+                  </div>
+                }
+              />
+            </div>
           );
         })}
       </div>
