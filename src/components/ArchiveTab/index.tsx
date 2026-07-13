@@ -35,13 +35,15 @@ const ArchiveTab: FunctionComponent<IProps> = () => {
 
   const { ref, inView } = useInView();
   let { data, isLoading, isFetching, fetchNextPage, hasNextPage, refetch } =
-    useArchiveList(
-      objectToQueryString({ size: PAGE_SIZE, offset: 0, order: orderBy, desc })
-    );
-
+    useArchiveList({
+      size: PAGE_SIZE,
+      offset: 0,
+      order: orderBy,
+      desc
+    });
   useEffect(() => {
     if (currentTab == TabTypes.ArchiveList) refetch();
-  }, [orderBy, desc]);
+  }, [orderBy, desc, currentTab]);
 
   useEffect(() => {
     if (inView && hasNextPage) {

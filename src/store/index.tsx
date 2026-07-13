@@ -30,7 +30,7 @@ export interface AppContextInterface {
   onSelect?: (data: any) => void;
   validExtension: string[];
   isSandbox: boolean;
-
+  multiValue: boolean;
   isShowCheckbox: boolean;
   setIsShowCheckbox: (isShowCheckbox: boolean) => void;
 

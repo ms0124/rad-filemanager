@@ -17,7 +17,8 @@ const index = () => {
     currentTab,
     setCurrentTab,
     setSearchText,
-    defaultDirectory
+    defaultDirectory,
+    multiValue
   } = useContext(Context);
 
   const checkboxRef = useRef<HTMLInputElement>(null);
@@ -66,6 +67,13 @@ const index = () => {
       window.removeEventListener('fm-deselect-all', handleDeselectAll);
     };
   }, []);
+  useEffect(() => {
+    if (checkboxRef.current) {
+      checkboxRef.current.checked = false;
+    }
+
+    window.dispatchEvent(new Event('fm-deselect-all'));
+  }, [currentTab]);
 
   return (
     <div className={classnames(styles['bread-crumb'])}>
@@ -79,6 +87,7 @@ const index = () => {
           }}
         >
           <input
+            disabled={!multiValue}
             ref={checkboxRef}
             style={{ cursor: 'pointer' }}
             type='checkbox'
@@ -107,7 +116,7 @@ const index = () => {
               setCurrentTab(TabTypes.FileList);
             }
 
-            setCurrentHash( defaultDirectory ? defaultDirectory :'root');
+            setCurrentHash(defaultDirectory ? defaultDirectory : 'root');
           }}
         >
           همه فایل ها{' '}
