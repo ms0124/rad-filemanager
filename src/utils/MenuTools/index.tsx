@@ -377,7 +377,7 @@ const MenuTools = forwardRef<any, IProps>(
                 <CheckPermissions permissions={['batch_delete']}>
                   <MenuItem
                     clickHandler={() => clickHandler(OperationTypes.Remove)}
-                    title='آرشیو'
+                    title='حذف'
                     icon={
                       <IconTrash style={{ width: '18px', height: '16px' }} />
                     }

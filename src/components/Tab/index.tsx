@@ -56,8 +56,7 @@ const Tab: FunctionComponent<Props> = () => {
   }, [searchText]);
 
   return (
-     <div className={styles['fm-wrapper']}>
-    <div className={styles['fm-wrapper__scroll']}>
+    <div>
       <Nav
         tabs
         className={`${styles['fix-top']} ${styles['nav-wrapper']}`}
@@ -165,7 +164,6 @@ const Tab: FunctionComponent<Props> = () => {
         </TabPane>
       </TabContent>
       <Selected />
-    </div>
     </div>
   );
 };

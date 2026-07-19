@@ -40,10 +40,9 @@ const Column: React.FunctionComponent<IProps> = ({
     setSelectedItems,
     itemHash,
     setItemHash,
-    validExtension,
-    multiValue
+    validExtension
   } = useContext(Context);
-
+  
   const slectedRef = useRef<(HTMLDivElement | null)[]>([]);
   const contextMenuRef: any = useRef<[]>([]);
   const rightClickRef: any = useRef<any>(null);
@@ -67,8 +66,6 @@ const Column: React.FunctionComponent<IProps> = ({
 
     if (!isValid) return;
 
-    const effectiveMultiSelect = multiValue ? multiSelect : false;
-
     const itemFinded = selectedItems.find((x) => x?.hash === item.hash);
     let newSelectedArray: any = [];
 
@@ -76,21 +73,18 @@ const Column: React.FunctionComponent<IProps> = ({
       // item finded
       newSelectedArray = selectedItems.filter((x) => x.hash !== item.hash);
       setSelectedItems(newSelectedArray);
-    } else if (
-      effectiveMultiSelect ||
-      (selectedItems.length === 0 && !effectiveMultiSelect)
-    ) {
+    } else if (multiSelect || (selectedItems.length === 0 && !multiSelect)) {
       // can't find item & add item
       newSelectedArray = [...selectedItems, item];
       setSelectedItems(newSelectedArray);
-    } else if (!effectiveMultiSelect && selectedItems.length == 1) {
+    } else if (!multiSelect && selectedItems.length == 1) {
       newSelectedArray = [item];
       setSelectedItems([item]);
     }
 
-    if (!effectiveMultiSelect && !itemHash) {
-      setItemHash('');
-    } else if (!effectiveMultiSelect && itemHash) {
+    if(!multiSelect && !itemHash){
+      setItemHash("");
+    }else if(!multiSelect && itemHash) {
       setItemHash(itemHash);
     }
 
@@ -152,7 +146,6 @@ const Column: React.FunctionComponent<IProps> = ({
   };
 
   const selectAllLoaded = () => {
-    if (!multiValue) return;
     if (allLoadedItems.length === 0) return;
     const merged: any[] = [];
     const seen = new Set<string>();
@@ -240,8 +233,8 @@ const Column: React.FunctionComponent<IProps> = ({
 
                     const intervalId = setTimeout(()=>{
                     if(isDoubleClick.current == false){
-                        clearInterval(intervalId);
-                        handleSelectItem(item, isShowCheckbox);
+                      clearInterval(intervalId);
+                       handleSelectItem(item, isShowCheckbox);
                       }
                     }, 300);
                   }}
@@ -297,7 +290,7 @@ const Column: React.FunctionComponent<IProps> = ({
                         ''
                       )}
                     </div>
-                    {isShowCheckbox && multiValue && (
+                    {isShowCheckbox && (
                       <input
                         role='button'
                         onClick={(event) => handleSelectItem(item)}
