@@ -21,19 +21,13 @@ interface Props {
   isSandbox: boolean;
   validExtension?: string[];
   dontShowArchive?: boolean;
-  defaultDirectory?: string;
-  multiValue?: boolean;
+  defaultDirectory?: string; 
 }
 
 const FileManagerReact = ({ ...props }: Props) => {
   const [isList, setIsList] = useState<boolean>(true);
   const [breadCrumb, setBreadCrumb] = useState<[]>([]);
-  const [currentHash, setCurrentHash] = useState<string>(
-    props.defaultDirectory ? props.defaultDirectory : 'root'
-  );
-  const [multiValue, setMultiValue] = useState<boolean>(
-    props.multiValue ? props.multiValue : true
-  );
+  const [currentHash, setCurrentHash] = useState<string>(props.defaultDirectory ? props.defaultDirectory : "root");
   const [itemHash, setItemHash] = useState<string>('');
   const [operationType, setOperationType] = useState<number | null>(null);
   const [currentTab, setCurrentTab] = useState<number>(1);
@@ -58,7 +52,7 @@ const FileManagerReact = ({ ...props }: Props) => {
   );
 
   const [defaultDirectory, setDefaultDirectory] = useState<string>(
-    props?.defaultDirectory ? props?.defaultDirectory : 'root'
+    props?.defaultDirectory ? props?.defaultDirectory : "root"
   );
 
   const handleVisibilitychange = () => {
@@ -78,9 +72,6 @@ const FileManagerReact = ({ ...props }: Props) => {
   useEffect(() => {
     setHeader({ clientId: props.clientId, accessToken: props.accessToken });
   }, [props.accessToken]);
-  useEffect(() => {
-    setMultiValue(props.multiValue !== undefined ? props.multiValue : true);
-  }, [props.multiValue]);
 
   useEffect(() => {
     setConfig(props.config);
@@ -124,7 +115,6 @@ const FileManagerReact = ({ ...props }: Props) => {
     validExtension,
     dontShowArchive,
     defaultDirectory,
-    multiValue
   };
   return (
     <Context.Provider value={defaultValues}>
@@ -141,9 +131,7 @@ const FileManagerReact = ({ ...props }: Props) => {
 function FileManager(props: any, elementId: any) {
   const [isList, setIsList] = useState<boolean>(true);
   const [breadCrumb, setBreadCrumb] = useState<[]>([]);
-  const [currentHash, setCurrentHash] = useState<string>(
-    props.defaultDirectory ? props.defaultDirectory : 'root'
-  );
+  const [currentHash, setCurrentHash] = useState<string>(props.defaultDirectory ? props.defaultDirectory : "root");
   const [itemHash, setItemHash] = useState<string>('');
   const [operationType, setOperationType] = useState<number | null>(null);
   const [currentTab, setCurrentTab] = useState<number>(1);
@@ -156,9 +144,7 @@ function FileManager(props: any, elementId: any) {
   const [validExtension, setValidExtension] = useState<string[]>(
     props.validExtension ? props.validExtension : validExtensionList
   );
-  const [multiValue, setMultiValue] = useState<boolean>(
-    props.multiValue !== undefined ? props.multiValue : true
-  );
+
   const [config, setConfig] = useState<any>(props.config);
   const [header, setHeader] = useState<any>({
     clientId: props.clientId,
@@ -170,7 +156,7 @@ function FileManager(props: any, elementId: any) {
     props.dontShowArchive ? false : true
   );
   const [defaultDirectory, setDefaultDirectory] = useState<string>(
-    props?.defaultDirectory ? props?.defaultDirectory : 'root'
+    props?.defaultDirectory ? props?.defaultDirectory : "root"
   );
 
   useEffect(() => {
@@ -180,9 +166,6 @@ function FileManager(props: any, elementId: any) {
   useEffect(() => {
     setConfig(props.config);
   }, [props?.config, props?.config?.height]);
-  useEffect(() => {
-    setMultiValue(props.multiValue !== undefined ? props.multiValue : true);
-  }, [props.multiValue]);
 
   const defaultValues: AppContextInterface = {
     isList,
@@ -215,7 +198,6 @@ function FileManager(props: any, elementId: any) {
     validExtension,
     dontShowArchive,
     defaultDirectory,
-    multiValue
   };
   ReactDOM.render(
     <Context.Provider value={defaultValues}>

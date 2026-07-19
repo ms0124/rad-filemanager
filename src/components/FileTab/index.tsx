@@ -39,12 +39,15 @@ const FileTab: FunctionComponent<IProps> = ({ setTotal }) => {
   } = useContext(Context);
 
   let { data, isLoading, isFetching, fetchNextPage, hasNextPage, refetch } =
-    useGetFolderContentChildren(currentHash, {
-      size: PAGE_SIZE,
-      offset: 0,
-      order: orderBy,
-      desc
-    });
+    useGetFolderContentChildren(
+      currentHash,
+      objectToQueryString({
+        size: PAGE_SIZE,
+        offset: 0, // just for first time
+        order: orderBy,
+        desc
+      })
+    );
 
   const { inView, ref } = useInView();
   if (data?.pages[0]?.result?.breadcrumb && currentTab === TabTypes.FileList) {
@@ -53,7 +56,7 @@ const FileTab: FunctionComponent<IProps> = ({ setTotal }) => {
 
   useEffect(() => {
     if (currentTab == TabTypes.FileList) refetch();
-  }, [orderBy, desc, currentTab]);
+  }, [orderBy, desc]);
 
   useEffect(() => {
     if (inView && hasNextPage) {

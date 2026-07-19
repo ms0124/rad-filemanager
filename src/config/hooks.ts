@@ -41,16 +41,11 @@ export const useGetFileDetails = (hash: string) => {
 
 export const useGetFolderContentChildren = (
   hash: string,
-  baseParams: {
-    size?: number;
-    offset?: number;
-    order?: string;
-    desc?: boolean;
-  } = {}
+  query: string = ''
 ) => {
   return useInfiniteQuery(
     ['folderContentChildren', hash],
-    ({ pageParam = baseParams, queryKey }) => {
+    ({ pageParam = query, queryKey }) => {
       return api.getFolderContentChildren({
         hash: queryKey[1],
         query: objectToQueryString(pageParam)
@@ -64,14 +59,23 @@ export const useGetFolderContentChildren = (
         if (offset >= total) {
           return undefined;
         }
+        const params: {
+          size?: number;
+          offset?: number;
+          order?: string;
+          desc?: boolean;
+        } = getParamsFromUrl(query);
+
+        if (params.size) delete params.size;
+        if (params.offset) delete params.offset;
 
         return {
-          ...baseParams,
           size: PAGE_SIZE,
-          offset
+          offset: offset,
+          ...params
         };
       },
-      cacheTime: 0
+      cacheTime: 0,
     }
   );
 };
@@ -169,17 +173,10 @@ export const useCutMulti = (folderHash) => {
   });
 };
 
-export const useArchiveList = (
-  baseParams: {
-    size?: number;
-    offset?: number;
-    order?: string;
-    desc?: boolean;
-  } = {}
-) => {
+export const useArchiveList = (query: string = '') => {
   return useInfiniteQuery(
     ['archiveList'],
-    ({ pageParam = baseParams }) => {
+    ({ pageParam = query }) => {
       return api.getArchiveList({
         query: objectToQueryString(pageParam)
       });
@@ -193,12 +190,10 @@ export const useArchiveList = (
           return undefined;
         }
         return {
-          ...baseParams, 
           size: PAGE_SIZE,
-          offset
+          offset: offset
         };
-      },
-      cacheTime: 0
+      }
     }
   );
 };
@@ -233,7 +228,7 @@ export const useSearchList = (query: string) => {
 export const useUploadLink = (query: string) => {
   return useQuery( ['uploadLink', query ], ({ queryKey }) =>
     api.uploadLink(queryKey[1]),
-    { enabled: false }
+   { enabled: false }
   );
 };
 
