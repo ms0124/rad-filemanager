@@ -1,5 +1,11 @@
 .container {
+  flex: 0 0 auto;     
+  position: absolute; 
+  width: 100%; 
   padding-right: 15px;
+  bottom: 0;
+  z-index: 5;
+  box-shadow: 0 -2px 6px rgba(0, 0, 0, 0.08);
   .title {
     padding-top: 15px;
     text-align: right;
@@ -11,7 +17,7 @@
     flex-direction: row;
     flex-wrap: wrap;
     align-content: start;
-    height: 160px;
+    height: 130px;
     overflow-y: scroll;
     &__item {
       display: flex;

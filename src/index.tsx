@@ -32,7 +32,7 @@ const FileManagerReact = ({ ...props }: Props) => {
     props.defaultDirectory ? props.defaultDirectory : 'root'
   );
   const [multiValue, setMultiValue] = useState<boolean>(
-    props.multiValue !== undefined ? props.multiValue : true
+    props.multiValue ? props.multiValue : true
   );
   const [itemHash, setItemHash] = useState<string>('');
   const [operationType, setOperationType] = useState<number | null>(null);
