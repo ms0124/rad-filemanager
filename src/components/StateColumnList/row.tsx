@@ -47,6 +47,7 @@ const Row: FunctionComponent<IProps> = ({ pages = [], setHash }) => {
     validExtension,
     itemHash,
     setItemHash,
+    multiValue,
   } = useContext(Context);
 
   const slectedRef = useRef<(HTMLDivElement | null)[]>([]);
@@ -107,6 +108,8 @@ const Row: FunctionComponent<IProps> = ({ pages = [], setHash }) => {
   };
 
   const selectAllLoaded = () => {
+    if (!multiValue) return; 
+
     if (allLoadedItems.length === 0) return;
     const merged: any[] = [];
     const seen = new Set<string>();
@@ -156,6 +159,8 @@ const Row: FunctionComponent<IProps> = ({ pages = [], setHash }) => {
         (!item.extension && x === 'dir' && item.type === FolderTypes.folder)
     );
     if (!isValid) return;
+    const effectiveMultiSelect = multiValue ? multiSelect : false;
+
     const itemFinded = selectedItems.find((x) => x?.hash === item.hash);
     let newSelectedArray: any = [];
 
@@ -163,20 +168,23 @@ const Row: FunctionComponent<IProps> = ({ pages = [], setHash }) => {
       // item finded
       newSelectedArray = selectedItems.filter((x) => x.hash !== item.hash);
       setSelectedItems(newSelectedArray);
-    } else if (multiSelect || (selectedItems.length === 0 && !multiSelect)) {
+    } else if (
+      effectiveMultiSelect ||
+      (selectedItems.length === 0 && !effectiveMultiSelect)
+    ) {
       // can't find item & add item
       newSelectedArray = [...selectedItems, item];
       setSelectedItems(newSelectedArray);
-    } else if (!multiSelect && selectedItems.length == 1) {
+    } else if (!effectiveMultiSelect && selectedItems.length == 1) {
       newSelectedArray = [item];
       setSelectedItems([item]);
     }
 
-     if(!multiSelect && !itemHash){
-      setItemHash("");
-    }else if(!multiSelect && itemHash) {
-      setItemHash(itemHash);
-    }
+     if (!effectiveMultiSelect && !itemHash) {
+       setItemHash('');
+     } else if (!effectiveMultiSelect && itemHash) {
+       setItemHash(itemHash);
+     }
 
     if (onSelect) {
       // const withOutFolders = newSelectedArray.filter((x) =>
@@ -287,17 +295,20 @@ const Row: FunctionComponent<IProps> = ({ pages = [], setHash }) => {
                   />
                 </td>
                 <td>
-                  {isShowCheckbox && (
-                    <input
-                      role='button'
-                      onClick={(_) => handleSelectItem(item)}
-                      type='checkbox'
-                      checked={
-                        !!selectedItems.find((x) => x.hash === item.hash)
-                      }
-                      className={classnames(styles['table-wrapper__checkbox'])}
-                    />
-                  )}
+                  {isShowCheckbox &&
+                    multiValue&&(
+                      <input
+                        role='button'
+                        onClick={(_) => handleSelectItem(item)}
+                        type='checkbox'
+                        checked={
+                          !!selectedItems.find((x) => x.hash === item.hash)
+                        }
+                        className={classnames(
+                          styles['table-wrapper__checkbox']
+                        )}
+                      />
+                    )}
                 </td>
                 <td
                   onDoubleClick={() => {
@@ -360,16 +371,16 @@ const Row: FunctionComponent<IProps> = ({ pages = [], setHash }) => {
 
                     const intervalId = setTimeout(()=>{
                     if(isDoubleClick.current == false){
-                      clearInterval(intervalId);
-                       handleSelectItem(item, isShowCheckbox);
+                        clearInterval(intervalId);
+                        handleSelectItem(item, isShowCheckbox);
                       }
                     }, 300);
                   }}
                   role='button'
                   onDoubleClick={() => {
-
-                    isDoubleClick.current = true;
                     
+                    isDoubleClick.current = true;
+
                     if (TabTypes.SearchList) {
                       setSearchText('');
                     }

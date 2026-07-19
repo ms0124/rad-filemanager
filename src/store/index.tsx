@@ -30,7 +30,6 @@ export interface AppContextInterface {
   onSelect?: (data: any) => void;
   validExtension: string[];
   isSandbox: boolean;
-
   isShowCheckbox: boolean;
   setIsShowCheckbox: (isShowCheckbox: boolean) => void;
 
@@ -50,6 +49,7 @@ export interface AppContextInterface {
   setDesc: (isDesc: boolean) => void;
   dontShowArchive: boolean;
   defaultDirectory?: string;
+  multiValue: boolean;
 }
 
 export const Context = createContext<AppContextInterface>(
