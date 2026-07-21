@@ -65,17 +65,17 @@ export const upload = async ({ isSandbox, formData, uploadHash, stream}, image =
       url = `${directMain}/api/files/${uploadHash}`;
     }
   }
-  
+
   return await instance.post(
     url,
     formData,
     {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-        ...headers
-      },
-      onUploadProgress: configs.onUploadProgress,
-      signal: configs.signal
+    headers: {
+      'Content-Type': 'multipart/form-data',
+      ...headers
+    },
+    onUploadProgress: configs.onUploadProgress,
+    signal: configs.signal
     }
   );
 };
@@ -146,7 +146,7 @@ export const getArchiveList = async ({ query, ...params }: any) => {
 export const archiveRestore = async ({ ...params }): Promise<Data> => {
   return httpRequest(
     `${namespace}/archive/restore/${params.variables}`,
-    {},
+    { message: successMessage },
     'POST'
   );
 };
@@ -154,7 +154,7 @@ export const archiveRestore = async ({ ...params }): Promise<Data> => {
 export const archiveDelete = async ({ ...params }): Promise<Data> => {
   return httpRequest(
     `${namespace}/archive/delete/${params.variables}`,
-    {},
+    { message: successMessage },
     'DELETE'
   );
 };
@@ -164,15 +164,15 @@ export const archiveDelete = async ({ ...params }): Promise<Data> => {
 /************************************* */
 
 export const download = async ({isSandbox,  downloadLink}) => {
-    let url = ''; 
+  let url = '';
   if(isSandbox){
       url =  `${directSandbox}/api/links/${downloadLink}`;
     }else {
-      url = `${directMain}/api/links/${downloadLink}`;
-    }
+    url = `${directMain}/api/links/${downloadLink}`;
+  }
   const response: any = await instance.get(`${url}`, { responseType: 'blob' });
-      const blob = response.data;
-      return new Blob([blob]);
+  const blob = response.data;
+  return new Blob([blob]);
 
 };
 
