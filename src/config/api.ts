@@ -154,7 +154,7 @@ export const archiveRestore = async ({ ...params }): Promise<Data> => {
 export const archiveDelete = async ({ ...params }): Promise<Data> => {
   return httpRequest(
     `${namespace}/archive/delete/${params.variables}`,
-    {},
+    {message: successMessage},
     'DELETE'
   );
 };

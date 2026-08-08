@@ -34,6 +34,7 @@ import {
 } from '../../config/hooks';
 import { objectToQueryString, serializeUrl } from '../../utils/index';
 import CheckPermissions from '../../components/CheckPermissions';
+import FullPageLoader from '../../components/FullPageLoader';
 import { getBs } from '../../utils/index';
 import {
   IconCopy,
@@ -202,9 +203,13 @@ const MenuTools = forwardRef<any, IProps>(
             });
           }
           break;
-        case OperationTypes.RemoveArchive:
-          archiveDelete.mutateAsync(serializeUrl({ hashes }));
-          break;
+      case OperationTypes.RemoveArchive:
+      try {
+        await archiveDelete.mutateAsync(serializeUrl({ hashes }));
+      } catch (error) {
+        console.error('Error removing archive item:', error);
+      }
+      break;
         case OperationTypes.RestoreArchive:
           archiveRestor.mutateAsync(serializeUrl({ hashes }));
           break;
@@ -231,6 +236,10 @@ const MenuTools = forwardRef<any, IProps>(
 
     return (
       <React.Fragment>
+        <React.Fragment>
+ 
+  </React.Fragment>
+     {(archiveDelete.isLoading || archiveRestor.isLoading) && <FullPageLoader />}
         {isOpenShareFile && (
           <ShareFile
             isOpen={isOpenShareFile}
