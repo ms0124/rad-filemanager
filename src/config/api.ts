@@ -1,4 +1,4 @@
-import { instance , directMain, directSandbox} from './config';
+import { instance, directMain, directSandbox } from './config';
 import { Data } from '../config/types';
 import { httpRequest } from '../utils/index';
 
@@ -38,7 +38,7 @@ export const deleteFileAndFolder = async ({ hashes }): Promise<Data> => {
   const params = { hashes }
   return httpRequest(
     `${namespace}/batch/delete`,
-    { message: successMessage , ...params},
+    { message: successMessage, ...params },
     'DELETE'
   );
 };
@@ -55,17 +55,17 @@ export const renameFileAndFolder = async ({ hash, newName }) => {
 /********* U P L O A D *****************/
 /************************************* */
 // برای یک سری تغیرات مجبور شدن ای پی ای آپلود رو عوض کنم در صورتی که این تغیرات تکمیل شوند این api شبیه الباقی میشود.
-export const upload = async ({ isSandbox, formData, uploadHash, stream}, image = false, configs, headers) => {
+export const upload = async ({ isSandbox, formData, uploadHash, stream }, configs, headers) => {
 
-  let url = `${namespace}/upload${image ? '/image' : ''}`;
-  if(!stream ) {
-    if(isSandbox){
-      url =  `${directSandbox}/api/files/${uploadHash}`;
-    }else {
-      url = `${directMain}/api/files/${uploadHash}`;
-    }
+  let url = "";
+  // if (!stream) {
+  if (isSandbox) {
+    url = `${directSandbox}/api/files/${uploadHash}`;
+  } else {
+    url = `${directMain}/api/files/${uploadHash}`;
   }
-  
+  // }
+
   return await instance.post(
     url,
     formData,
@@ -83,6 +83,20 @@ export const upload = async ({ isSandbox, formData, uploadHash, stream}, image =
 export const uploadLink = async (params) => {
   return await httpRequest(`${namespace}/upload/link${params}`);
 }
+export const streamPrepare = async ({ hash, ...params }): Promise<Data> => {
+  return httpRequest(
+    `${namespace}/stream/offline/prepare/${hash}`,
+    {
+      message: successMessage,
+      ...params
+    },
+    'POST'
+  );
+};
+
+
+
+
 
 /************************************* */
 /********* C O P Y  &  C U T ***********/
@@ -154,7 +168,7 @@ export const archiveRestore = async ({ ...params }): Promise<Data> => {
 export const archiveDelete = async ({ ...params }): Promise<Data> => {
   return httpRequest(
     `${namespace}/archive/delete/${params.variables}`,
-    {message: successMessage},
+    { message: successMessage },
     'DELETE'
   );
 };
@@ -163,16 +177,16 @@ export const archiveDelete = async ({ ...params }): Promise<Data> => {
 /********* D O W N L O A D ***************/
 /************************************* */
 
-export const download = async ({isSandbox,  downloadLink}) => {
-    let url = ''; 
-  if(isSandbox){
-      url =  `${directSandbox}/api/links/${downloadLink}`;
-    }else {
-      url = `${directMain}/api/links/${downloadLink}`;
-    }
+export const download = async ({ isSandbox, downloadLink }) => {
+  let url = '';
+  if (isSandbox) {
+    url = `${directSandbox}/api/links/${downloadLink}`;
+  } else {
+    url = `${directMain}/api/links/${downloadLink}`;
+  }
   const response: any = await instance.get(`${url}`, { responseType: 'blob' });
-      const blob = response.data;
-      return new Blob([blob]);
+  const blob = response.data;
+  return new Blob([blob]);
 
 };
 

@@ -41,7 +41,7 @@ import { getHeader } from '../../config/hooks';
 import { getBs } from '../../utils/index';
 import { IconTick, IconTimes, IconUpload } from '../../utils/icons';
 import { audioQualities, videoQualities } from './upload.constants';
-import { useUploadLink } from '../../config/hooks';
+import { useUploadLink, useStreamPrepare } from '../../config/hooks';
 import { objectToQueryString } from '../../utils/index';
 
 import DefaultThumbnail from '../StateColumnList/defaultThumbnail/index';
@@ -105,6 +105,14 @@ interface fileListInterface {
   name: string;
 }
 
+interface ProgressItemType {
+  percent: number;
+  hasError: boolean;
+  showRemoveButton: boolean;
+  completeSuccess: boolean;
+  message?: string;
+}
+
 const FilesDragAndDrop: FunctionComponent<Props> = ({
   modal,
   toggleModal,
@@ -141,16 +149,18 @@ const FilesDragAndDrop: FunctionComponent<Props> = ({
   const [audio, setAudio] = useState<string[]>(audioLocal);
   const [video, setVideo] = useState<string[]>(videoLocal);
 
-  const [progress, setProgress] = useState<{}>({});
+  const [progress, setProgress] = useState<Record<string, ProgressItemType>>(
+    {}
+  );
 
   const [isPublic, setIsPublic] = useState<boolean>(false);
 
   const fileListRef = useRef<fileListInterface[]>([]);
   const uploadHashRef = useRef<string>('');
-  const progressRef = useRef({});
+  const progressRef = useRef<Record<string, number>>({});
   const inputRef = useRef<HTMLInputElement | null>(null);
-  const controllerRef: any = useRef([]);
-
+  const controllerRef = useRef<Record<string, AbortController>>({});
+  const streamPrepare = useStreamPrepare({});
   const { data, refetch } = useUploadLink(
     objectToQueryString({
       size: 0,
@@ -210,22 +220,23 @@ const FilesDragAndDrop: FunctionComponent<Props> = ({
     fileListRef.current = [...fileListRef.current, file];
     progressRef.current = { ...progressRef.current, [file.name]: 0 };
 
+    let qualities: string[] = [];
+
     formData.append('file', file);
     if (modal?.stream) formData.append('folderHash', currentHash);
     if (modal?.stream) formData.append('isPublic', `${isPublic}`);
     if ((audio.length > 0 || video.length > 0) && modal.stream) {
       formData.append('streamNeeded', 'true');
 
-      let data: string[] = [];
       if (file.type?.endsWith('mpeg')) {
-        data = audio;
+        qualities = audio;
       } else if (file.type?.endsWith('mp4')) {
-        data = video;
+        qualities = video;
       }
-      if (data)
-        for (let quality of data) {
-          formData.append('qualities[]', quality);
-        }
+      // if (data)
+      // for (let quality of data) {
+      // formData.append('qualities[]', quality);
+      // }
     }
 
     const controller = new AbortController();
@@ -240,7 +251,6 @@ const FilesDragAndDrop: FunctionComponent<Props> = ({
         formData,
         stream: modal?.stream
       },
-      false,
       {
         onUploadProgress: (e) => onUploadProgress(e, file, index),
         signal: controller.signal
@@ -248,7 +258,12 @@ const FilesDragAndDrop: FunctionComponent<Props> = ({
       headers
     )
       .then((res) => {
-        const { hasError, message } = res.data;
+        const {
+          hasError,
+          message,
+          result: { hash }
+        } = res.data;
+
         // if progress is 100 percent or more progress is complete.
         const progressComplete = Object.values(progressRef.current).every(
           (item: number) => item >= 100
@@ -265,6 +280,7 @@ const FilesDragAndDrop: FunctionComponent<Props> = ({
             }
           }));
         } else {
+          if (modal.stream) streamPrepare.mutateAsync({ hash, qualities });
           setProgress((prev) => ({
             ...prev,
             [`${file.name}_${index}`]: {
@@ -384,10 +400,10 @@ const FilesDragAndDrop: FunctionComponent<Props> = ({
     e.stopPropagation();
 
     const files = e.dataTransfer.files;
-    if (!modal.stream) {
-      const { data } = await refetch();
-      uploadHashRef.current = data?.result[0]?.uploadHash;
-    }
+    // if (!modal.stream) {
+    const { data } = await refetch();
+    uploadHashRef.current = data?.result[0]?.uploadHash;
+    // }
 
     if (disabledUploadStream) return;
     setHoverFile(false);
@@ -407,10 +423,10 @@ const FilesDragAndDrop: FunctionComponent<Props> = ({
 
   const handleOnChangesInputFiles = async (e) => {
     const files = [...e.target.files];
-    if (!modal.stream) {
-      const { data } = await refetch();
-      uploadHashRef.current = data?.result[0]?.uploadHash;
-    }
+    // if (!modal.stream) {
+    const { data } = await refetch();
+    uploadHashRef.current = data?.result[0]?.uploadHash;
+    // }
 
     setUploadComplete(false);
     if (files && files.length > 0) {

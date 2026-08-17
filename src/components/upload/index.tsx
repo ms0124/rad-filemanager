@@ -18,7 +18,7 @@ import CheckPermissions from '../../components/CheckPermissions/index';
 import { getBs } from '../../utils/index';
 import { IconStream, IconUpload } from '../../utils/icons';
 import { queryClient } from '../../config/config';
-import moment from "moment-jalaali";
+import moment from 'moment-jalaali';
 
 const Upload = () => {
   const [modal, setModal] = useState<{ upload: boolean; stream: boolean }>({
@@ -32,7 +32,6 @@ const Upload = () => {
 
   const { currentHash } = useContext(Context);
 
-  
   useEffect(() => {
     if (uploadComplete) {
       queryClient.refetchQueries({
@@ -52,17 +51,15 @@ const Upload = () => {
     setModal({ upload, stream });
 
     // get upload hash
-    if(upload || stream){
-
-    //  const {data} = await refetch();
-    //  setUploadHash(data.result[0]?.uploadHash);
-    } 
-    
+    if (upload || stream) {
+      //  const {data} = await refetch();
+      //  setUploadHash(data.result[0]?.uploadHash);
+    }
   };
 
   return (
     <React.Fragment>
-      <CheckPermissions permissions={['upload', 'upload_image']}>
+      <CheckPermissions permissions={['stream_offline_prepare', 'upload_link']}>
         <UncontrolledDropdown cssModule={getBs()} group>
           <Button
             tag={'a'}

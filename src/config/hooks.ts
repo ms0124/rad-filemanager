@@ -193,7 +193,7 @@ export const useArchiveList = (
           return undefined;
         }
         return {
-          ...baseParams, 
+          ...baseParams,
           size: PAGE_SIZE,
           offset
         };
@@ -231,12 +231,23 @@ export const useSearchList = (query: string) => {
 };
 
 export const useUploadLink = (query: string) => {
-  return useQuery( ['uploadLink', query ], ({ queryKey }) =>
+  return useQuery(['uploadLink', query], ({ queryKey }) =>
     api.uploadLink(queryKey[1]),
     { enabled: false }
   );
 };
 
+export const useStreamPrepare = (variables) => {
+  return useMutation({
+    mutationFn: (variables: { hash: string, qualities }) =>
+      api.streamPrepare({ ...variables }),
+    // onSuccess: (_, variables) => {
+    //   queryClient.refetchQueries({
+    //     queryKey: ['folderContentChildren', folderHash]
+    //   });
+    // }
+  });
+};
 
 export const useDebounce = (value, delay) => {
   const [debouncedValue, setDebouncedValue] = useState(value);
