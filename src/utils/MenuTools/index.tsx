@@ -134,7 +134,7 @@ const MenuTools = forwardRef<any, IProps>(
             // some action in the futuer
             // if multi item select
             // just for one Item
-            if(selectedItems.length === 1){
+            if (selectedItems.length === 1) {
               setItemHash(item?.hash);
             }
           } else {
@@ -147,7 +147,7 @@ const MenuTools = forwardRef<any, IProps>(
             // some action in the futuer
             // if multi item select
             // just for one Item
-            if(selectedItems.length === 1){
+            if (selectedItems.length === 1) {
               setItemHash(item?.hash);
             }
           } else {
@@ -203,13 +203,13 @@ const MenuTools = forwardRef<any, IProps>(
             });
           }
           break;
-      case OperationTypes.RemoveArchive:
-      try {
-        await archiveDelete.mutateAsync(serializeUrl({ hashes }));
-      } catch (error) {
-        console.error('Error removing archive item:', error);
-      }
-      break;
+        case OperationTypes.RemoveArchive:
+          try {
+            await archiveDelete.mutateAsync(serializeUrl({ hashes }));
+          } catch (error) {
+            console.error('Error removing archive item:', error);
+          }
+          break;
         case OperationTypes.RestoreArchive:
           archiveRestor.mutateAsync(serializeUrl({ hashes }));
           break;
@@ -236,10 +236,10 @@ const MenuTools = forwardRef<any, IProps>(
 
     return (
       <React.Fragment>
-        <React.Fragment>
- 
-  </React.Fragment>
-     {(archiveDelete.isLoading || archiveRestor.isLoading) && <FullPageLoader />}
+        <React.Fragment></React.Fragment>
+        {(archiveDelete.isLoading || archiveRestor.isLoading) && (
+          <FullPageLoader />
+        )}
         {isOpenShareFile && (
           <ShareFile
             isOpen={isOpenShareFile}
@@ -333,7 +333,7 @@ const MenuTools = forwardRef<any, IProps>(
             ) : (
               <MenuItem
                 clickHandler={() => clickHandler(OperationTypes.Preview)}
-                title='پیش نمایش و جزئیات'
+                title='پیش نمایش '
                 enTitle='Preview'
                 icon={
                   <FontAwesomeIcon
