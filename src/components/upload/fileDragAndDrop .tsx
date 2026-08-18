@@ -203,7 +203,7 @@ const FilesDragAndDrop: FunctionComponent<Props> = ({
       setShowCollapse(false);
   }, [fileListRef.current, progress]);
 
-  const onUpload = (file, index) => {
+  const onUpload = (file, index, uploadHash) => {
     if (!isOpenCollapse) setIsOpenCollapse(true);
     if (!showCollapse) setShowCollapse(true);
 
@@ -247,7 +247,7 @@ const FilesDragAndDrop: FunctionComponent<Props> = ({
     upload(
       {
         isSandbox,
-        uploadHash: uploadHashRef.current,
+        uploadHash: uploadHash,
         formData,
         stream: modal?.stream
       },
@@ -402,7 +402,9 @@ const FilesDragAndDrop: FunctionComponent<Props> = ({
     const files = e.dataTransfer.files;
     // if (!modal.stream) {
     const { data } = await refetch();
-    uploadHashRef.current = data?.result[0]?.uploadHash;
+    const uploadHash = data?.result[0]?.uploadHash;
+    uploadHashRef.current = uploadHash;
+
     // }
 
     if (disabledUploadStream) return;
@@ -415,7 +417,7 @@ const FilesDragAndDrop: FunctionComponent<Props> = ({
     if (files && files.length) {
       let index = fileListRef.current.length;
       for (let file of files) {
-        onUpload(file, index);
+        onUpload(file, index, uploadHash);
         index++;
       }
     }
@@ -425,7 +427,8 @@ const FilesDragAndDrop: FunctionComponent<Props> = ({
     const files = [...e.target.files];
     // if (!modal.stream) {
     const { data } = await refetch();
-    uploadHashRef.current = data?.result[0]?.uploadHash;
+    const uploadHash = data?.result[0]?.uploadHash;
+    uploadHashRef.current = uploadHash;
     // }
 
     setUploadComplete(false);
@@ -436,7 +439,7 @@ const FilesDragAndDrop: FunctionComponent<Props> = ({
 
     if (files && files.length) {
       for (let file of files) {
-        onUpload(file, index);
+        onUpload(file, index, uploadHash);
         index++;
       }
     }
