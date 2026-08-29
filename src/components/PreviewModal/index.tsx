@@ -16,6 +16,7 @@ import DefaultThumnail from '../StateColumnList/defaultThumbnail/index';
 import styles from './style.module.scss';
 import { useGetFileDetails } from '../../config/hooks';
 import moment from 'moment-jalaali';
+import CheckPermissions from '../../components/CheckPermissions/index';
 
 interface IProps {
   isOpen: boolean;
@@ -30,6 +31,23 @@ interface IProps {
   allFiles?: any[];
 }
 
+type EventTypeProps =
+  | 'uploaded'
+  | 'renamed'
+  | 'copied'
+  | 'moved'
+  | 'deleted'
+  | 'restored'
+  | 'published'
+  | 'sharedWithUser';
+
+interface ChangeLogProps {
+  eventType: EventTypeProps | string;
+  timestamp: string | number;
+  updatedBySsoId: string;
+  updatedByUsername: string;
+}
+
 interface FileItem {
   size?: number;
   name?: string;
@@ -39,11 +57,28 @@ interface FileItem {
   isPublic?: boolean;
   thumbnail?: string;
   hash?: string;
+  metaData?: {
+    changeLog?: ChangeLogProps[];
+  };
 }
 interface SidebarItemProps {
   label?: string;
-  value?: string;
+  value?: string | React.ReactNode;
 }
+const changeLogLabels: Record<string, string> = {
+  uploaded: 'بارگذاری',
+  renamed: 'تغییر نام',
+  copied: 'کپی',
+  moved: 'جابه‌جایی',
+  deleted: 'آرشیو',
+  restored: 'بازیابی',
+  published: 'انتشار',
+  sharedWithUser: 'اشتراک گذاری'
+};
+
+const getChangeLogAction = (eventType: string): string => {
+  return changeLogLabels[eventType] || eventType;
+};
 
 const SidebarItem: React.FunctionComponent<SidebarItemProps> = ({
   label,
@@ -267,6 +302,61 @@ const PreviewModal: React.FunctionComponent<IProps> = ({
       refetch();
     }
   }, [currentSlideIndex]);
+  const toMilliseconds = (timestamp: string | number) => {
+    const value = Number(timestamp);
+
+    const isSeconds = value < 10_000_000_000;
+    return isSeconds ? value * 1000 : value;
+  };
+
+  const formatChangeLogDate = (timestamp: string | number) => {
+    return moment(toMilliseconds(timestamp)).format('jYYYY/jMM/jDD');
+  };
+
+  const formatChangeLogTime = (timestamp: string | number) => {
+    return moment(toMilliseconds(timestamp)).format('HH:mm');
+  };
+
+  const renderChangeLog = (changeLog?: ChangeLogProps[]) => {
+    if (!changeLog || changeLog.length === 0) {
+      return null;
+    }
+
+    return (
+      <div className={styles['info-section__log-card']}>
+        <span className={styles['info-section__log-title-wrapper']}>
+          تاریخچه تغییرات
+        </span>
+        {changeLog.map((log, index) => {
+          const action = getChangeLogAction(log.eventType);
+
+          return (
+            <div
+              key={`${log.eventType}-${log.timestamp}-${index}`}
+              className={styles['info-section__item-wrapper']}
+            >
+              <SidebarItem
+                label='عملیات'
+                value={`(${log.eventType}) ${action}`}
+              />
+              <SidebarItem label='کاربر' value={log.updatedByUsername} />
+              <SidebarItem
+                label='تاریخ'
+                value={
+                  <div className={styles['info-section__log-card-item']}>
+                    <span>{formatChangeLogDate(log.timestamp)}</span>
+                    {`:ساعت`}
+                    &nbsp;
+                    <span>{formatChangeLogTime(log.timestamp)}</span>
+                  </div>
+                }
+              />
+            </div>
+          );
+        })}
+      </div>
+    );
+  };
 
   const renderPreview = (item: any) => {
     return (
@@ -324,6 +414,10 @@ const PreviewModal: React.FunctionComponent<IProps> = ({
             value={moment(fileData?.updated).format('jYYYY/jMM/jDD HH:mm')}
           />
         </div>
+
+        <CheckPermissions permissions={['drives_details']} showMessage>
+          {renderChangeLog(fileData?.metaData?.changeLog)}
+        </CheckPermissions>
       </div>
     );
   };
