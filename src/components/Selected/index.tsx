@@ -1,6 +1,6 @@
 import styles from './style.module.scss';
 
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 
 import { Context } from '../../store/index';
 import { IconTimes } from '../../utils/icons';
@@ -11,8 +11,14 @@ import DefaultThumnail from '../StateColumnList/defaultThumbnail/index';
 import folder from '../StateColumnList/folder.png';
 
 const Selected = () => {
-  const { selectedItems, setSelectedItems, isSandbox, onSelect } =
-    useContext(Context);
+  const {
+    selectedItems,
+    setSelectedItems,
+    isSandbox,
+    onSelect,
+
+    currentTab
+  } = useContext(Context);
 
   const handleRemoveItem = (item) => {
     const filteredItems = selectedItems.filter((x) => x.hash !== item.hash);
@@ -24,7 +30,13 @@ const Selected = () => {
       onSelect(withOutFolders);
     }
   };
+
+  useEffect(() => {
+    setSelectedItems([]);
+  }, [currentTab]);
+
   if (!selectedItems.length) return null;
+  
   return (
     <div className={classNames(styles['container'])}>
       <h4 className={classNames(styles['title'])}>

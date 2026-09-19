@@ -22,6 +22,7 @@ export const validExtensionList = [
   'svg',
   'html',
   'json',
+  'lottie',
   'webp',
   'txt',
   'gz',

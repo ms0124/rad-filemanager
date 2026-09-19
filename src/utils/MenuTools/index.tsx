@@ -34,6 +34,7 @@ import {
 } from '../../config/hooks';
 import { objectToQueryString, serializeUrl } from '../../utils/index';
 import CheckPermissions from '../../components/CheckPermissions';
+import FullPageLoader from '../../components/FullPageLoader';
 import { getBs } from '../../utils/index';
 import {
   IconCopy,
@@ -136,6 +137,9 @@ const MenuTools = forwardRef<any, IProps>(
           break;
         case OperationTypes.Copy:
           if (Array.isArray(selectedItems) && selectedItems.length > 0) {
+            // some action in the futuer
+            // if multi item select
+            // just for one Item
             if (selectedItems.length === 1) {
               setItemHash(item?.hash);
             }
@@ -146,6 +150,9 @@ const MenuTools = forwardRef<any, IProps>(
           break;
         case OperationTypes.Cut:
           if (Array.isArray(selectedItems) && selectedItems.length > 0) {
+            // some action in the futuer
+            // if multi item select
+            // just for one Item
             if (selectedItems.length === 1) {
               setItemHash(item?.hash);
             }
@@ -207,7 +214,12 @@ const MenuTools = forwardRef<any, IProps>(
             toast.error('امکان حذف بیشتر از 50 فایل وجود ندارد.');
             break;
           }
-          archiveDelete.mutateAsync(serializeUrl({ hashes }));
+          try {
+            await archiveDelete.mutateAsync(serializeUrl({ hashes }));
+          } catch (error) {
+            console.error('Error removing archive item:', error);
+          }
+
           setSelectedItems([]);
           break;
         case OperationTypes.RestoreArchive:
@@ -241,6 +253,10 @@ const MenuTools = forwardRef<any, IProps>(
 
     return (
       <React.Fragment>
+        <React.Fragment></React.Fragment>
+        {(archiveDelete.isLoading || archiveRestor.isLoading) && (
+          <FullPageLoader />
+        )}
         {isOpenShareFile && (
           <ShareFile
             isOpen={isOpenShareFile}
@@ -334,7 +350,7 @@ const MenuTools = forwardRef<any, IProps>(
             ) : (
               <MenuItem
                 clickHandler={() => clickHandler(OperationTypes.Preview)}
-                title='پیش نمایش و جزئیات'
+                title='پیش نمایش '
                 enTitle='Preview'
                 icon={
                   <FontAwesomeIcon
@@ -387,7 +403,7 @@ const MenuTools = forwardRef<any, IProps>(
                 <CheckPermissions permissions={['batch_delete']}>
                   <MenuItem
                     clickHandler={() => clickHandler(OperationTypes.Remove)}
-                    title='حذف'
+                    title='آرشیو'
                     icon={
                       <IconTrash style={{ width: '18px', height: '16px' }} />
                     }
