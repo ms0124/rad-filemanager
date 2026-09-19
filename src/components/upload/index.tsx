@@ -3,20 +3,21 @@ import utilStyles from '../../sass/style.module.scss';
 
 import React, { useState, useEffect, useContext } from 'react';
 import {
-  Button,
   UncontrolledDropdown,
   DropdownToggle,
   DropdownMenu,
   DropdownItem
 } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faAngleDown } from '@fortawesome/free-solid-svg-icons';
+import { faPlus } from '@fortawesome/free-solid-svg-icons';
 
 import { Context } from '../../store';
 import FileDragAndDrop from './fileDragAndDrop ';
 import CheckPermissions from '../../components/CheckPermissions/index';
+import NewFolderModal from '../../utils/rightClick/Modal';
+import { OperationTypes } from '../../config/types';
 import { getBs } from '../../utils/index';
-import { IconStream, IconUpload } from '../../utils/icons';
+import { IconStream, IconUpload, IconFolderPlus } from '../../utils/icons';
 import { queryClient } from '../../config/config';
 import moment from 'moment-jalaali';
 
@@ -29,6 +30,7 @@ const Upload = () => {
   const [isOpenCollapse, setIsOpenCollapse] = useState(false);
   const [showCollapse, setShowCollapse] = useState(false);
   const [uploadComplete, setUploadComplete] = useState<boolean>(false);
+  const [isNewFolderOpen, setIsNewFolderOpen] = useState(false);
 
   const { currentHash } = useContext(Context);
 
@@ -57,49 +59,84 @@ const Upload = () => {
     }
   };
 
+  const toggleNewFolder = () => setIsNewFolderOpen((prev) => !prev);
+
   return (
     <React.Fragment>
-      <CheckPermissions permissions={['stream_offline_prepare', 'upload_link']}>
+      <CheckPermissions
+        permissions={['stream_offline_prepare', 'upload_link', 'folder_create']}
+      >
         <UncontrolledDropdown cssModule={getBs()} group>
-          <Button
-            tag={'a'}
+          <DropdownToggle
+            tag={'div'}
             cssModule={getBs()}
             className={`${styles['btn-upload']} ${utilStyles['my-auto']}`}
-            onClick={(event) =>
-              handleModalToggle({ upload: true, stream: false })
-            }
           >
-            <IconUpload size='18px' />
-            <span> بارگذاری</span>
-            <DropdownToggle
-              tag={'a'}
-              style={{
-                background: 'transparent',
-                border: 'none',
-                padding: '8px 5px 2px 8px',
-                display: 'inline-block'
-              }}
-              cssModule={getBs()}
-              onClick={(e) => e.stopPropagation()}
-            >
-              <FontAwesomeIcon icon={faAngleDown} style={{ color: '#fff' }} />
-            </DropdownToggle>
-          </Button>
+            <FontAwesomeIcon icon={faPlus} style={{ color: '#fff' }} />
+            <span> فایل/پوشه</span>
+          </DropdownToggle>
 
-          <DropdownMenu className={styles['dropdown-menu']} cssModule={getBs()}>
-            <DropdownItem
-              cssModule={getBs()}
-              style={{ paddingRight: 6 }}
-              onClick={() => handleModalToggle({ upload: true, stream: true })}
-            >
-              <IconStream style={{ width: '18px', height: '18px' }} />
-              <span style={{ marginRight: '8px', fontSize: '13px' }}>
-                بارگذاری استریم
-              </span>
-            </DropdownItem>
+          <DropdownMenu
+            right
+            end={true}
+            container='body'
+            className={styles['dropdown-menu']}
+            cssModule={getBs()}
+          >
+            <CheckPermissions permissions={['upload_link']}>
+              <DropdownItem
+                cssModule={getBs()}
+                className={styles['dropdown-menu__item']}
+                onClick={() =>
+                  handleModalToggle({ upload: true, stream: false })
+                }
+              >
+                <IconUpload colorGray style={{ width: '18px', height: '18px' }} />
+                <span style={{ marginRight: '8px', fontSize: '13px' }}>
+                  بارگذاری فایل
+                </span>
+              </DropdownItem>
+            </CheckPermissions>
+            <CheckPermissions permissions={['stream_offline_prepare']}>
+              <DropdownItem
+                cssModule={getBs()}
+                className={styles['dropdown-menu__item']}
+                onClick={() =>
+                  handleModalToggle({ upload: true, stream: true })
+                }
+              >
+                <IconStream style={{ width: '18px', height: '18px' }} />
+                <span style={{ marginRight: '8px', fontSize: '13px' }}>
+                  بارگذاری فایل و استریم
+                </span>
+              </DropdownItem>
+            </CheckPermissions>
+            <CheckPermissions permissions={['folder_create']}>
+              <DropdownItem
+                cssModule={getBs()}
+                className={styles['dropdown-menu__item']}
+                onClick={toggleNewFolder}
+              >
+                <IconFolderPlus />
+                <span style={{ marginRight: '8px', fontSize: '13px' }}>
+                  ایجاد پوشه جدید
+                </span>
+              </DropdownItem>
+            </CheckPermissions>
           </DropdownMenu>
         </UncontrolledDropdown>
       </CheckPermissions>
+      {isNewFolderOpen && (
+        <NewFolderModal
+          isOpen={isNewFolderOpen}
+          type={OperationTypes.NewFolder}
+          title='ایجاد پوشه جدید'
+          toggle={toggleNewFolder}
+          placeholder='نام پوشه جدید را وارد نمایید'
+          btnNoText='انصراف'
+          btnOkText='ایجاد'
+        />
+      )}
       <FileDragAndDrop
         uploadComplete={uploadComplete}
         setUploadComplete={setUploadComplete}
