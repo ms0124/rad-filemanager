@@ -75,7 +75,7 @@ export const useGetFolderContentChildren = (
           ...params
         };
       },
-      cacheTime: 0,
+      cacheTime: 0
     }
   );
 };
@@ -190,6 +190,7 @@ export const useArchiveList = (query: string = '') => {
           return undefined;
         }
         return {
+          // ...baseParams,
           size: PAGE_SIZE,
           offset: offset
         };
@@ -226,12 +227,24 @@ export const useSearchList = (query: string) => {
 };
 
 export const useUploadLink = (query: string) => {
-  return useQuery( ['uploadLink', query ], ({ queryKey }) =>
-    api.uploadLink(queryKey[1]),
-   { enabled: false }
+  return useQuery(
+    ['uploadLink', query],
+    ({ queryKey }) => api.uploadLink(queryKey[1]),
+    { enabled: false }
   );
 };
 
+export const useStreamPrepare = (variables) => {
+  return useMutation({
+    mutationFn: (variables: { hash: string; qualities }) =>
+      api.streamPrepare({ ...variables })
+    // onSuccess: (_, variables) => {
+    //   queryClient.refetchQueries({
+    //     queryKey: ['folderContentChildren', folderHash]
+    //   });
+    // }
+  });
+};
 
 export const useDebounce = (value, delay) => {
   const [debouncedValue, setDebouncedValue] = useState(value);

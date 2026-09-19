@@ -15,7 +15,8 @@ const App: FunctionComponent = () => {
       <Row cssModule={getBs()}>
         <FileManagerReact
           clientId='17959574q2f0347718971594ccd86f3f4'
-          accessToken='13292ac09c5549118e11e6569f779b8f.XzIwMjMxMg'
+          accessToken='
+5258131095-d05a337F1d6b47a29c7688a900d98757.XzIwMjY5'
           permissions={['full']}
           isSandbox={true}
           // permissions={[
@@ -35,7 +36,6 @@ const App: FunctionComponent = () => {
           //   'archive_restore'
           // ]}
           config={{ height: '400px' }}
-
         />
       </Row>
     </>
