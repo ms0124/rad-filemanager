@@ -48,6 +48,7 @@ import {
 } from '../../utils/icons';
 import ShareFile from '../../components/ShareFile/index';
 import PreviewModal from '../../components/PreviewModal/index';
+import { toast } from 'react-toastify';
 
 interface IProps {
   item: {
@@ -63,6 +64,8 @@ interface IProps {
   onClick?: (event) => void;
   allFiles?: any[];
 }
+
+const MAX_BULK_ARCHIVE_ACTION = 50;
 
 const MenuTools = forwardRef<any, IProps>(
   (
@@ -116,9 +119,12 @@ const MenuTools = forwardRef<any, IProps>(
 
     const archiveDelete = useArchiveDelete(currentHash);
     const archiveRestor = useArchiveRestor(currentHash);
+
     const clickHandler = async (type) => {
-      const hashes: any = [];
-      hashes.push(item?.hash);
+      const hashes: string[] =
+        Array.isArray(selectedItems) && selectedItems.length > 0
+          ? selectedItems.map((x) => x?.hash)
+          : [item?.hash];
 
       switch (type) {
         case OperationTypes.Remove:
@@ -204,14 +210,25 @@ const MenuTools = forwardRef<any, IProps>(
           }
           break;
         case OperationTypes.RemoveArchive:
+          if (hashes.length >= MAX_BULK_ARCHIVE_ACTION) {
+            toast.error('امکان حذف بیشتر از 50 فایل وجود ندارد.');
+            break;
+          }
           try {
             await archiveDelete.mutateAsync(serializeUrl({ hashes }));
           } catch (error) {
             console.error('Error removing archive item:', error);
           }
+
+          setSelectedItems([]);
           break;
         case OperationTypes.RestoreArchive:
+          if (hashes.length >= MAX_BULK_ARCHIVE_ACTION) {
+            toast.error('امکان بازیابی بیشتر از 50 فایل وجود ندارد.');
+            break;
+          }
           archiveRestor.mutateAsync(serializeUrl({ hashes }));
+          setSelectedItems([]);
           break;
         case OperationTypes.Share:
           setIsOpenShareFile(true);
@@ -413,7 +430,6 @@ const MenuTools = forwardRef<any, IProps>(
                 >
                   <CheckPermissions permissions={['archive_delete']}>
                     <MenuItem
-                      disabled={isShowCheckbox}
                       clickHandler={() =>
                         clickHandler(OperationTypes.RemoveArchive)
                       }
@@ -425,7 +441,6 @@ const MenuTools = forwardRef<any, IProps>(
                   </CheckPermissions>
                   <CheckPermissions permissions={['archive_restore']}>
                     <MenuItem
-                      disabled={isShowCheckbox}
                       clickHandler={() =>
                         clickHandler(OperationTypes.RestoreArchive)
                       }
