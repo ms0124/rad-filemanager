@@ -350,7 +350,7 @@ const MenuTools = forwardRef<any, IProps>(
             ) : (
               <MenuItem
                 clickHandler={() => clickHandler(OperationTypes.Preview)}
-                title='پیش نمایش '
+                title='پیش نمایش و جزئیات'
                 enTitle='Preview'
                 icon={
                   <FontAwesomeIcon
