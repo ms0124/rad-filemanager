@@ -425,7 +425,7 @@ const PreviewModal: React.FunctionComponent<IProps> = ({
   return (
     <div className={styles['preview-modal-overlay']} onClick={handleClose}>
       {/* Sidebar */}
-      {/* {currentSlide && fileData && renderPreview(currentSlide)} */}
+      {currentSlide && fileData && renderPreview(currentSlide)}
       {/* Modal */}
       <div
         className={styles['preview-modal-content']}
