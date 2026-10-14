@@ -5,13 +5,15 @@ interface IProps {
   permissions: string[];
   operator?: string;
   showMessage?: boolean;
+  myStyle?: object;
 }
 
 const CheckPermissions: React.FunctionComponent<IProps> = ({
   permissions,
   operator = 'OR',
   showMessage = false,
-  children
+  children,
+  myStyle = {}
 }) => {
   const { permissions: globalPermissions } = useContext(Context);
 
@@ -37,7 +39,7 @@ const CheckPermissions: React.FunctionComponent<IProps> = ({
     }
   }
   return showMessage ? (
-    <Empty text='شما درسترسی به این بخش را ندارید.' />
+    <Empty text='شما دسترسی به این بخش را ندارید.' myStyle={myStyle} />
   ) : null;
 };
 
