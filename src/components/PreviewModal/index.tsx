@@ -18,6 +18,8 @@ import { useGetFileDetails } from '../../config/hooks';
 import moment from 'moment-jalaali';
 import CheckPermissions from '../../components/CheckPermissions/index';
 
+const PANEL_MENU_SELECTORS = ['.app-body .sidebar', '.app-body .sidebar-v2'];
+
 interface IProps {
   isOpen: boolean;
   toggle: () => void;
@@ -103,6 +105,54 @@ const PreviewModal: React.FunctionComponent<IProps> = ({
   const [currentSlideIndex, setCurrentSlideIndex] = useState<number>(0);
   const [showSidebar, setShowSidebar] = useState(false);
 
+  const [menuOffset, setMenuOffset] = useState(0);
+
+  useEffect(() => {
+    if (!isOpen) {
+      setMenuOffset(0);
+      return;
+    }
+
+    let menu: HTMLElement | null = null;
+    for (const selector of PANEL_MENU_SELECTORS) {
+      menu = document.querySelector(selector) as HTMLElement | null;
+      if (menu) break;
+    }
+
+    if (!menu) {
+      setMenuOffset(0);
+      return;
+    }
+
+    const target: HTMLElement = menu;
+
+    const calcOffset = () => {
+      const rect = target.getBoundingClientRect();
+      const isOnRight = rect.left > window.innerWidth / 2;
+      const hasSize = rect.width > 0;
+
+      if (isOnRight && hasSize) {
+        setMenuOffset(Math.max(0, window.innerWidth - rect.left));
+      } else {
+        setMenuOffset(0);
+      }
+    };
+
+    calcOffset();
+
+    const resizeObserver = new ResizeObserver(calcOffset);
+    resizeObserver.observe(target);
+
+    window.addEventListener('resize', calcOffset);
+    target.addEventListener('transitionend', calcOffset);
+
+    return () => {
+      resizeObserver.disconnect();
+      window.removeEventListener('resize', calcOffset);
+      target.removeEventListener('transitionend', calcOffset);
+    };
+  }, [isOpen]);
+
   const isImageFile = (extension: string) => {
     return Object.values(ImageTypes).includes(
       extension.toLowerCase() as ImageTypes
@@ -152,7 +202,7 @@ const PreviewModal: React.FunctionComponent<IProps> = ({
     const slidesData = previewableFiles.map((file) => {
       if (isImageFile(file.extension)) {
         return {
-          src: getThumbnailUrl(file.hash, isSandbox),
+          src: getFileUrl(file.hash, isSandbox),
           alt: file.name,
           type: 'image',
           name: file.name,
@@ -226,20 +276,9 @@ const PreviewModal: React.FunctionComponent<IProps> = ({
     if (slide.type === 'video') {
       return (
         <div className={styles['preview-container']}>
-          <video
-            controls
-            className={styles['preview-video']}
-            src={slide.src}
-            style={{ maxWidth: '100%', maxHeight: '300px' }}
-          >
+          <video controls className={styles['preview-video']} src={slide.src}>
             Your browser does not support the video tag.
           </video>
-          <div className={styles['file-info']}>
-            <h3 className={styles['file-name']}>{slide.name}</h3>
-            <p className={styles['file-size']}>
-              {formatBytes(slide.size || 0)}
-            </p>
-          </div>
         </div>
       );
     } else if (slide.type === 'file') {
@@ -249,14 +288,8 @@ const PreviewModal: React.FunctionComponent<IProps> = ({
             <DefaultThumnail
               item={{ extension: slide.extension }}
               size='5x'
-              style={{ color: '#666' }}
+              style={{ color: '#fff' }}
             />
-          </div>
-          <div className={styles['file-info']}>
-            <h3 className={styles['file-name']}>{slide.name}</h3>
-            <p className={styles['file-size']}>
-              {formatBytes(slide.size || 0)}
-            </p>
           </div>
         </div>
       );
@@ -268,14 +301,7 @@ const PreviewModal: React.FunctionComponent<IProps> = ({
             src={slide.src}
             alt={slide.alt}
             className={styles['preview-image']}
-            style={{ maxWidth: '100%', maxHeight: '300px' }}
           />
-          <div className={styles['file-info']}>
-            <h3 className={styles['file-name']}>{slide.name}</h3>
-            <p className={styles['file-size']}>
-              {formatBytes(slide.size || 0)}
-            </p>
-          </div>
         </div>
       );
     }
@@ -345,7 +371,7 @@ const PreviewModal: React.FunctionComponent<IProps> = ({
                 value={
                   <div className={styles['info-section__log-card-item']}>
                     <span>{formatChangeLogDate(log.timestamp)}</span>
-                    {`:ساعت`}
+                    {`: ساعت`}
                     &nbsp;
                     <span>{formatChangeLogTime(log.timestamp)}</span>
                   </div>
@@ -366,7 +392,8 @@ const PreviewModal: React.FunctionComponent<IProps> = ({
       >
         <div className={styles['info-section']}>
           <span className={styles['info-section__title-main']}>
-            <FontAwesomeIcon icon={faCircleInfo} /> اطلاعات فایل
+            {/* <FontAwesomeIcon icon={faCircleInfo} /> */}
+            اطلاعات فایل
           </span>
           <span className={styles['info-section__close']} onClick={handleClose}>
             ×
@@ -375,11 +402,11 @@ const PreviewModal: React.FunctionComponent<IProps> = ({
         <br />
         <br />
         <br />
-        <div className={styles['info-section__icon']}>
+        {/* <div className={styles['info-section__icon']}>
           {fileData?.thumbnail?.startsWith('THUMBNAIL_EXIST') ? (
             <img
               className={styles['info-section__img']}
-              src={getThumbnailUrl(fileData?.hash, isSandbox)}
+              src={getFileUrl(fileData?.hash, isSandbox)}
             />
           ) : (
             <DefaultThumnail
@@ -388,11 +415,8 @@ const PreviewModal: React.FunctionComponent<IProps> = ({
               // style={}
             />
           )}
-        </div>
-        <br />
-        <br />
-        <span className={styles['info-section__name']}> {item.name} </span>
-        <br />
+        </div> */}
+        <div className={styles['info-section__name']}> {item.name} </div>
         <div className={styles['info-section__card']}>
           <SidebarItem label='نوع فایل' value={fileData?.extension} />
           <SidebarItem
@@ -410,7 +434,7 @@ const PreviewModal: React.FunctionComponent<IProps> = ({
             value={moment(fileData?.created).format('jYYYY/jMM/jDD HH:mm')}
           />
           <SidebarItem
-            label='تاریخ ویرایش'
+            label='تاریخ آخرین ویرایش'
             value={moment(fileData?.updated).format('jYYYY/jMM/jDD HH:mm')}
           />
         </div>
@@ -429,6 +453,7 @@ const PreviewModal: React.FunctionComponent<IProps> = ({
       {/* Modal */}
       <div
         className={styles['preview-modal-content']}
+        style={{ paddingRight: menuOffset }}
         onClick={(e) => e.stopPropagation()}
       >
         {currentSlide && renderSlide(currentSlide)}
@@ -444,7 +469,7 @@ const PreviewModal: React.FunctionComponent<IProps> = ({
                 );
               }}
             >
-              {`›`}
+              {`‹`}
             </button>
             <button
               className={`${styles['nav-button']} ${styles['nav-button-right']}`}
@@ -454,7 +479,7 @@ const PreviewModal: React.FunctionComponent<IProps> = ({
                 );
               }}
             >
-              {`‹`}
+              {`›`}
             </button>
           </>
         )}
