@@ -440,7 +440,7 @@ const PreviewModal: React.FunctionComponent<IProps> = ({
         </div>
 
         <CheckPermissions
-          permissions={['drives_details']}
+          permissions={['details']}
           showMessage
           myStyle={{ height: '100px' }}
         >
