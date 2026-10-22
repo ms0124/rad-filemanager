@@ -16,6 +16,9 @@ import DefaultThumnail from '../StateColumnList/defaultThumbnail/index';
 import styles from './style.module.scss';
 import { useGetFileDetails } from '../../config/hooks';
 import moment from 'moment-jalaali';
+import CheckPermissions from '../../components/CheckPermissions/index';
+
+const PANEL_MENU_SELECTORS = ['.app-body .sidebar', '.app-body .sidebar-v2'];
 
 interface IProps {
   isOpen: boolean;
@@ -30,6 +33,23 @@ interface IProps {
   allFiles?: any[];
 }
 
+type EventTypeProps =
+  | 'uploaded'
+  | 'renamed'
+  | 'copied'
+  | 'moved'
+  | 'deleted'
+  | 'restored'
+  | 'published'
+  | 'sharedWithUser';
+
+interface ChangeLogProps {
+  eventType: EventTypeProps | string;
+  timestamp: string | number;
+  updatedBySsoId: string;
+  updatedByUsername: string;
+}
+
 interface FileItem {
   size?: number;
   name?: string;
@@ -39,11 +59,28 @@ interface FileItem {
   isPublic?: boolean;
   thumbnail?: string;
   hash?: string;
+  metaData?: {
+    changeLog?: ChangeLogProps[];
+  };
 }
 interface SidebarItemProps {
   label?: string;
-  value?: string;
+  value?: string | React.ReactNode;
 }
+const changeLogLabels: Record<string, string> = {
+  uploaded: 'بارگذاری',
+  renamed: 'تغییر نام',
+  copied: 'کپی',
+  moved: 'جابه‌جایی',
+  deleted: 'آرشیو',
+  restored: 'بازیابی',
+  published: 'انتشار',
+  sharedWithUser: 'اشتراک گذاری'
+};
+
+const getChangeLogAction = (eventType: string): string => {
+  return changeLogLabels[eventType] || eventType;
+};
 
 const SidebarItem: React.FunctionComponent<SidebarItemProps> = ({
   label,
@@ -67,6 +104,54 @@ const PreviewModal: React.FunctionComponent<IProps> = ({
   const [slides, setSlides] = useState<any[]>([]);
   const [currentSlideIndex, setCurrentSlideIndex] = useState<number>(0);
   const [showSidebar, setShowSidebar] = useState(false);
+
+  const [menuOffset, setMenuOffset] = useState(0);
+
+  useEffect(() => {
+    if (!isOpen) {
+      setMenuOffset(0);
+      return;
+    }
+
+    let menu: HTMLElement | null = null;
+    for (const selector of PANEL_MENU_SELECTORS) {
+      menu = document.querySelector(selector) as HTMLElement | null;
+      if (menu) break;
+    }
+
+    if (!menu) {
+      setMenuOffset(0);
+      return;
+    }
+
+    const target: HTMLElement = menu;
+
+    const calcOffset = () => {
+      const rect = target.getBoundingClientRect();
+      const isOnRight = rect.left > window.innerWidth / 2;
+      const hasSize = rect.width > 0;
+
+      if (isOnRight && hasSize) {
+        setMenuOffset(Math.max(0, window.innerWidth - rect.left));
+      } else {
+        setMenuOffset(0);
+      }
+    };
+
+    calcOffset();
+
+    const resizeObserver = new ResizeObserver(calcOffset);
+    resizeObserver.observe(target);
+
+    window.addEventListener('resize', calcOffset);
+    target.addEventListener('transitionend', calcOffset);
+
+    return () => {
+      resizeObserver.disconnect();
+      window.removeEventListener('resize', calcOffset);
+      target.removeEventListener('transitionend', calcOffset);
+    };
+  }, [isOpen]);
 
   const isImageFile = (extension: string) => {
     return Object.values(ImageTypes).includes(
@@ -117,7 +202,7 @@ const PreviewModal: React.FunctionComponent<IProps> = ({
     const slidesData = previewableFiles.map((file) => {
       if (isImageFile(file.extension)) {
         return {
-          src: getThumbnailUrl(file.hash, isSandbox),
+          src: getFileUrl(file.hash, isSandbox),
           alt: file.name,
           type: 'image',
           name: file.name,
@@ -191,20 +276,9 @@ const PreviewModal: React.FunctionComponent<IProps> = ({
     if (slide.type === 'video') {
       return (
         <div className={styles['preview-container']}>
-          <video
-            controls
-            className={styles['preview-video']}
-            src={slide.src}
-            style={{ maxWidth: '100%', maxHeight: '300px' }}
-          >
+          <video controls className={styles['preview-video']} src={slide.src}>
             Your browser does not support the video tag.
           </video>
-          <div className={styles['file-info']}>
-            <h3 className={styles['file-name']}>{slide.name}</h3>
-            <p className={styles['file-size']}>
-              {formatBytes(slide.size || 0)}
-            </p>
-          </div>
         </div>
       );
     } else if (slide.type === 'file') {
@@ -214,14 +288,8 @@ const PreviewModal: React.FunctionComponent<IProps> = ({
             <DefaultThumnail
               item={{ extension: slide.extension }}
               size='5x'
-              style={{ color: '#666' }}
+              style={{ color: '#fff' }}
             />
-          </div>
-          <div className={styles['file-info']}>
-            <h3 className={styles['file-name']}>{slide.name}</h3>
-            <p className={styles['file-size']}>
-              {formatBytes(slide.size || 0)}
-            </p>
           </div>
         </div>
       );
@@ -233,14 +301,7 @@ const PreviewModal: React.FunctionComponent<IProps> = ({
             src={slide.src}
             alt={slide.alt}
             className={styles['preview-image']}
-            style={{ maxWidth: '100%', maxHeight: '300px' }}
           />
-          <div className={styles['file-info']}>
-            <h3 className={styles['file-name']}>{slide.name}</h3>
-            <p className={styles['file-size']}>
-              {formatBytes(slide.size || 0)}
-            </p>
-          </div>
         </div>
       );
     }
@@ -267,6 +328,61 @@ const PreviewModal: React.FunctionComponent<IProps> = ({
       refetch();
     }
   }, [currentSlideIndex]);
+  const toMilliseconds = (timestamp: string | number) => {
+    const value = Number(timestamp);
+
+    const isSeconds = value < 10_000_000_000;
+    return isSeconds ? value * 1000 : value;
+  };
+
+  const formatChangeLogDate = (timestamp: string | number) => {
+    return moment(toMilliseconds(timestamp)).format('jYYYY/jMM/jDD');
+  };
+
+  const formatChangeLogTime = (timestamp: string | number) => {
+    return moment(toMilliseconds(timestamp)).format('HH:mm');
+  };
+
+  const renderChangeLog = (changeLog?: ChangeLogProps[]) => {
+    if (!changeLog || changeLog.length === 0) {
+      return null;
+    }
+
+    return (
+      <div className={styles['info-section__log-card']}>
+        <span className={styles['info-section__log-title-wrapper']}>
+          تاریخچه تغییرات
+        </span>
+        {changeLog.map((log, index) => {
+          const action = getChangeLogAction(log.eventType);
+
+          return (
+            <div
+              key={`${log.eventType}-${log.timestamp}-${index}`}
+              className={styles['info-section__item-wrapper']}
+            >
+              <SidebarItem
+                label='عملیات'
+                value={`(${log.eventType}) ${action}`}
+              />
+              <SidebarItem label='کاربر' value={log.updatedByUsername} />
+              <SidebarItem
+                label='تاریخ'
+                value={
+                  <div className={styles['info-section__log-card-item']}>
+                    <span>{formatChangeLogDate(log.timestamp)}</span>
+                    {`: ساعت`}
+                    &nbsp;
+                    <span>{formatChangeLogTime(log.timestamp)}</span>
+                  </div>
+                }
+              />
+            </div>
+          );
+        })}
+      </div>
+    );
+  };
 
   const renderPreview = (item: any) => {
     return (
@@ -276,7 +392,8 @@ const PreviewModal: React.FunctionComponent<IProps> = ({
       >
         <div className={styles['info-section']}>
           <span className={styles['info-section__title-main']}>
-            <FontAwesomeIcon icon={faCircleInfo} /> اطلاعات فایل
+            {/* <FontAwesomeIcon icon={faCircleInfo} /> */}
+            اطلاعات فایل
           </span>
           <span className={styles['info-section__close']} onClick={handleClose}>
             ×
@@ -285,11 +402,11 @@ const PreviewModal: React.FunctionComponent<IProps> = ({
         <br />
         <br />
         <br />
-        <div className={styles['info-section__icon']}>
+        {/* <div className={styles['info-section__icon']}>
           {fileData?.thumbnail?.startsWith('THUMBNAIL_EXIST') ? (
             <img
               className={styles['info-section__img']}
-              src={getThumbnailUrl(fileData?.hash, isSandbox)}
+              src={getFileUrl(fileData?.hash, isSandbox)}
             />
           ) : (
             <DefaultThumnail
@@ -298,11 +415,8 @@ const PreviewModal: React.FunctionComponent<IProps> = ({
               // style={}
             />
           )}
-        </div>
-        <br />
-        <br />
-        <span className={styles['info-section__name']}> {item.name} </span>
-        <br />
+        </div> */}
+        <div className={styles['info-section__name']}> {item.name} </div>
         <div className={styles['info-section__card']}>
           <SidebarItem label='نوع فایل' value={fileData?.extension} />
           <SidebarItem
@@ -320,10 +434,18 @@ const PreviewModal: React.FunctionComponent<IProps> = ({
             value={moment(fileData?.created).format('jYYYY/jMM/jDD HH:mm')}
           />
           <SidebarItem
-            label='تاریخ ویرایش'
+            label='تاریخ آخرین ویرایش'
             value={moment(fileData?.updated).format('jYYYY/jMM/jDD HH:mm')}
           />
         </div>
+
+        <CheckPermissions
+          permissions={['details']}
+          showMessage
+          myStyle={{ height: '100px' }}
+        >
+          {renderChangeLog(fileData?.metaData?.changeLog)}
+        </CheckPermissions>
       </div>
     );
   };
@@ -331,10 +453,11 @@ const PreviewModal: React.FunctionComponent<IProps> = ({
   return (
     <div className={styles['preview-modal-overlay']} onClick={handleClose}>
       {/* Sidebar */}
-      {/* {currentSlide && fileData && renderPreview(currentSlide)} */}
+      {currentSlide && fileData && renderPreview(currentSlide)}
       {/* Modal */}
       <div
         className={styles['preview-modal-content']}
+        style={{ paddingRight: menuOffset }}
         onClick={(e) => e.stopPropagation()}
       >
         {currentSlide && renderSlide(currentSlide)}
@@ -350,7 +473,7 @@ const PreviewModal: React.FunctionComponent<IProps> = ({
                 );
               }}
             >
-              {`›`}
+              {`‹`}
             </button>
             <button
               className={`${styles['nav-button']} ${styles['nav-button-right']}`}
@@ -360,7 +483,7 @@ const PreviewModal: React.FunctionComponent<IProps> = ({
                 );
               }}
             >
-              {`‹`}
+              {`›`}
             </button>
           </>
         )}

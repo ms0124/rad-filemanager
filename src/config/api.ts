@@ -64,18 +64,17 @@ export const upload = async ({ isSandbox, formData, uploadHash, stream }, config
   } else {
     url = `${directMain}/api/files/${uploadHash}`;
   }
-  // }
 
   return await instance.post(
     url,
     formData,
     {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-        ...headers
-      },
-      onUploadProgress: configs.onUploadProgress,
-      signal: configs.signal
+    headers: {
+      'Content-Type': 'multipart/form-data',
+      ...headers
+    },
+    onUploadProgress: configs.onUploadProgress,
+    signal: configs.signal
     }
   );
 };
@@ -160,7 +159,7 @@ export const getArchiveList = async ({ query, ...params }: any) => {
 export const archiveRestore = async ({ ...params }): Promise<Data> => {
   return httpRequest(
     `${namespace}/archive/restore/${params.variables}`,
-    {},
+    { message: successMessage },
     'POST'
   );
 };

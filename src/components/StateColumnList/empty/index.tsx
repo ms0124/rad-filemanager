@@ -7,20 +7,24 @@ import React, { FunctionComponent } from 'react';
 
 interface IProps {
   text?: string;
+  myStyle?: object;
 }
 
-const Empty: FunctionComponent<IProps> = ({ text = '' }) => {
+const Empty: FunctionComponent<IProps> = ({ text = '', myStyle = {} }) => {
   return (
     <React.Fragment>
       <RightClick query='#rightclick' />
-      <div id='rightclick' className={styles['empty']}>
+      <div id='rightclick' className={styles['empty']} style={myStyle}>
         {text ? (
           text
         ) : (
-          <div
-            className={styles['empty__container']}
-          >
-            <img src={emptyFolder} width={60} height={40} className={utilStyles['mb-2']} />
+          <div className={styles['empty__container']}>
+            <img
+              src={emptyFolder}
+              width={60}
+              height={40}
+              className={utilStyles['mb-2']}
+            />
             <span>این پوشه خالیست!</span>
           </div>
         )}
