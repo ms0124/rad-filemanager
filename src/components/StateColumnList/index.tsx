@@ -14,7 +14,7 @@ const StateColumnList = () => {
 
   return (
     <span className={styles['state-column-list']}>
-      <span>شیوه نمایش</span>
+      <span className={styles['state-column-list__text']}>شیوه نمایش</span>
 
       <FontAwesomeIcon
         icon={faColumns}

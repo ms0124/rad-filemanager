@@ -13,9 +13,18 @@ interface IProps {}
 const SearchTab: React.FunctionComponent<IProps> = () => {
   const { isList, setCurrentHash, setBreadCrumb, searchText } =
     useContext(Context);
-  const debonceSearch = useDebounce(searchText, 500);
+
+  // initialValue '' is required: with the current text as the initial value the
+  // very first keystroke would fire a request immediately instead of waiting
+  // for 500ms of silence.
+  const debonceSearch = useDebounce(searchText, 500, '');
+  const trimmedSearch = debonceSearch.trim();
+  const isDebouncing = searchText.trim() !== trimmedSearch;
+
   const { data, isLoading } = useSearchList(
-    objectToQueryString({ title: debonceSearch, desc: true })
+    objectToQueryString({ title: trimmedSearch, desc: true }),
+    // no request for an empty term (e.g. while the debounce is still pending)
+    { enabled: !!trimmedSearch }
   );
 
   useEffect(() => {
@@ -35,7 +44,7 @@ const SearchTab: React.FunctionComponent<IProps> = () => {
 
   return (
     <React.Fragment>
-      {pagesArray[0].result.list.length && !isLoading ? (
+      {pagesArray[0].result.list.length && !isLoading && !isDebouncing ? (
         isList ? (
           <Column
             pages={pagesArray}
@@ -49,7 +58,7 @@ const SearchTab: React.FunctionComponent<IProps> = () => {
             tabType={TabTypes.FileList}
           />
         )
-      ) : isLoading ? (
+      ) : isLoading || isDebouncing ? (
         <Loading wholePage />
       ) : (
         <Empety text='جستجو نتیجه ای نداشت !' />

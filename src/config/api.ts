@@ -201,8 +201,8 @@ export const downloadLink = async (params) => {
 /*********** S E A R C H ***************/
 /************************************* */
 
-export const search = async ({ query }: any) => {
-  return await httpRequest(`${namespace}/search/${query}`);
+export const search = async ({ query, signal }: any) => {
+  return await httpRequest(`${namespace}/search/${query}`, {}, 'GET', { signal });
 };
 
 /************************************* */

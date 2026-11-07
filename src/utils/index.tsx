@@ -2,7 +2,7 @@ import bs from 'bootstrap/dist/css/bootstrap.min.css';
 
 import RightClick from './rightClick/index';
 import { instance } from '../config/config';
-import { AxiosResponse } from 'axios';
+import axios, { AxiosResponse } from 'axios';
 import { toast } from 'react-toastify';
 export { Loading } from './loading/index';
 
@@ -15,27 +15,37 @@ interface IParams {
   headers?: null;
   message?: string;
 }
+
+// A request aborted on purpose (e.g. react-query cancelling a stale search)
+// is not an error the user should ever see.
+const isCanceledRequest = (error: any): boolean =>
+  !!error &&
+  (axios.isCancel(error) ||
+    error.code === 'ERR_CANCELED' ||
+    error.name === 'CanceledError');
+
 export const httpRequest = (
   url,
   { message = '', headers = null, ...params }: IParams = {},
-  method = 'GET'
+  method = 'GET',
+  config: { signal?: AbortSignal } = {}
 ) => {
   let instancRequest: Promise<AxiosResponse<any, any>>;
   switch (method.toUpperCase()) {
     case 'DELETE':
-      instancRequest = instance.delete(url, { params } );
+      instancRequest = instance.delete(url, { params, ...config });
       break;
     case 'POST':
-      instancRequest = instance.post(url, params);
+      instancRequest = instance.post(url, params, config);
       break;
     case 'PUT':
-      instancRequest = instance.put(url, params);
+      instancRequest = instance.put(url, params, config);
       break;
     // case "PATCH":
     //   return instance.patch(url, data);
     //   break;
     default: // GET Request
-      instancRequest = instance.get<any>(url, { params });
+      instancRequest = instance.get<any>(url, { params, ...config });
   }
   return instancRequest
     .then((res) => {
@@ -43,13 +53,19 @@ export const httpRequest = (
       return res.data;
     })
     .catch((err) => {
+      // cancelled requests stay silent (no toast) and reject so that the caller
+      // (react-query) can treat them as an abort rather than a failure
+      if (isCanceledRequest(err)) {
+        return Promise.reject(err);
+      }
       resultServ(err, message);
-      return err.data;
+      return err?.data;
     });
 };
 
 const resultServ = (res, message) => {
-  const { data } = res;
+  const data = res && res.data;
+  if (!data) return;
   if (data.hasError) {
     data.message.map((item) => toast.error(item));
   } else if (message) {

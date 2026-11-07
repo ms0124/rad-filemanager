@@ -73,3 +73,34 @@
     border-right: none !important;
   }
 }
+
+//*****************************************
+//***** Responsive: tablet & mobile *******
+//*****************************************
+// The header row used to be a single flex line holding a fixed-width search
+// input (270px) plus the tools group (~300px). Below roughly 1025px that line
+// first wraps and then overflows the component, because a flex item defaults to
+// min-width: auto and so refuses to shrink below its content. Inside this
+// breakpoint the tools item takes a row of its own and its children may shrink.
+// Desktop rules above are untouched.
+@media (max-width: 991.98px) {
+  .nav-wrapper {
+    padding: 8px !important;
+  }
+
+  .nav-wrapper__container {
+    flex: 1 1 100%;
+    flex-wrap: wrap;
+    width: 100%;
+    min-width: 0;
+    margin-right: 0;
+    margin-left: 0;
+    row-gap: 8px;
+  }
+
+  .nav-wrapper__tools {
+    flex: 0 0 auto;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+}

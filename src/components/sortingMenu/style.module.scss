@@ -80,3 +80,26 @@
   right: 0;
   z-index: 2;
 }
+
+//*****************************************
+//***** Responsive: tablet & mobile *******
+//*****************************************
+// The bar is one long toolbar (±720px of items) clipped by a hard
+// `max-height: 50px`. Below lg the items wrap into 2-3 hidden rows, so the bar
+// looked cut in half. Inside this breakpoint it keeps a single row and scrolls
+// horizontally on its own instead of growing or overflowing the page.
+// `> ul` is a structural selector: the `.nav` class here is bootstrap's, which
+// CSS Modules localises, so `.sorting-menu .nav` would never match the DOM.
+@media (max-width: 991.98px) {
+  .sorting-menu {
+    max-height: none;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .sorting-menu > ul {
+    flex-wrap: nowrap;
+    white-space: nowrap;
+    align-items: center;
+  }
+}

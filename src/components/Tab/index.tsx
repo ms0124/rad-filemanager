@@ -31,15 +31,28 @@ interface Props {}
 const Tab: FunctionComponent<Props> = () => {
   // const [activeTab, setActiveTab] = useState(TabTypes.FileList);
 
-  const { config, setCurrentTab, currentTab, searchText, dontShowArchive } =
+  const { config, setCurrentTab, currentTab, searchText, setSearchText, dontShowArchive } =
     useContext(Context);
 
   // const total = useRef<{ archive: number; file: number }>({archive:0, file:0});
   const total = useRef<number>(0);
 
+  // set when the user picks a tab explicitly, so the search-sync effect below
+  // does not fight the click (clearing the field must not jump back to another tab)
+  const skipSearchSync = useRef(false);
+
   const handleTab = (tab: number) => {
     setCurrentTab(tab);
     // setActiveTab(tab);
+  };
+
+  const handleTabClick = (tab: number) => {
+    // switching tabs resets the search: the input empties, SearchTab unmounts
+    // (which clears a pending debounce timer) and react-query aborts the
+    // in-flight search because the query function consumes its abort signal
+    if (searchText) skipSearchSync.current = true;
+    setSearchText('');
+    handleTab(tab);
   };
 
   const setTotal = (val) => (total.current = val);
@@ -48,11 +61,13 @@ const Tab: FunctionComponent<Props> = () => {
     // if type in input search deselect another tabs
     if (searchText) {
       handleTab(TabTypes.SearchList);
-      setCurrentTab(TabTypes.SearchList);
-    } else {
-      handleTab(TabTypes.FileList);
-      setCurrentTab(TabTypes.FileList);
+      return;
     }
+    if (skipSearchSync.current) {
+      skipSearchSync.current = false;
+      return;
+    }
+    handleTab(TabTypes.FileList);
   }, [searchText]);
 
   return (
@@ -70,7 +85,7 @@ const Tab: FunctionComponent<Props> = () => {
           <NavLink
             // disabled={activeTab === TabTypes.SearchList}
             active={currentTab === TabTypes.FileList}
-            onClick={() => handleTab(TabTypes.FileList)}
+            onClick={() => handleTabClick(TabTypes.FileList)}
             className={classNames(
               styles['nav-wrapper__link'],
               {
@@ -95,7 +110,7 @@ const Tab: FunctionComponent<Props> = () => {
             <NavLink
               // disabled={activeTab === TabTypes.SearchList}
               active={currentTab === TabTypes.ArchiveList}
-              onClick={() => handleTab(TabTypes.ArchiveList)}
+              onClick={() => handleTabClick(TabTypes.ArchiveList)}
               className={classNames(
                 styles['nav-wrapper__link'],
                 {
@@ -120,7 +135,12 @@ const Tab: FunctionComponent<Props> = () => {
           cssModule={getBs()}
         >
           <Search />
-          <span className={utilsStyles['d-flex']}>
+          <span
+            className={classNames(
+              utilsStyles['d-flex'],
+              styles['nav-wrapper__tools']
+            )}
+          >
             <StateColumnList />
             <Upload />
           </span>

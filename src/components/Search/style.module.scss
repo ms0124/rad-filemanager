@@ -42,3 +42,29 @@
     }
   }
 }
+
+//*****************************************
+//***** Responsive: tablet & mobile *******
+//*****************************************
+// Desktop keeps the 270px input. Below the lg breakpoint the group has to be
+// able to shrink (min-width: 0) and the input has to give up its fixed width,
+// otherwise the header row spills sideways out of the component and the tools
+// end up off-screen.
+// `!important` is required here: the group carries an inline width:'auto' and
+// the input a hard `width: 270px !important` in the base rule above.
+// Without this the group's min-content width (~312px) plus the tools group
+// cannot fit a phone header row, and the row spills out of the component.
+@media (max-width: 991.98px) {
+  .search-wrapper {
+    flex: 1 1 200px;
+    min-width: 0;
+    margin-right: 0;
+    margin-left: 0;
+  }
+
+  .search-wrapper__input {
+    flex: 1 1 auto;
+    width: auto !important;
+    min-width: 0;
+  }
+}

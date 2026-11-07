@@ -13,6 +13,18 @@
     margin-right: 10px;
   }
 }
+
+//*****************************************
+//***** Responsive: phones ****************
+//*****************************************
+// On phones the header has to fit ~300px. The "شیوه نمایش" caption is a label
+// only; the two toggle icons stay, so dropping it here buys the search input
+// the room it needs instead of forcing a third header row.
+@media (max-width: 575.98px) {
+  .state-column-list__text {
+    display: none;
+  }
+}
 /**************************
 ********* column styles****
 ***************************/

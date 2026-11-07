@@ -53,3 +53,28 @@
   //   padding-left: 10px;
   // }
 }
+
+//*****************************************
+//***** Responsive: tablet & mobile *******
+//*****************************************
+// A deep path is a row of nowrap segments; it used to widen the whole scroll
+// area. Inside this breakpoint the fixed 40px height becomes a minimum and the
+// path itself scrolls horizontally, keeping the "بازگشت" button in place.
+@media (max-width: 991.98px) {
+  .bread-crumb {
+    height: auto;
+    min-height: 40px;
+    gap: 8px;
+  }
+
+  .bread-crumb__wrapper-item {
+    flex: 1 1 auto;
+    min-width: 0;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+
+  .bread-crumb__back {
+    flex: 0 0 auto;
+  }
+}

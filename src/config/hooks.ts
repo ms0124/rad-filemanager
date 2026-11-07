@@ -224,23 +224,32 @@ export const useArchiveRestor = (folderHash) => {
   });
 };
 
-export const useSearchList = (query: string) => {
-  return useQuery(['searchList', { query }], ({ queryKey }) =>
-    api.search(queryKey[1])
+export const useSearchList = (
+  query: string,
+  options: { enabled?: boolean } = {}
+) => {
+  return useQuery(
+    ['searchList', { query }],
+    // `signal` is consumed on purpose: react-query only aborts in-flight
+    // requests when the query function reads it.
+    ({ queryKey, signal }) =>
+      api.search({ ...(queryKey[1] as { query: string }), signal }),
+    { enabled: options.enabled !== false }
   );
 };
 
 export const useUploadLink = (query: string) => {
-  return useQuery(['uploadLink', query], ({ queryKey }) =>
-    api.uploadLink(queryKey[1]),
+  return useQuery(
+    ['uploadLink', query],
+    ({ queryKey }) => api.uploadLink(queryKey[1]),
     { enabled: false }
   );
 };
 
 export const useStreamPrepare = (variables) => {
   return useMutation({
-    mutationFn: (variables: { hash: string, qualities }) =>
-      api.streamPrepare({ ...variables }),
+    mutationFn: (variables: { hash: string; qualities }) =>
+      api.streamPrepare({ ...variables })
     // onSuccess: (_, variables) => {
     //   queryClient.refetchQueries({
     //     queryKey: ['folderContentChildren', folderHash]
@@ -249,8 +258,8 @@ export const useStreamPrepare = (variables) => {
   });
 };
 
-export const useDebounce = (value, delay) => {
-  const [debouncedValue, setDebouncedValue] = useState(value);
+export const useDebounce = (value, delay, initialValue = value) => {
+  const [debouncedValue, setDebouncedValue] = useState(initialValue);
   useEffect(() => {
     const handler = setTimeout(() => {
       setDebouncedValue(value);
