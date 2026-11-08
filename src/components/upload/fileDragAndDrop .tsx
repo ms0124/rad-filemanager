@@ -43,29 +43,9 @@ import { IconTick, IconTimes, IconUpload } from '../../utils/icons';
 import { audioQualities, videoQualities } from './upload.constants';
 import { useUploadLink, useStreamPrepare } from '../../config/hooks';
 import { objectToQueryString } from '../../utils/index';
+import StreamQualityList from './StreamQualityList';
 
 import DefaultThumbnail from '../StateColumnList/defaultThumbnail/index';
-
-const Checkbox = ({ name, index, checked, onClick }) => {
-  return (
-    <>
-      <Input
-        id={name + index}
-        type='checkbox'
-        onClick={onClick}
-        checked={checked}
-      />
-      <Label
-        check
-        for={name + index}
-        className={styles['stream__checkboxlabel']}
-        role='button'
-      >
-        {name}
-      </Label>
-    </>
-  );
-};
 
 const Radio = ({ name, index, checked, onClick }) => {
   return (
@@ -510,20 +490,6 @@ const FilesDragAndDrop: FunctionComponent<Props> = ({
     delete controllerRef.current[`${name}_${index}`];
   };
 
-  const handleClickCheckbox = (e, item, type) => {
-    const { checked } = e.target;
-    if (checked && type === 'audio') {
-      setAudio((prev) => [...prev, item]);
-    } else if (checked && type === 'video') {
-      setVideo((prev) => [...prev, item]);
-    } else if (!checked && type === 'audio') {
-      const filtredQualities = audio.filter((i) => i !== item);
-      setAudio(filtredQualities);
-    } else if (!checked && type === 'video') {
-      const filtredQualities = video.filter((i) => i !== item);
-      setVideo(filtredQualities);
-    }
-  };
   const clickHandlerRadio = () => {
     setIsPublic((prevIsPublic) => !prevIsPublic);
   };
@@ -564,44 +530,34 @@ const FilesDragAndDrop: FunctionComponent<Props> = ({
               )}
               <div className={styles['stream']}>
                 {modal.stream && (
-                  <>
-                    <div className={styles['stream__title']}>
-                      <span> کیفیت فایل صوتی</span>
-                      <span className={styles['stream__subTitle']}>
-                        {' '}
-                        (mp3){' '}
-                      </span>
-                    </div>
-                    {audioQualities.map((x, index) => (
-                      <Checkbox
-                        checked={audio.find((y) => y === x) ? 'checked' : ''}
-                        name={x}
-                        index={index}
-                        onClick={(e) => handleClickCheckbox(e, x, 'audio')}
-                      />
-                    ))}
-
-                    <div
-                      className={classnames(
-                        styles['stream__title'],
-                        utilStyles['mt-2']
-                      )}
-                    >
-                      <span> کیفیت فایل تصویری</span>
-                      <span className={styles['stream__subTitle']}>
-                        {' '}
-                        (mp4){' '}
-                      </span>
-                    </div>
-                    {videoQualities.map((x, index) => (
-                      <Checkbox
-                        checked={video.find((y) => y === x) ? 'checked' : ''}
-                        name={x}
-                        index={index}
-                        onClick={(e) => handleClickCheckbox(e, x, 'video')}
-                      />
-                    ))}
-                  </>
+                  <StreamQualityList
+                    groups={[
+                      {
+                        title: 'کیفیت فایل صوتی',
+                        subTitle: '(mp3)',
+                        qualities: audioQualities,
+                        selected: audio,
+                        onChange: (quality, checked) =>
+                          setAudio((prev) =>
+                            checked
+                              ? [...prev, quality]
+                              : prev.filter((item) => item !== quality)
+                          )
+                      },
+                      {
+                        title: 'کیفیت فایل تصویری',
+                        subTitle: '(mp4)',
+                        qualities: videoQualities,
+                        selected: video,
+                        onChange: (quality, checked) =>
+                          setVideo((prev) =>
+                            checked
+                              ? [...prev, quality]
+                              : prev.filter((item) => item !== quality)
+                          )
+                      }
+                    ]}
+                  />
                 )}
                 <div className={styles['stream__title']}>
                   <span>نوع دسترسی</span>

@@ -44,10 +44,12 @@ import {
   IconDownload,
   IconCircleInfo,
   IconShare,
-  IconPreview
+  IconPreview,
+  IconStream
 } from '../../utils/icons';
 import ShareFile from '../../components/ShareFile/index';
 import PreviewModal from '../../components/PreviewModal/index';
+import StreamModal from '../../components/upload/StreamModal';
 import { toast } from 'react-toastify';
 
 interface IProps {
@@ -98,6 +100,15 @@ const MenuTools = forwardRef<any, IProps>(
     const togglePreview = () => {
       setIsOpenPreview((prev) => !prev);
     };
+
+    const [isOpenStream, setIsOpenStream] = useState<boolean>(false);
+    const toggleStream = () => {
+      setIsOpenStream((prev) => !prev);
+    };
+
+    const isStreamable = ['mp3', 'mp4'].includes(
+      item?.extension?.toLowerCase()
+    );
 
     const toggleModal: () => void = () => setIsOpenModal(!isOpenModal);
     const toggle: () => void = () => {
@@ -236,6 +247,9 @@ const MenuTools = forwardRef<any, IProps>(
         case OperationTypes.Preview:
           setIsOpenPreview(true);
           break;
+        case OperationTypes.Stream:
+          setIsOpenStream(true);
+          break;
       }
     };
 
@@ -271,6 +285,13 @@ const MenuTools = forwardRef<any, IProps>(
             toggle={togglePreview}
             item={item}
             allFiles={allFiles}
+          />
+        )}
+        {isOpenStream && (
+          <StreamModal
+            isOpen={isOpenStream}
+            toggle={toggleStream}
+            item={item}
           />
         )}
         {isOpenModal && operationType === OperationTypes.Remove ? (
@@ -422,6 +443,23 @@ const MenuTools = forwardRef<any, IProps>(
                     disabled={isShowCheckbox}
                   />
                 </CheckPermissions>
+                {isStreamable && (
+                  <CheckPermissions
+                    permissions={['drives_stream_offline_prepare']}
+                  >
+                    <DropdownItem cssModule={getBs()} divider />
+                    <MenuItem
+                      clickHandler={() => clickHandler(OperationTypes.Stream)}
+                      title='استریم'
+                      icon={
+                        <IconStream
+                          style={{ width: '18px', height: '16px' }}
+                        />
+                      }
+                      enTitle='Stream'
+                    />
+                  </CheckPermissions>
+                )}
               </React.Fragment>
             ) : (
               <React.Fragment>

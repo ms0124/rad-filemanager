@@ -179,3 +179,26 @@ div[role='dialog'] {
     color: #e4a400;
   }
 }
+
+.stream-modal {
+  &__header {
+    display: flex;
+    // rtl: flex-start is the right side
+    justify-content: flex-start;
+  }
+  &__close {
+    color: #737373;
+    cursor: pointer;
+    font-size: 16px;
+  }
+  &__footer {
+    display: flex;
+    // rtl: flex-end is the left side
+    justify-content: flex-end;
+    margin-top: 16px;
+  }
+  &__save {
+    background-color: #6184ff !important;
+    border-color: #6184ff !important;
+  }
+}
