@@ -14,9 +14,9 @@ const App: FunctionComponent = () => {
       ></div> */}
       <Row cssModule={getBs()}>
         <FileManagerReact
-          clientId='17959574q2f0347718971594ccd86f3f4'
+          clientId='22d3be94bf4311b91a4480fe933e12'
           accessToken='
-9464635971-62a872816159467ca4f3C14eade0f31a.XzIwMjY3'
+9263689434-1e78300e304b412a99f930e98F51d6e3.XzIwMjYxMQ'
           permissions={['full']}
           isSandbox={true}
           // permissions={[

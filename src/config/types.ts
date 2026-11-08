@@ -20,7 +20,8 @@ export enum OperationTypes {
   RemoveArchive = 8,
   RestoreArchive = 9,
   Share = 10,
-  Preview = 11
+  Preview = 11,
+  Stream = 12
 }
 
 export enum TabTypes {
