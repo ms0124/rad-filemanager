@@ -5,6 +5,58 @@ export interface Data {
   count?: number;
 }
 
+export interface BreadcrumbItem {
+  hash?: string;
+  name?: string;
+  attributes?: string[];
+  disabled?: boolean;
+}
+
+export interface DriveItem {
+  hash: string;
+  name: string;
+  extension?: string;
+  type?: string;
+  parentHash?: string;
+  isPublic?: boolean;
+  isShared?: boolean;
+  isBookmarked?: boolean;
+  userCanTrash?: boolean;
+  thumbnail?: string;
+  size?: number;
+  created?: number | string;
+  updated?: number | string;
+  // با streamStatus=true مقدار دارد؛ در نمونه‌ی واقعی برای فایل استریم‌نشده [] است.
+  // ساختار عناصر آن قطعی نیست، پس عمداً شل تایپ شده است.
+  streamStatus?: unknown;
+  [key: string]: any;
+}
+
+export interface ChildrenPayload {
+  entity?: Record<string, any>;
+  list?: DriveItem[];
+  breadcrumb?: BreadcrumbItem[];
+  count?: number;
+  links?: { nextPage?: string; [key: string]: any };
+  [key: string]: any;
+}
+
+// پاسخ خام سرویس children؛ با arrayResponseFormat=true مقدار result آرایه است
+// و آبجکت list/breadcrumb در result[0] قرار می‌گیرد.
+export interface ChildrenResponse {
+  hasError?: boolean;
+  count?: number;
+  result?: ChildrenPayload | ChildrenPayload[];
+  metaData?: any[];
+  [key: string]: any;
+}
+
+// شکل نرمال‌شده‌ای که به کامپوننت‌ها داده می‌شود تا به ساختار آرایه‌ای وابسته نباشند.
+export interface ChildrenPage {
+  count: number;
+  result: ChildrenPayload;
+}
+
 /************************
  ******T Y P E S *********
  *************************/

@@ -34,6 +34,10 @@
   }
   &__icon-access-wrapper {
     display: flex;
+    padding-top: 4px !important;
+    padding-bottom: 4px !important;
+    flex-direction: column;
+    gap: 4px;
     justify-content: center;
     align-items: center;
     width: 25;

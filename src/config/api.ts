@@ -1,5 +1,6 @@
 import { instance, directMain, directSandbox } from './config';
-import { Data } from '../config/types';
+// eslint-disable-next-line no-unused-vars
+import { ChildrenResponse, Data } from '../config/types';
 import { httpRequest } from '../utils/index';
 
 const namespace = 'api/core/drives';
@@ -18,7 +19,7 @@ export const getFileDetails: (hash: string) => Promise<Data> = async (hash) => {
 export const getFolderContentChildren = ({
   hash,
   query
-}: any): Promise<Data> => {
+}: any): Promise<ChildrenResponse> => {
   return httpRequest(`${namespace}/${hash}/children/${query}`);
 };
 

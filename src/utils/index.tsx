@@ -128,6 +128,22 @@ const isPermitted = (userPermissions, permissions, operator = 'AND') => {
 };
 
 
+const isStreamed = (item?: { streamStatus?: unknown }): boolean => {
+  const streamStatus: any = item?.streamStatus;
+  if (
+    streamStatus === null ||
+    streamStatus === undefined ||
+    streamStatus === ''
+  ) {
+    return false;
+  }
+  if (Array.isArray(streamStatus)) return streamStatus.length > 0;
+  if (typeof streamStatus === 'object') {
+    return Object.keys(streamStatus).length > 0;
+  }
+  return !!streamStatus;
+};
+
 const getViewport  = () => {
   const width = Math.max(
     document.documentElement.clientWidth,
@@ -161,6 +177,7 @@ const getParamsFromUrl = (url) => {
 }
 export {
   isPermitted,
+  isStreamed,
   RightClick,
   formatBytes,
   brifStr,

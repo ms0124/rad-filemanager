@@ -123,7 +123,7 @@ const FileTab: FunctionComponent<IProps> = ({ setTotal }) => {
 
   return (
     <React.Fragment>
-      {data?.pages[0]?.result && data?.pages[0]?.result?.list?.length > 0 ? (
+      {(data?.pages[0]?.result?.list?.length ?? 0) > 0 ? (
         <React.Fragment>
           {isList ? (
             <Column
