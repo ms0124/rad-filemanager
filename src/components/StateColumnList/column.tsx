@@ -10,8 +10,9 @@ import folder from './folder.png';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faGlobe, faKey } from '@fortawesome/free-solid-svg-icons';
 import MenuTools from '../../utils/MenuTools/';
-import { formatBytes, getThumbnailUrl, brifStr } from '../../utils/index';
+import { formatBytes, getThumbnailUrl, brifStr, isStreamed } from '../../utils/index';
 import { RightClick } from '../../utils';
+import { IconStream } from '../../utils/icons';
 import { TabTypes, FolderTypes } from '../../config/types';
 import { Context } from '../../store/index';
 import { getBs, getViewport } from '../../utils/index';
@@ -319,6 +320,12 @@ const Column: React.FunctionComponent<IProps> = ({
                         <FontAwesomeIcon
                           className={styles['col__icon-access']}
                           icon={faKey}
+                        />
+                      )}
+                      {isStreamed(item) && (
+                        <IconStream
+                          color='#6184ff'
+                          style={{ width: '16px', height: '16px' }}
                         />
                       )}
                     </div>

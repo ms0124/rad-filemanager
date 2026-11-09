@@ -4,6 +4,33 @@ import * as api from './api';
 import { useContext, useState, useEffect } from 'react';
 import { Context } from '../store';
 import { objectToQueryString, getParamsFromUrl } from '../utils/';
+// eslint-disable-next-line no-unused-vars
+import { ChildrenPage, ChildrenResponse } from './types';
+
+// با arrayResponseFormat=true پاسخ result به آرایه تبدیل می‌شود و list/breadcrumb
+// در result[0] قرار می‌گیرند. این تابع همان‌جا داده را به شکل قبلی نرمال می‌کند
+// تا بقیه‌ی کامپوننت‌ها به ساختار آرایه‌ای وابسته نشوند.
+const normalizeChildrenPage = (raw: ChildrenResponse): ChildrenPage => {
+  const rawResult: any = raw?.result;
+  let payload: any;
+
+  if (Array.isArray(rawResult)) {
+    payload =
+      rawResult[0] && ('list' in rawResult[0] || 'breadcrumb' in rawResult[0])
+        ? rawResult[0]
+        : { list: rawResult, breadcrumb: [] };
+  } else {
+    payload = rawResult;
+  }
+
+  return {
+    count: raw?.count ?? payload?.count ?? 0,
+    result: {
+      list: Array.isArray(payload?.list) ? payload.list : [],
+      breadcrumb: Array.isArray(payload?.breadcrumb) ? payload.breadcrumb : []
+    }
+  };
+};
 
 /************************************* */
 /********* get Header ***************/
@@ -51,10 +78,16 @@ export const useGetFolderContentChildren = (
   return useInfiniteQuery(
     ['folderContentChildren', hash],
     ({ pageParam = baseParams, queryKey }) => {
-      return api.getFolderContentChildren({
-        hash: queryKey[1],
-        query: objectToQueryString(pageParam)
-      });
+      return api
+        .getFolderContentChildren({
+          hash: queryKey[1],
+          query: objectToQueryString({
+            ...pageParam,
+            streamStatus: true,
+            arrayResponseFormat: true
+          })
+        })
+        .then(normalizeChildrenPage);
     },
     {
       getNextPageParam: (lastPage, allPages) => {
@@ -239,8 +272,8 @@ export const useUploadLink = (query: string) => {
 
 export const useStreamPrepare = (variables) => {
   return useMutation({
-    mutationFn: (variables: { hash: string, qualities }) =>
-      api.streamPrepare({ ...variables }),
+    mutationFn: (variables: { hash: string; qualities }) =>
+      api.streamPrepare({ ...variables })
     // onSuccess: (_, variables) => {
     //   queryClient.refetchQueries({
     //     queryKey: ['folderContentChildren', folderHash]

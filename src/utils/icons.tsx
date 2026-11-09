@@ -32,8 +32,41 @@ export const IconUpload = ({ colorGray = false, size = '', style = {} }) => {
   return <IconBuilder src={upload} style={styles} />;
 };
 
-export const IconStream = ({ style = {} }) => {
-  return <IconBuilder src={stream} style={style} />;
+export const IconStream = ({
+  style = {},
+  color,
+  ...props
+}: {
+  style?: React.CSSProperties;
+  color?: string;
+  [key: string]: any;
+}) => {
+  // SVG با fill ثابت (#737373) است و با <img> رنگ پدر را ارث نمی‌برد؛
+  // برای هماهنگی رنگ با آیکون اشتراک، همان SVG را به‌صورت mask رنگ می‌کنیم.
+  if (color) {
+    return (
+      <span
+        aria-hidden='true'
+        style={{
+          display: 'inline-block',
+          width: 16,
+          height: 16,
+          backgroundColor: color,
+          WebkitMaskImage: `url("${stream}")`,
+          WebkitMaskRepeat: 'no-repeat',
+          WebkitMaskPosition: 'center',
+          WebkitMaskSize: 'contain',
+          maskImage: `url("${stream}")`,
+          maskRepeat: 'no-repeat',
+          maskPosition: 'center',
+          maskSize: 'contain',
+          ...style
+        }}
+        {...props}
+      />
+    );
+  }
+  return <IconBuilder src={stream} style={style} {...props} />;
 };
 
 export const IconCopy = ({ style = {}, ...props }) => {
@@ -91,4 +124,3 @@ export const IconShare = ({ style = {}, ...props }) => {
 export const IconPreview = ({ style = {}, ...props }) => {
   return <IconBuilder src={preview} style={style} {...props} />;
 };
-
