@@ -9,11 +9,20 @@ import {
   ImageTypes,
   VideoTypes,
   DocumentTypes,
-  AudioTypes
+  AudioTypes,
+  // eslint-disable-next-line no-unused-vars
+  StreamStatus
 } from '../../config/types';
 import { getThumbnailUrl, getFileUrl, formatBytes } from '../../utils/index';
 import DefaultThumnail from '../StateColumnList/defaultThumbnail/index';
 import styles from './style.module.scss';
+import StreamDetails from './streamDetails';
+import {
+  InfoSectionCard,
+  InfoSectionItem,
+  SidebarItem,
+  DateTimeValue
+} from './infoSection';
 import { useGetFileDetails } from '../../config/hooks';
 import moment from 'moment-jalaali';
 import CheckPermissions from '../../components/CheckPermissions/index';
@@ -59,14 +68,12 @@ interface FileItem {
   isPublic?: boolean;
   thumbnail?: string;
   hash?: string;
+  streamStatus?: StreamStatus | StreamStatus[] | null;
   metaData?: {
     changeLog?: ChangeLogProps[];
   };
 }
-interface SidebarItemProps {
-  label?: string;
-  value?: string | React.ReactNode;
-}
+
 const changeLogLabels: Record<string, string> = {
   uploaded: 'بارگذاری',
   renamed: 'تغییر نام',
@@ -80,18 +87,6 @@ const changeLogLabels: Record<string, string> = {
 
 const getChangeLogAction = (eventType: string): string => {
   return changeLogLabels[eventType] || eventType;
-};
-
-const SidebarItem: React.FunctionComponent<SidebarItemProps> = ({
-  label,
-  value
-}) => {
-  return (
-    <div className={styles['info-section__sidebar-item']}>
-      <span>{label}</span>
-      <span className={styles['info-section__sidebar-value']}>{value}</span>
-    </div>
-  );
 };
 
 const PreviewModal: React.FunctionComponent<IProps> = ({
@@ -315,12 +310,16 @@ const PreviewModal: React.FunctionComponent<IProps> = ({
   const {
     data: _fileData,
     isLoading,
+    isError,
     refetch
   } = useGetFileDetails(currentSlide?.hash ? currentSlide?.hash : item?.hash);
 
   let fileData: FileItem | null = null;
   if (_fileData) {
-    fileData = _fileData.result[0];
+    // پاسخ این ریکوست آرایه‌ای است (arrayResponseFormat)؛ برای اطمینان هر دو شکل پشتیبانی می‌شود.
+    fileData = Array.isArray(_fileData.result)
+      ? _fileData.result[0]
+      : _fileData.result;
   }
 
   useEffect(() => {
@@ -328,39 +327,18 @@ const PreviewModal: React.FunctionComponent<IProps> = ({
       refetch();
     }
   }, [currentSlideIndex]);
-  const toMilliseconds = (timestamp: string | number) => {
-    const value = Number(timestamp);
-
-    const isSeconds = value < 10_000_000_000;
-    return isSeconds ? value * 1000 : value;
-  };
-
-  const formatChangeLogDate = (timestamp: string | number) => {
-    return moment(toMilliseconds(timestamp)).format('jYYYY/jMM/jDD');
-  };
-
-  const formatChangeLogTime = (timestamp: string | number) => {
-    return moment(toMilliseconds(timestamp)).format('HH:mm');
-  };
-
   const renderChangeLog = (changeLog?: ChangeLogProps[]) => {
     if (!changeLog || changeLog.length === 0) {
       return null;
     }
 
     return (
-      <div className={styles['info-section__log-card']}>
-        <span className={styles['info-section__log-title-wrapper']}>
-          تاریخچه تغییرات
-        </span>
+      <InfoSectionCard title='تاریخچه تغییرات'>
         {changeLog.map((log, index) => {
           const action = getChangeLogAction(log.eventType);
 
           return (
-            <div
-              key={`${log.eventType}-${log.timestamp}-${index}`}
-              className={styles['info-section__item-wrapper']}
-            >
+            <InfoSectionItem key={`${log.eventType}-${log.timestamp}-${index}`}>
               <SidebarItem
                 label='عملیات'
                 value={`(${log.eventType}) ${action}`}
@@ -368,19 +346,12 @@ const PreviewModal: React.FunctionComponent<IProps> = ({
               <SidebarItem label='کاربر' value={log.updatedByUsername} />
               <SidebarItem
                 label='تاریخ'
-                value={
-                  <div className={styles['info-section__log-card-item']}>
-                    <span>{formatChangeLogDate(log.timestamp)}</span>
-                    {`: ساعت`}
-                    &nbsp;
-                    <span>{formatChangeLogTime(log.timestamp)}</span>
-                  </div>
-                }
+                value={<DateTimeValue value={log.timestamp} />}
               />
-            </div>
+            </InfoSectionItem>
           );
         })}
-      </div>
+      </InfoSectionCard>
     );
   };
 
@@ -445,6 +416,12 @@ const PreviewModal: React.FunctionComponent<IProps> = ({
           myStyle={{ height: '100px' }}
         >
           {renderChangeLog(fileData?.metaData?.changeLog)}
+          <StreamDetails
+            streamStatus={fileData?.streamStatus}
+            extension={currentSlide?.extension}
+            isLoading={isLoading}
+            isError={isError}
+          />
         </CheckPermissions>
       </div>
     );

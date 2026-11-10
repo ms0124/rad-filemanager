@@ -12,6 +12,31 @@ export interface BreadcrumbItem {
   disabled?: boolean;
 }
 
+export type StreamSegmentStatus = 'WAITING' | 'PROCESSING' | 'DONE' | 'FAIL';
+
+// هر کیفیت آماده‌سازی‌شده‌ی استریم (360/480/... برای ویدیو و 128/... برای صدا)
+export interface StreamQualityStatus {
+  hash?: string;
+  quality?: string | number;
+  segmentStatus?: StreamSegmentStatus;
+  streamType?: string;
+  created?: string | number;
+  updated?: string | number;
+  [key: string]: any;
+}
+
+// در پاسخ جزئیات فایل، برای فایل استریم‌نشده مقدار streamStatus برابر [] است.
+export interface StreamStatus {
+  hash?: string;
+  // در پاسخ نمونه، segmentStatus فقط داخل هر کیفیت است؛ اگر در سطح بالا هم بیاید استفاده می‌شود.
+  segmentStatus?: StreamSegmentStatus;
+  streamType?: string;
+  created?: string | number;
+  updated?: string | number;
+  qualities?: StreamQualityStatus[];
+  [key: string]: any;
+}
+
 export interface DriveItem {
   hash: string;
   name: string;
@@ -28,7 +53,7 @@ export interface DriveItem {
   updated?: number | string;
   // با streamStatus=true مقدار دارد؛ در نمونه‌ی واقعی برای فایل استریم‌نشده [] است.
   // ساختار عناصر آن قطعی نیست، پس عمداً شل تایپ شده است.
-  streamStatus?: unknown;
+  streamStatus?: StreamStatus | StreamStatus[] | null;
   [key: string]: any;
 }
 

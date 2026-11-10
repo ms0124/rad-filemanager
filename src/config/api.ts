@@ -12,7 +12,10 @@ export const getBaseDir: () => object = async () => {
 };
 
 export const getFileDetails: (hash: string) => Promise<Data> = async (hash) => {
-  const { data } = await instance.get(`${namespace}/${hash}`);
+  // برای برگرداندن streamStatus در پاسخ جزئیات فایل، همان پارامتر ریکوست children لازم است.
+  const { data } = await instance.get(`${namespace}/${hash}`, {
+    params: { streamStatus: true }
+  });
   return data;
 };
 
