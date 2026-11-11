@@ -47,7 +47,7 @@ const Row: FunctionComponent<IProps> = ({ pages = [], setHash }) => {
     validExtension,
     itemHash,
     setItemHash,
-    multiValue,
+    multiValue
   } = useContext(Context);
 
   const slectedRef = useRef<(HTMLDivElement | null)[]>([]);
@@ -108,7 +108,7 @@ const Row: FunctionComponent<IProps> = ({ pages = [], setHash }) => {
   };
 
   const selectAllLoaded = () => {
-    if (!multiValue) return; 
+    if (!multiValue) return;
 
     if (allLoadedItems.length === 0) return;
     const merged: any[] = [];
@@ -180,11 +180,11 @@ const Row: FunctionComponent<IProps> = ({ pages = [], setHash }) => {
       setSelectedItems([item]);
     }
 
-     if (!effectiveMultiSelect && !itemHash) {
-       setItemHash('');
-     } else if (!effectiveMultiSelect && itemHash) {
-       setItemHash(itemHash);
-     }
+    if (!effectiveMultiSelect && !itemHash) {
+      setItemHash('');
+    } else if (!effectiveMultiSelect && itemHash) {
+      setItemHash(itemHash);
+    }
 
     if (onSelect) {
       // const withOutFolders = newSelectedArray.filter((x) =>
@@ -279,7 +279,9 @@ const Row: FunctionComponent<IProps> = ({ pages = [], setHash }) => {
                     }}
                     item={item}
                     tabType={currentTab}
-                    allFiles={pages.flatMap(page => page?.result?.list || page?.result || [])}
+                    allFiles={pages.flatMap(
+                      (page) => page?.result?.list || page?.result || []
+                    )}
                     // ref={(ref) => (contextMenuRef.current[index] = ref)}
                     ref={(ref) => {
                       const currentIndex = pageIndex * PAGE_SIZE + index;
@@ -295,27 +297,26 @@ const Row: FunctionComponent<IProps> = ({ pages = [], setHash }) => {
                   />
                 </td>
                 <td>
-                  {isShowCheckbox &&
-                    multiValue&&(
-                      <input
-                        role='button'
-                        onClick={(_) => handleSelectItem(item)}
-                        type='checkbox'
-                        checked={
-                          !!selectedItems.find((x) => x.hash === item.hash)
-                        }
-                        className={classnames(
-                          styles['table-wrapper__checkbox']
-                        )}
-                      />
-                    )}
+                  {isShowCheckbox && multiValue && (
+                    <input
+                      role='button'
+                      onClick={(_) => handleSelectItem(item)}
+                      type='checkbox'
+                      checked={
+                        !!selectedItems.find((x) => x.hash === item.hash)
+                      }
+                      className={classnames(styles['table-wrapper__checkbox'])}
+                    />
+                  )}
                 </td>
                 <td
                   onDoubleClick={() => {
                     if (TabTypes.SearchList) {
                       setSearchText('');
                     }
-                    item?.extension ? null : setHash(item?.hash);
+                    item?.type == 'application/vnd.podspace.folder'
+                      ? setHash(item?.hash)
+                      : null;
                   }}
                   className={styles['thumnail-wrraper']}
                 >
@@ -369,8 +370,8 @@ const Row: FunctionComponent<IProps> = ({ pages = [], setHash }) => {
 
                     isDoubleClick.current = false;
 
-                    const intervalId = setTimeout(()=>{
-                    if(isDoubleClick.current == false){
+                    const intervalId = setTimeout(() => {
+                      if (isDoubleClick.current == false) {
                         clearInterval(intervalId);
                         handleSelectItem(item, isShowCheckbox);
                       }
@@ -378,7 +379,6 @@ const Row: FunctionComponent<IProps> = ({ pages = [], setHash }) => {
                   }}
                   role='button'
                   onDoubleClick={() => {
-                    
                     isDoubleClick.current = true;
 
                     if (TabTypes.SearchList) {

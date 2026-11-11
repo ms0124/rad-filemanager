@@ -238,8 +238,8 @@ const Column: React.FunctionComponent<IProps> = ({
                     // if multi select is enable ==> prevent one select work
                     isDoubleClick.current = false;
 
-                    const intervalId = setTimeout(()=>{
-                    if(isDoubleClick.current == false){
+                    const intervalId = setTimeout(() => {
+                      if (isDoubleClick.current == false) {
                         clearInterval(intervalId);
                         handleSelectItem(item, isShowCheckbox);
                       }
@@ -251,8 +251,9 @@ const Column: React.FunctionComponent<IProps> = ({
                       setSearchText('');
                     }
                     if (currentTab == TabTypes.ArchiveList) return;
-
-                    item?.extension ? null : setHash(item?.hash);
+                    item?.type == 'application/vnd.podspace.folder'
+                      ? setHash(item?.hash)
+                      : null;
                   }}
                   className={styles['col']}
                   role='butotn'
@@ -287,7 +288,9 @@ const Column: React.FunctionComponent<IProps> = ({
                           isFirstCol={index % colCount === 0 ? true : false}
                           item={item}
                           tabType={currentTab}
-                          allFiles={pages.flatMap(page => page?.result?.list || page?.result || [])}
+                          allFiles={pages.flatMap(
+                            (page) => page?.result?.list || page?.result || []
+                          )}
                           ref={(ref) => {
                             const currentIndex = pageIndex * PAGE_SIZE + index;
                             return (contextMenuRef.current[currentIndex] = ref);
